@@ -1,85 +1,78 @@
 import { Request, Response } from 'express';
-import { faqs } from '../config/mockData';
+import { FAQ, IFAQ } from '../models/interfaces';
 
-export const getAllFaqs = (req: Request, res: Response) => {
-  const { category } = req.query;
-  
-  let filteredFaqs = [...faqs];
-  
-  // Filtrar por categoría si se proporciona
-  if (category) {
-    filteredFaqs = filteredFaqs.filter(f => f.category === category);
+// Obtener todas las FAQs
+export const getAllFAQs = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const faqs = await FAQ.find().sort({ createdAt: -1 });
+    res.status(200).json(faqs);
+  } catch (error) {
+    console.error('Error fetching FAQs:', error);
+    res.status(500).json({ message: 'Error al obtener las FAQs' });
   }
-  
-  res.status(200).json(filteredFaqs);
 };
 
-export const getFaqById = (req: Request, res: Response) => {
-  const faqId = parseInt(req.params.id);
-  const faq = faqs.find(f => f.id === faqId);
-
-  if (!faq) {
-    return res.status(404).json({ message: 'FAQ no encontrada' });
+// Obtener una FAQ por ID
+export const getFAQById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const faq = await FAQ.findById(req.params.id);
+    if (!faq) {
+      res.status(404).json({ message: 'FAQ no encontrada' });
+      return;
+    }
+    res.status(200).json(faq);
+  } catch (error) {
+    console.error('Error fetching FAQ:', error);
+    res.status(500).json({ message: 'Error al obtener la FAQ' });
   }
-
-  res.status(200).json(faq);
 };
 
-export const createFaq = (req: Request, res: Response) => {
-  const { question, answer, category } = req.body;
-  
-  // Generar ID
-  const newId = faqs.length > 0 ? Math.max(...faqs.map(f => f.id)) + 1 : 1;
-  
-  // Crear nueva FAQ
-  const newFaq = {
-    id: newId,
-    question,
-    answer,
-    category,
-    createdAt: new Date()
-  };
-  
-  faqs.push(newFaq);
-  
-  res.status(201).json(newFaq);
+// Crear una nueva FAQ
+export const createFAQ = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const newFAQ = new FAQ(req.body);
+    const savedFAQ = await newFAQ.save();
+    res.status(201).json(savedFAQ);
+  } catch (error) {
+    console.error('Error creating FAQ:', error);
+    res.status(500).json({ message: 'Error al crear la FAQ' });
+  }
 };
 
-export const updateFaq = (req: Request, res: Response) => {
-  const faqId = parseInt(req.params.id);
-  const { question, answer, category } = req.body;
-  
-  // Buscar FAQ
-  const faqIndex = faqs.findIndex(f => f.id === faqId);
-  
-  if (faqIndex === -1) {
-    return res.status(404).json({ message: 'FAQ no encontrada' });
+// Actualizar una FAQ
+export const updateFAQ = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const updatedFAQ = await FAQ.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body, updatedAt: new Date() },
+      { new: true }
+    );
+    
+    if (!updatedFAQ) {
+      res.status(404).json({ message: 'FAQ no encontrada' });
+      return;
+    }
+    
+    res.status(200).json(updatedFAQ);
+  } catch (error) {
+    console.error('Error updating FAQ:', error);
+    res.status(500).json({ message: 'Error al actualizar la FAQ' });
   }
-  
-  // Actualizar FAQ
-  const faq = faqs[faqIndex];
-  
-  if (question) faq.question = question;
-  if (answer) faq.answer = answer;
-  if (category) faq.category = category;
-  
-  faq.updatedAt = new Date();
-  
-  res.status(200).json(faq);
 };
 
-export const deleteFaq = (req: Request, res: Response) => {
-  const faqId = parseInt(req.params.id);
-  
-  // Buscar FAQ
-  const faqIndex = faqs.findIndex(f => f.id === faqId);
-  
-  if (faqIndex === -1) {
-    return res.status(404).json({ message: 'FAQ no encontrada' });
+// Eliminar una FAQ
+export const deleteFAQ = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const deletedFAQ = await FAQ.findByIdAndDelete(req.params.id);
+    
+    if (!deletedFAQ) {
+      res.status(404).json({ message: 'FAQ no encontrada' });
+      return;
+    }
+    
+    res.status(200).json({ message: 'FAQ eliminada correctamente' });
+  } catch (error) {
+    console.error('Error deleting FAQ:', error);
+    res.status(500).json({ message: 'Error al eliminar la FAQ' });
   }
-  
-  // Eliminar FAQ
-  const deletedFaq = faqs.splice(faqIndex, 1)[0];
-  
-  res.status(200).json(deletedFaq);
 };

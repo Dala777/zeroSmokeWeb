@@ -1,14 +1,14 @@
-// src/routes/auth.routes.ts
-import { Router } from 'express';
-import * as authController from '../controllers/auth.controller';
-import { verifyToken } from '../middleware/auth.middleware';
+import express from 'express';
+import { login, getProfile, register } from '../controllers/auth.controller';
+import { authMiddleware } from '../middleware/auth.middleware';
 
-const router = Router();
+const router = express.Router();
 
-// Ruta para login
-router.post('/login', authController.login);
+// Rutas públicas
+router.post('/login', login);
+router.post('/register', register); // Solo para desarrollo
 
-// Ruta para obtener perfil del usuario autenticado
-router.get('/profile', verifyToken, authController.getProfile);
+// Rutas protegidas
+router.get('/profile', authMiddleware, getProfile);
 
 export default router;

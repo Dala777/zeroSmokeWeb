@@ -85,63 +85,87 @@ const TagPill = styled.span`
   font-size: 0.75rem;
 `
 
+const LoadingContainer = styled.div`
+  text-align: center;
+  margin-top: 2rem;
+  color: ${AppColors.text};
+`
+
 const ArticlesPage: React.FC = () => {
-  const [articles, setArticles] = useState<Article[]>([])
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Función para cargar artículos
-    const loadArticles = () => {
-      const articlesData = getArticles().filter((article) => article.status === "published")
-      setArticles(articlesData)
-    }
+    const loadArticles = async () => {
+      try {
+        setLoading(true);
+        const articlesData = await getArticles();
+        setArticles(articlesData.filter((article) => article.status === "published"));
+      } catch (error) {
+        console.error("Error loading articles:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    // Cargar artículos inicialmente
-    loadArticles()
+    loadArticles();
 
     // Configurar un intervalo para verificar actualizaciones
-    const intervalId = setInterval(loadArticles, 2000)
+    const intervalId = setInterval(loadArticles, 10000);
 
     // Limpiar el intervalo cuando el componente se desmonte
-    return () => clearInterval(intervalId)
-  }, [])
+    return () => clearInterval(intervalId);
+  }, []);
+
+  if (loading && articles.length === 0) {
+    return (
+      <PageContainer>
+        <PageTitle>Artículos</PageTitle>
+        <LoadingContainer>Cargando artículos...</LoadingContainer>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer>
       <PageTitle>Artículos</PageTitle>
 
-      <ArticlesGrid>
-        {articles.map((article) => (
-          <ArticleCard key={article.id}>
-            <ArticleImage>
-              <img src={article.image || "/placeholder.svg"} alt={article.title} />
-            </ArticleImage>
+      {articles.length === 0 ? (
+        <LoadingContainer>No hay artículos publicados actualmente.</LoadingContainer>
+      ) : (
+        <ArticlesGrid>
+          {articles.map((article) => (
+            <ArticleCard key={article._id || article.id}>
+              <ArticleImage>
+                <img src={article.image || "/placeholder.svg"} alt={article.title} />
+              </ArticleImage>
 
-            <ArticleTitle>{article.title}</ArticleTitle>
+              <ArticleTitle>{article.title}</ArticleTitle>
 
-            <ArticleMeta>
-              <span>{article.author}</span>
-              <span>{new Date(article.createdAt).toLocaleDateString()}</span>
-            </ArticleMeta>
+              <ArticleMeta>
+                <span>{article.author}</span>
+                <span>{new Date(article.createdAt).toLocaleDateString()}</span>
+              </ArticleMeta>
 
-            <ArticleExcerpt>{article.excerpt}</ArticleExcerpt>
+              <ArticleExcerpt>{article.excerpt}</ArticleExcerpt>
 
-            <TagsContainer>
-              {article.tags.map((tag) => (
-                <TagPill key={tag}>{tag}</TagPill>
-              ))}
-            </TagsContainer>
+              <TagsContainer>
+                {article.tags.map((tag) => (
+                  <TagPill key={tag}>{tag}</TagPill>
+                ))}
+              </TagsContainer>
 
-            <Button variant="outline" size="small" fullWidth>
-              <Link to={`/articles/${article.id}`} style={{ color: "inherit" }}>
-                Leer más
-              </Link>
-            </Button>
-          </ArticleCard>
-        ))}
-      </ArticlesGrid>
+              <Button variant="outline" size="small" fullWidth>
+                <Link to={`/articles/${article._id || article.id}`} style={{ color: "inherit" }}>
+                  Leer más
+                </Link>
+              </Button>
+            </ArticleCard>
+          ))}
+        </ArticlesGrid>
+      )}
     </PageContainer>
-  )
-}
+  );
+};
 
-export default ArticlesPage
-
+export default ArticlesPage;

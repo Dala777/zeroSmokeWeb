@@ -1,116 +1,82 @@
 import { Request, Response } from 'express';
-import { messages } from '../config/mockData';
+import { Message, IMessage } from '../models/interfaces';
 
-export const getAllMessages = (req: Request, res: Response) => {
-  const { status } = req.query;
-  
-  let filteredMessages = [...messages];
-  
-  // Filtrar por estado si se proporciona
-  if (status && (status === 'new' || status === 'read' || status === 'answered')) {
-    filteredMessages = filteredMessages.filter(m => m.status === status);
+// Obtener todos los mensajes
+export const getAllMessages = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const messages = await Message.find().sort({ createdAt: -1 });
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    res.status(500).json({ message: 'Error al obtener los mensajes' });
   }
-  
-  // Ordenar por fecha de creación (más reciente primero)
-  filteredMessages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  
-  res.status(200).json(filteredMessages);
 };
 
-export const getMessageById = (req: Request, res: Response) => {
-  const messageId = parseInt(req.params.id);
-  const message = messages.find(m => m.id === messageId);
-
-  if (!message) {
-    return res.status(404).json({ message: 'Mensaje no encontrado' });
+// Obtener un mensaje por ID
+export const getMessageById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const message = await Message.findById(req.params.id);
+    if (!message) {
+      res.status(404).json({ message: 'Mensaje no encontrado' });
+      return;
+    }
+    res.status(200).json(message);
+  } catch (error) {
+    console.error('Error fetching message:', error);
+    res.status(500).json({ message: 'Error al obtener el mensaje' });
   }
-  
-  // Si el mensaje es nuevo, marcarlo como leído
-  if (message.status === 'new') {
-    message.status = 'read';
-    message.updatedAt = new Date();
-  }
-
-  res.status(200).json(message);
 };
 
-export const createMessage = (req: Request, res: Response) => {
-  const { name, email, subject, message } = req.body;
-  
-  // Generar ID
-  const newId = messages.length > 0 ? Math.max(...messages.map(m => m.id)) + 1 : 1;
-  
-  // Crear nuevo mensaje
-  const newMessage = {
-    id: newId,
-    name,
-    email,
-    subject,
-    message,
-    status: 'new' as 'new' | 'read' | 'answered',
-    createdAt: new Date()
-  };
-  
-  messages.push(newMessage);
-  
-  res.status(201).json(newMessage);
+// Crear un nuevo mensaje
+export const createMessage = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const newMessage = new Message({
+      ...req.body,
+      status: 'new',
+      createdAt: new Date()
+    });
+    const savedMessage = await newMessage.save();
+    res.status(201).json(savedMessage);
+  } catch (error) {
+    console.error('Error creating message:', error);
+    res.status(500).json({ message: 'Error al crear el mensaje' });
+  }
 };
 
-export const updateMessage = (req: Request, res: Response) => {
-  const messageId = parseInt(req.params.id);
-  const { status } = req.body;
-  
-  // Buscar mensaje
-  const messageIndex = messages.findIndex(m => m.id === messageId);
-  
-  if (messageIndex === -1) {
-    return res.status(404).json({ message: 'Mensaje no encontrado' });
+// Actualizar un mensaje
+export const updateMessage = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const updatedMessage = await Message.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body, updatedAt: new Date() },
+      { new: true }
+    );
+    
+    if (!updatedMessage) {
+      res.status(404).json({ message: 'Mensaje no encontrado' });
+      return;
+    }
+    
+    res.status(200).json(updatedMessage);
+  } catch (error) {
+    console.error('Error updating message:', error);
+    res.status(500).json({ message: 'Error al actualizar el mensaje' });
   }
-  
-  // Actualizar mensaje
-  const message = messages[messageIndex];
-  
-  if (status) message.status = status;
-  message.updatedAt = new Date();
-  
-  res.status(200).json(message);
 };
 
-export const respondToMessage = (req: Request, res: Response) => {
-  const messageId = parseInt(req.params.id);
-  const { responseText } = req.body;
-  
-  // Buscar mensaje
-  const messageIndex = messages.findIndex(m => m.id === messageId);
-  
-  if (messageIndex === -1) {
-    return res.status(404).json({ message: 'Mensaje no encontrado' });
+// Eliminar un mensaje
+export const deleteMessage = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const deletedMessage = await Message.findByIdAndDelete(req.params.id);
+    
+    if (!deletedMessage) {
+      res.status(404).json({ message: 'Mensaje no encontrado' });
+      return;
+    }
+    
+    res.status(200).json({ message: 'Mensaje eliminado correctamente' });
+  } catch (error) {
+    console.error('Error deleting message:', error);
+    res.status(500).json({ message: 'Error al eliminar el mensaje' });
   }
-  
-  // Actualizar mensaje
-  const message = messages[messageIndex];
-  message.status = 'answered';
-  message.updatedAt = new Date();
-  
-  // Aquí se implementaría el envío de email con la respuesta
-  // Para la presentación, simplemente simulamos que se envió
-  console.log(`Enviando respuesta a ${message.email}: ${responseText}`);
-  
-  res.status(200).json(message);
-};
-
-export const deleteMessage = (req: Request, res: Response) => {
-  const messageId = parseInt(req.params.id);
-  
-  // Buscar mensaje
-  const messageIndex = messages.findIndex(m => m.id === messageId);
-  
-  if (messageIndex === -1) {
-    return res.status(404).json({ message: 'Mensaje no encontrado' });
-  }
-  
-  // Eliminar mensaje
-  const deletedMessage = messages.splice(messageIndex, 1)[0];
-  
-  res.status(200).json(deletedMessage);
 };

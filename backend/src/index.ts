@@ -1,18 +1,10 @@
-// src/index.ts
 import app from './app';
-// Comentamos la importación de la base de datos para evitar errores
-// import { connect } from './config/database';
+import dotenv from 'dotenv';
 
-// Puerto
-const PORT = process.env.PORT || 8000;
+dotenv.config();
 
-// Iniciar servidor
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
-  
-  // Conectar a la base de datos
-  // connect();
-  
-  // Para la presentación, podemos omitir la conexión a la base de datos
-  // y usar datos en memoria
 });

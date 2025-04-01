@@ -1,17 +1,22 @@
-// src/routes/faq.routes.ts
-import { Router } from 'express';
-import * as faqController from '../controllers/faq.controller';
-import { verifyToken, isAdmin } from '../middleware/auth.middleware';
+import express from 'express';
+import {
+  getAllFAQs,
+  getFAQById,
+  createFAQ,
+  updateFAQ,
+  deleteFAQ
+} from '../controllers/faq.controller';
+import { authMiddleware } from '../middleware/auth.middleware';
 
-const router = Router();
+const router = express.Router();
 
 // Rutas públicas
-router.get('/', faqController.getAllFaqs);
-router.get('/:id', faqController.getFaqById);
+router.get('/', getAllFAQs);
+router.get('/:id', getFAQById);
 
-// Rutas protegidas por autenticación y rol de administrador
-router.post('/', [verifyToken, isAdmin], faqController.createFaq);
-router.put('/:id', [verifyToken, isAdmin], faqController.updateFaq);
-router.delete('/:id', [verifyToken, isAdmin], faqController.deleteFaq);
+// Rutas protegidas (solo admin)
+router.post('/', authMiddleware, createFAQ);
+router.put('/:id', authMiddleware, updateFAQ);
+router.delete('/:id', authMiddleware, deleteFAQ);
 
 export default router;

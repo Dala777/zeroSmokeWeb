@@ -1,17 +1,22 @@
-// src/routes/article.routes.ts
-import { Router } from 'express';
-import * as articleController from '../controllers/article.controller';
-import { verifyToken, isAdmin } from '../middleware/auth.middleware';
+import express from 'express';
+import {
+  getAllArticles,
+  getArticleById,
+  createArticle,
+  updateArticle,
+  deleteArticle
+} from '../controllers/article.controller';
+import { authMiddleware } from '../middleware/auth.middleware';
 
-const router = Router();
+const router = express.Router();
 
 // Rutas públicas
-router.get('/', articleController.getAllArticles);
-router.get('/:id', articleController.getArticleById);
+router.get('/', getAllArticles);
+router.get('/:id', getArticleById);
 
-// Rutas protegidas por autenticación y rol de administrador
-router.post('/', [verifyToken, isAdmin], articleController.createArticle);
-router.put('/:id', [verifyToken, isAdmin], articleController.updateArticle);
-router.delete('/:id', [verifyToken, isAdmin], articleController.deleteArticle);
+// Rutas protegidas (solo admin)
+router.post('/', authMiddleware, createArticle);
+router.put('/:id', authMiddleware, updateArticle);
+router.delete('/:id', authMiddleware, deleteArticle);
 
 export default router;

@@ -1,15 +1,18 @@
-// src/routes/user.routes.ts
-import { Router } from 'express';
-import * as userController from '../controllers/user.controller';
-import { verifyToken, isAdmin } from '../middleware/auth.middleware';
+import express from "express"
+import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from "../controllers/user.controller"
+import { authMiddleware, adminMiddleware } from "../middleware/auth.middleware"
 
-const router = Router();
+const router = express.Router()
 
-// Rutas protegidas por autenticación y rol de administrador
-router.get('/', [verifyToken, isAdmin], userController.getAllUsers);
-router.post('/', [verifyToken, isAdmin], userController.createUser);
-router.get('/:id', [verifyToken, isAdmin], userController.getUserById);
-router.put('/:id', [verifyToken, isAdmin], userController.updateUser);
-router.delete('/:id', [verifyToken, isAdmin], userController.deleteUser);
+// Todas las rutas de usuarios requieren autenticación de administrador
+router.use(authMiddleware)
+router.use(adminMiddleware)
 
-export default router;
+router.get("/", getAllUsers)
+router.get("/:id", getUserById)
+router.post("/", createUser)
+router.put("/:id", updateUser)
+router.delete("/:id", deleteUser)
+
+export default router
+

@@ -21,11 +21,11 @@ const BackLink = styled(Link)`
   color: ${AppColors.primary};
   margin-bottom: 1.5rem;
   font-weight: 500;
-  
+
   &:hover {
     text-decoration: underline;
   }
-  
+
   &:before {
     content: "←";
     margin-right: 0.5rem;
@@ -57,7 +57,7 @@ const ArticleImage = styled.div`
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 2rem;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -69,25 +69,25 @@ const ArticleContent = styled.div`
   color: ${AppColors.text};
   line-height: 1.8;
   font-size: 1.125rem;
-  
+
   p {
     margin-bottom: 1.5rem;
   }
-  
+
   h2, h3, h4 {
     color: ${AppColors.textSecondary};
     margin: 2rem 0 1rem;
   }
-  
+
   ul, ol {
     margin-bottom: 1.5rem;
     padding-left: 1.5rem;
   }
-  
+
   li {
     margin-bottom: 0.5rem;
   }
-  
+
   strong {
     color: ${AppColors.textSecondary};
     font-weight: 600;
@@ -144,67 +144,87 @@ const RelatedArticleExcerpt = styled.p`
   flex-grow: 1;
 `
 
+const LoadingContainer = styled.div`
+  text-align: center;
+  margin-top: 2rem;
+  color: ${AppColors.text};
+`
+
 // Función para convertir texto con formato markdown simple a HTML
 const formatContent = (content: string) => {
   // Convertir saltos de línea a <br>
-  let formatted = content.replace(/\n/g, "<br>")
+  let formatted = content.replace(/\n/g, "<br>");
 
   // Convertir **texto** a <strong>texto</strong>
-  formatted = formatted.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+  formatted = formatted.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
   // Convertir listas
-  formatted = formatted.replace(/- (.*?)(?=\n|$)/g, "<li>$1</li>")
+  formatted = formatted.replace(/- (.*?)(?=\n|$)/g, "<li>$1</li>");
 
-  return formatted
-}
+  return formatted;
+};
 
 const ArticleDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>()
-  const [article, setArticle] = useState<Article | null>(null)
-  const [relatedArticles, setRelatedArticles] = useState<Article[]>([])
+  const { id } = useParams<{ id: string }>();
+  const [article, setArticle] = useState<Article | null>(null);
+  const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Cargar el artículo
-    if (id) {
-      const articleId = Number.parseInt(id)
-      const articleData = getArticleById(articleId)
-
-      if (articleData) {
-        setArticle(articleData)
-
-        // Cargar artículos relacionados (mismas etiquetas)
-        const allArticles = getArticles().filter((a) => a.status === "published" && a.id !== articleId)
-        const related = allArticles.filter((a) => a.tags.some((tag) => articleData.tags.includes(tag))).slice(0, 3)
-
-        setRelatedArticles(related)
+    const loadArticle = async () => {
+      if (!id) return;
+      
+      try {
+        setLoading(true);
+        const articleData = await getArticleById(id);
+        
+        if (articleData) {
+          setArticle(articleData);
+          
+          // Cargar artículos relacionados (mismas etiquetas)
+          const allArticles = await getArticles();
+          const published = allArticles.filter(a => a.status === "published" && (a._id !== articleData._id && a.id !== articleData.id));
+          const related = published
+            .filter(a => a.tags.some(tag => articleData.tags.includes(tag)))
+            .slice(0, 3);
+          
+          setRelatedArticles(related);
+        }
+      } catch (error) {
+        console.error("Error loading article:", error);
+      } finally {
+        setLoading(false);
       }
-    }
-  }, [id])
+    };
 
-  // Función para verificar actualizaciones
-  useEffect(() => {
-    if (!id) return
-
-    const articleId = Number.parseInt(id)
-
-    const checkForUpdates = () => {
-      const updatedArticle = getArticleById(articleId)
-      if (updatedArticle && JSON.stringify(updatedArticle) !== JSON.stringify(article)) {
-        setArticle(updatedArticle)
+    loadArticle();
+    
+    // Configurar un intervalo para verificar actualizaciones
+    const intervalId = setInterval(() => {
+      if (id) {
+        loadArticle();
       }
-    }
+    }, 10000);
+    
+    return () => clearInterval(intervalId);
+  }, [id]);
 
-    const intervalId = setInterval(checkForUpdates, 2000)
-    return () => clearInterval(intervalId)
-  }, [id, article])
+  if (loading && !article) {
+    return (
+      <PageContainer>
+        <BackLink to="/articulos">Volver a artículos</BackLink>
+        <LoadingContainer>Cargando artículo...</LoadingContainer>
+      </PageContainer>
+    );
+  }
 
   if (!article) {
     return (
       <PageContainer>
-        <h2>Artículo no encontrado</h2>
         <BackLink to="/articulos">Volver a artículos</BackLink>
+        <h2>Artículo no encontrado</h2>
       </PageContainer>
-    )
+    );
   }
 
   return (
@@ -236,11 +256,11 @@ const ArticleDetailPage: React.FC = () => {
           <SectionTitle>Artículos relacionados</SectionTitle>
           <RelatedArticlesGrid>
             {relatedArticles.map((relatedArticle) => (
-              <RelatedArticleCard key={relatedArticle.id}>
+              <RelatedArticleCard key={relatedArticle._id || relatedArticle.id}>
                 <RelatedArticleTitle>{relatedArticle.title}</RelatedArticleTitle>
                 <RelatedArticleExcerpt>{relatedArticle.excerpt}</RelatedArticleExcerpt>
                 <Button variant="outline" size="small">
-                  <Link to={`/articles/${relatedArticle.id}`} style={{ color: "inherit" }}>
+                  <Link to={`/articles/${relatedArticle._id || relatedArticle.id}`} style={{ color: "inherit" }}>
                     Leer más
                   </Link>
                 </Button>
@@ -250,8 +270,7 @@ const ArticleDetailPage: React.FC = () => {
         </RelatedArticlesSection>
       )}
     </PageContainer>
-  )
-}
+  );
+};
 
-export default ArticleDetailPage
-
+export default ArticleDetailPage;

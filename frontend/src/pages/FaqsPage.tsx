@@ -1,12 +1,12 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import styled from "styled-components"
 import { AppColors } from "../styles/colors"
 import Card from "../components/ui/Card"
-import { getFaqs, type FAQ } from "../services/storageService"
 
+// Componentes estilizados
 const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -84,33 +84,48 @@ const FaqCategory = styled.span`
   margin-left: 1rem;
 `
 
+// Mock data para pruebas
+const mockFaqs = [
+  {
+    id: 1,
+    question: "¿Cuáles son los beneficios inmediatos de dejar de fumar?",
+    answer:
+      "Los beneficios inmediatos incluyen una mejora en la circulación sanguínea, normalización de la presión arterial y la frecuencia cardíaca, y un aumento en los niveles de oxígeno en la sangre. Además, el sentido del gusto y el olfato comienzan a mejorar en pocos días.",
+    category: "Beneficios",
+  },
+  {
+    id: 2,
+    question: "¿Cómo puedo manejar los antojos de nicotina?",
+    answer:
+      "Para manejar los antojos, puedes intentar técnicas como respiración profunda, beber agua, mantener las manos ocupadas con actividades, masticar chicle sin azúcar, y evitar situaciones que asocias con fumar. También puedes considerar terapias de reemplazo de nicotina como parches o chicles.",
+    category: "Consejos",
+  },
+  {
+    id: 3,
+    question: "¿Cuánto tiempo duran los síntomas de abstinencia?",
+    answer:
+      "Los síntomas físicos de abstinencia suelen alcanzar su punto máximo en los primeros 3-5 días y disminuyen gradualmente durante 2-4 semanas. Sin embargo, los antojos psicológicos pueden persistir durante meses, aunque con menor frecuencia e intensidad con el tiempo.",
+    category: "Abstinencia",
+  },
+  {
+    id: 4,
+    question: "¿Es efectiva la terapia de reemplazo de nicotina?",
+    answer:
+      "Sí, la terapia de reemplazo de nicotina (TRN) ha demostrado ser efectiva para ayudar a las personas a dejar de fumar. Proporciona nicotina en forma controlada sin las toxinas dañinas del humo del tabaco, ayudando a reducir los síntomas de abstinencia mientras se rompe el hábito.",
+    category: "Tratamientos",
+  },
+]
+
 const FaqsPage: React.FC = () => {
-  const [faqs, setFaqs] = useState<FAQ[]>([])
   const [selectedCategory, setSelectedCategory] = useState("Todas")
   const [openFaqId, setOpenFaqId] = useState<number | null>(null)
 
-  useEffect(() => {
-    // Función para cargar FAQs
-    const loadFaqs = () => {
-      const faqsData = getFaqs()
-      setFaqs(faqsData)
-    }
-
-    // Cargar FAQs inicialmente
-    loadFaqs()
-
-    // Configurar un intervalo para verificar actualizaciones
-    const intervalId = setInterval(loadFaqs, 2000)
-
-    // Limpiar el intervalo cuando el componente se desmonte
-    return () => clearInterval(intervalId)
-  }, [])
-
   // Obtener categorías únicas
-  const categories = ["Todas", ...Array.from(new Set(faqs.map((faq) => faq.category)))]
+  const categories = ["Todas", ...Array.from(new Set(mockFaqs.map((faq) => faq.category)))]
 
   // Filtrar FAQs por categoría
-  const filteredFaqs = selectedCategory === "Todas" ? faqs : faqs.filter((faq) => faq.category === selectedCategory)
+  const filteredFaqs =
+    selectedCategory === "Todas" ? mockFaqs : mockFaqs.filter((faq) => faq.category === selectedCategory)
 
   const toggleFaq = (id: number) => {
     setOpenFaqId(openFaqId === id ? null : id)

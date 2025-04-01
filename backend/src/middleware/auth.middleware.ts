@@ -1,40 +1,46 @@
-// src/middleware/auth.middleware.ts
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { users } from '../config/mockData';
+import type { Request, Response, NextFunction } from "express"
+import jwt from "jsonwebtoken"
 
-// Extender la interfaz Request para incluir el usuario
-declare global {
-  namespace Express {
-    interface Request {
-      user?: any;
+// Middleware para verificar token JWT
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    // Obtener token del header
+    const token = req.header("Authorization")?.replace("Bearer ", "")
+
+    if (!token) {
+      res.status(401).json({ message: "No hay token, autorización denegada" })
+      return
     }
+
+    // Verificar token
+    const secret = process.env.JWT_SECRET || "your_jwt_secret"
+    const decoded = jwt.verify(token, secret) as { id: string; role: string }
+
+    // Añadir información del usuario a la request
+    ;(req as any).userId = decoded.id
+    ;(req as any).userRole = decoded.role
+
+    next()
+  } catch (error) {
+    console.error("Error en autenticación:", error)
+    res.status(401).json({ message: "Token no válido" })
   }
 }
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.headers.authorization?.split(' ')[1];
-
-  if (!token) {
-    return res.status(403).json({ message: 'No se proporcionó token de autenticación' });
-  }
-
+// Middleware para verificar rol de administrador
+export const adminMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secreto');
-    req.user = decoded;
-    next();
+    const userRole = (req as any).userRole
+
+    if (userRole !== "admin") {
+      res.status(403).json({ message: "Acceso denegado, se requiere rol de administrador" })
+      return
+    }
+
+    next()
   } catch (error) {
-    return res.status(401).json({ message: 'Token inválido' });
+    console.error("Error en verificación de rol:", error)
+    res.status(500).json({ message: "Error en el servidor" })
   }
-};
+}
 
-export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.user?.id;
-  const user = users.find(u => u.id === userId);
-
-  if (!user || !user.isAdmin) {
-    return res.status(403).json({ message: 'Requiere permisos de administrador' });
-  }
-
-  next();
-};

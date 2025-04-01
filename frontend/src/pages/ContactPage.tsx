@@ -7,9 +7,9 @@ import { AppColors } from "../styles/colors"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
 import Card from "../components/ui/Card"
-import { createMessage } from "../services/storageService"
 import { useChatbot } from "../components/ChatbotContext"
 
+// Componentes estilizados
 const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -27,7 +27,7 @@ const ContactGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
@@ -106,6 +106,14 @@ const SuccessMessage = styled.div`
   text-align: center;
 `
 
+const FormLabel = styled.label`
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: ${AppColors.textSecondary};
+`
+
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -126,16 +134,8 @@ const ContactPage: React.FC = () => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Crear un nuevo mensaje
-    try {
-      createMessage({
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-      })
-
-      // Mostrar mensaje de éxito
+    // Simulación de envío de formulario
+    setTimeout(() => {
       setIsSuccess(true)
       setFormData({
         name: "",
@@ -143,16 +143,13 @@ const ContactPage: React.FC = () => {
         subject: "",
         message: "",
       })
+      setIsSubmitting(false)
 
       // Ocultar mensaje después de 5 segundos
       setTimeout(() => {
         setIsSuccess(false)
       }, 5000)
-    } catch (error) {
-      console.error("Error al enviar el mensaje:", error)
-    } finally {
-      setIsSubmitting(false)
-    }
+    }, 1000)
   }
 
   return (
@@ -229,12 +226,7 @@ const ContactPage: React.FC = () => {
             <Input label="Asunto" name="subject" value={formData.subject} onChange={handleChange} required fullWidth />
 
             <div>
-              <label
-                htmlFor="message"
-                style={{ display: "block", marginBottom: "0.5rem", color: AppColors.textSecondary }}
-              >
-                Mensaje
-              </label>
+              <FormLabel htmlFor="message">Mensaje</FormLabel>
               <TextArea
                 id="message"
                 name="message"

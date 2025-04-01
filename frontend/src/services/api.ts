@@ -1,142 +1,67 @@
-// frontend/src/services/api.ts
-import axios from 'axios';
+import axios from "axios"
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api"
 
-// Crear instancia de axios con configuración base
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+// Configurar axios con el token
+const setAuthToken = (token: string | null) => {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
+  } else {
+    delete axios.defaults.headers.common["Authorization"]
+  }
+}
 
-// Interceptor para añadir token de autenticación
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// Obtener token del localStorage
+const token = localStorage.getItem("token")
+if (token) {
+  setAuthToken(token)
+}
 
-// Servicios de autenticación
-export const authService = {
-  login: async (email: string, password: string) => {
-    const response = await api.post('/auth/login', { email, password });
-    
-    if (response.data.accessToken) {
-      localStorage.setItem('token', response.data.accessToken);
-    }
-    
-    return response.data;
-  },
-  
-  logout: () => {
-    localStorage.removeItem('token');
-  },
-  
-  getProfile: async () => {
-    return api.get('/auth/profile');
-  },
-};
+// API para autenticación
+export const authAPI = {
+  login: (data: { email: string; password: string }) => axios.post(`${API_URL}/auth/login`, data),
 
-// Servicios de artículos
-export const articleService = {
-  getAll: async (status?: string) => {
-    const params = status ? { status } : {};
-    return api.get('/articles', { params });
-  },
-  
-  getById: async (id: number) => {
-    return api.get(`/articles/${id}`);
-  },
-  
-  create: async (article: any) => {
-    return api.post('/articles', article);
-  },
-  
-  update: async (id: number, article: any) => {
-    return api.put(`/articles/${id}`, article);
-  },
-  
-  delete: async (id: number) => {
-    return api.delete(`/articles/${id}`);
-  },
-};
+  register: (data: { name: string; email: string; password: string }) => axios.post(`${API_URL}/auth/register`, data),
 
-// Servicios de mensajes
-export const messageService = {
-  getAll: async (status?: string) => {
-    const params = status ? { status } : {};
-    return api.get('/messages', { params });
-  },
-  
-  getById: async (id: number) => {
-    return api.get(`/messages/${id}`);
-  },
-  
-  create: async (message: any) => {
-    return api.post('/messages', message);
-  },
-  
-  update: async (id: number, status: string) => {
-    return api.put(`/messages/${id}`, { status });
-  },
-  
-  respond: async (id: number, responseText: string) => {
-    return api.post(`/messages/${id}/respond`, { responseText });
-  },
-  
-  delete: async (id: number) => {
-    return api.delete(`/messages/${id}`);
-  },
-};
+  getProfile: () => axios.get(`${API_URL}/auth/profile`),
+}
 
-// Servicios de FAQs
-export const faqService = {
-  getAll: async (category?: string) => {
-    const params = category ? { category } : {};
-    return api.get('/faqs', { params });
-  },
-  
-  getById: async (id: number) => {
-    return api.get(`/faqs/${id}`);
-  },
-  
-  create: async (faq: any) => {
-    return api.post('/faqs', faq);
-  },
-  
-  update: async (id: number, faq: any) => {
-    return api.put(`/faqs/${id}`, faq);
-  },
-  
-  delete: async (id: number) => {
-    return api.delete(`/faqs/${id}`);
-  },
-};
+// API para artículos
+export const articleAPI = {
+  getAll: () => axios.get(`${API_URL}/articles`),
 
-// Servicios de usuarios
-export const userService = {
-  getAll: async () => {
-    return api.get('/users');
-  },
-  
-  getById: async (id: number) => {
-    return api.get(`/users/${id}`);
-  },
-  
-  create: async (user: any) => {
-    return api.post('/users', user);
-  },
-  
-  update: async (id: number, user: any) => {
-    return api.put(`/users/${id}`, user);
-  },
-};
+  getById: (id: string) => axios.get(`${API_URL}/articles/${id}`),
 
-export default api;
+  create: (data: any) => axios.post(`${API_URL}/articles`, data),
+
+  update: (id: string, data: any) => axios.put(`${API_URL}/articles/${id}`, data),
+
+  delete: (id: string) => axios.delete(`${API_URL}/articles/${id}`),
+}
+
+// API para FAQs
+export const faqAPI = {
+  getAll: () => axios.get(`${API_URL}/faqs`),
+
+  getById: (id: string) => axios.get(`${API_URL}/faqs/${id}`),
+
+  create: (data: any) => axios.post(`${API_URL}/faqs`, data),
+
+  update: (id: string, data: any) => axios.put(`${API_URL}/faqs/${id}`, data),
+
+  delete: (id: string) => axios.delete(`${API_URL}/faqs/${id}`),
+}
+
+// API para mensajes
+export const messageAPI = {
+  getAll: () => axios.get(`${API_URL}/messages`),
+
+  getById: (id: string) => axios.get(`${API_URL}/messages/${id}`),
+
+  create: (data: any) => axios.post(`${API_URL}/messages`, data),
+
+  update: (id: string, data: any) => axios.put(`${API_URL}/messages/${id}`, data),
+
+  delete: (id: string) => axios.delete(`${API_URL}/messages/${id}`),
+}
+

@@ -1,15 +1,16 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import { AppColors } from "../../styles/colors"
 import Button from "../../components/ui/Button"
 import Card from "../../components/ui/Card"
 import Input from "../../components/ui/Input"
-import { articleService } from "../../services/api"
+import type { Article } from "../../types"
 
+// Componentes estilizados
 const PageContainer = styled.div`
   padding: 1.5rem;
   background-color: ${AppColors.background};
@@ -49,7 +50,7 @@ const SelectFilter = styled.select`
   background-color: rgba(255, 255, 255, 0.05);
   color: ${AppColors.text};
   font-size: 1rem;
-  
+
   &:focus {
     outline: none;
     border-color: ${AppColors.primary};
@@ -60,7 +61,7 @@ const ArticleCard = styled(Card)`
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  
+
   @media (min-width: 768px) {
     flex-direction: row;
   }
@@ -73,7 +74,7 @@ const ArticleImage = styled.div`
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 1rem;
-  
+
   @media (min-width: 768px) {
     width: 200px;
     height: 150px;
@@ -81,7 +82,7 @@ const ArticleImage = styled.div`
     margin-right: 1.5rem;
     flex-shrink: 0;
   }
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -146,7 +147,25 @@ const ActionButton = styled.button`
   font-size: 0.875rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  
+
+  &:hover {
+    background-color: ${AppColors.primary};
+    color: white;
+  }
+`
+
+const ViewLink = styled.a`
+  background-color: rgba(255, 255, 255, 0.1);
+  color: ${AppColors.text};
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+
   &:hover {
     background-color: ${AppColors.primary};
     color: white;
@@ -172,87 +191,54 @@ const PageButton = styled.button<{ isActive?: boolean }>`
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  
+
   &:hover:not([disabled]) {
     background-color: ${(props) => (props.isActive ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
 `
 
-const ViewLink = styled.a`
-  background-color: rgba(255, 255, 255, 0.1);
-  color: ${AppColors.text};
-  border: none;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  
-  &:hover {
-    background-color: ${AppColors.primary};
-    color: white;
-  }
-`
-
-// Define the article type to avoid TypeScript errors
-interface Article {
-  id: number;
-  title: string;
-  excerpt: string;
-  author: string;
-  date: string;
-  status: "published" | "draft";
-  image?: string;
-}
-
-// Mock data
+// Mock data para pruebas
 const mockArticles: Article[] = [
   {
     id: 1,
     title: "Efectos del tabaco en el sistema respiratorio",
-    excerpt:
-      "Los efectos nocivos del tabaco en el sistema respiratorio son extensos y bien documentados. Desde la irritación inmediata hasta enfermedades graves...",
+    excerpt: "Los efectos nocivos del tabaco en el sistema respiratorio son extensos y bien documentados...",
+    content: "Contenido completo del artículo...",
     author: "Dr. Juan Pérez",
-    date: "2023-05-15",
+    authorId: "1",
+    createdAt: new Date("2023-05-15"),
     status: "published",
     image: "/placeholder.svg?height=200&width=300",
+    tags: ["salud", "respiratorio"],
   },
   {
     id: 2,
     title: "Beneficios inmediatos al dejar de fumar",
-    excerpt:
-      "Dejar de fumar tiene beneficios inmediatos para la salud. En tan solo 20 minutos después de su último cigarrillo, su cuerpo comienza un proceso de recuperación...",
+    excerpt: "Dejar de fumar tiene beneficios inmediatos para la salud...",
+    content: "Contenido completo del artículo...",
     author: "Dra. María González",
-    date: "2023-06-02",
+    authorId: "1",
+    createdAt: new Date("2023-06-02"),
     status: "published",
     image: "/placeholder.svg?height=200&width=300",
+    tags: ["beneficios", "salud"],
   },
   {
     id: 3,
     title: "Estrategias efectivas para dejar de fumar",
-    excerpt:
-      "Hay varias estrategias que han demostrado ser efectivas para ayudar a las personas a dejar de fumar. Desde terapias de reemplazo de nicotina hasta...",
+    excerpt: "Hay varias estrategias que han demostrado ser efectivas...",
+    content: "Contenido completo del artículo...",
     author: "Dr. Carlos Rodríguez",
-    date: "2023-06-20",
+    authorId: "1",
+    createdAt: new Date("2023-06-20"),
     status: "draft",
     image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    id: 4,
-    title: "El tabaquismo pasivo y sus riesgos",
-    excerpt:
-      "El tabaquismo pasivo, también conocido como humo de segunda mano, es la inhalación involuntaria del humo de tabaco por los no fumadores...",
-    author: "Dra. Ana Martínez",
-    date: "2023-07-05",
-    status: "published",
-    image: "/placeholder.svg?height=200&width=300",
+    tags: ["estrategias", "consejos"],
   },
 ]
 
@@ -260,71 +246,33 @@ const ArticlesList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
-  const [articles, setArticles] = useState<Article[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
+  const [articles, setArticles] = useState<Article[]>(mockArticles)
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        setLoading(true)
-        const response = await articleService.getAll(statusFilter !== "all" ? statusFilter : undefined)
-        setArticles(response.data)
-        setError("")
-      } catch (err) {
-        console.error("Error fetching articles:", err)
-        setError("Error al cargar los artículos. Por favor, intenta de nuevo.")
-        // Fallback to mockArticles if API fails
-        setArticles(mockArticles)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchArticles()
-  }, [statusFilter])
-
+  // Función para filtrar artículos
   const filteredArticles = articles.filter((article) => {
-    return (
+    const matchesSearch =
       article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      article.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+      article.excerpt?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      false
+
+    // Corregido: Usar comparación explícita para statusFilter
+    const matchesStatus = statusFilter === "all" || article.status === statusFilter
+
+    return matchesSearch && matchesStatus
   })
 
-  const handleDelete = async (id: number) => {
+  // Función para cambiar el estado de un artículo
+  const handleStatusChange = (id: number, newStatus: "published" | "draft") => {
+    setArticles(articles.map((article) => (article.id === id ? { ...article, status: newStatus } : article)))
+  }
+
+  // Función para eliminar un artículo
+  const handleDelete = (id: number) => {
     if (window.confirm("¿Estás seguro de que quieres eliminar este artículo?")) {
-      try {
-        await articleService.delete(id)
-        setArticles(articles.filter((article) => article.id !== id))
-      } catch (err) {
-        console.error("Error deleting article:", err)
-        alert("Error al eliminar el artículo. Por favor, intenta de nuevo.")
-      }
+      setArticles(articles.filter((article) => article.id !== id))
     }
-  }
-
-  const handleStatusChange = async (id: number, newStatus: "published" | "draft") => {
-    try {
-      await articleService.update(id, { status: newStatus })
-      setArticles(
-        articles.map((article) =>
-          article.id === id ? { ...article, status: newStatus } : article
-        )
-      )
-    } catch (err) {
-      console.error("Error updating article status:", err)
-      alert("Error al actualizar el estado del artículo. Por favor, intenta de nuevo.")
-    }
-  }
-
-  if (loading) {
-    return <div>Cargando artículos...</div>
-  }
-
-  if (error && articles.length === 0) {
-    return <div>{error}</div>
   }
 
   return (
@@ -369,46 +317,42 @@ const ArticlesList: React.FC = () => {
         </Button>
       </FilterContainer>
 
-      {filteredArticles.length === 0 ? (
-        <div>No se encontraron artículos que coincidan con los criterios de búsqueda.</div>
-      ) : (
-        filteredArticles.map((article) => (
-          <ArticleCard key={article.id}>
-            <ArticleImage>
-              <img src={article.image || "/placeholder.svg"} alt={article.title} />
-            </ArticleImage>
+      {filteredArticles.map((article) => (
+        <ArticleCard key={article.id}>
+          <ArticleImage>
+            <img src={article.image || "/placeholder.svg"} alt={article.title} />
+          </ArticleImage>
 
-            <ArticleContent>
-              <ArticleHeader>
-                <ArticleTitle>{article.title}</ArticleTitle>
-                <ArticleStatus status={article.status}>
-                  {article.status === "published" ? "Publicado" : "Borrador"}
-                </ArticleStatus>
-              </ArticleHeader>
+          <ArticleContent>
+            <ArticleHeader>
+              <ArticleTitle>{article.title}</ArticleTitle>
+              <ArticleStatus status={article.status}>
+                {article.status === "published" ? "Publicado" : "Borrador"}
+              </ArticleStatus>
+            </ArticleHeader>
 
-              <ArticleMeta>
-                <span>Autor: {article.author}</span>
-                <span>Fecha: {article.date}</span>
-              </ArticleMeta>
+            <ArticleMeta>
+              <span>Autor: {article.author}</span>
+              <span>Fecha: {article.createdAt.toLocaleDateString()}</span>
+            </ArticleMeta>
 
-              <ArticleExcerpt>{article.excerpt}</ArticleExcerpt>
+            <ArticleExcerpt>{article.excerpt}</ArticleExcerpt>
 
-              <ArticleActions>
-                <ActionButton onClick={() => navigate(`/admin/articles/edit/${article.id}`)}>Editar</ActionButton>
-                {article.status === "draft" ? (
-                  <ActionButton onClick={() => handleStatusChange(article.id, "published")}>Publicar</ActionButton>
-                ) : (
-                  <ActionButton onClick={() => handleStatusChange(article.id, "draft")}>Pasar a borrador</ActionButton>
-                )}
-                <ActionButton onClick={() => handleDelete(article.id)}>Eliminar</ActionButton>
-                <ViewLink href={`/articles/${article.id}`} target="_blank">
-                  Ver
-                </ViewLink>
-              </ArticleActions>
-            </ArticleContent>
-          </ArticleCard>
-        ))
-      )}
+            <ArticleActions>
+              <ActionButton onClick={() => navigate(`/admin/articles/edit/${article.id}`)}>Editar</ActionButton>
+              {article.status === "draft" ? (
+                <ActionButton onClick={() => handleStatusChange(article.id, "published")}>Publicar</ActionButton>
+              ) : (
+                <ActionButton onClick={() => handleStatusChange(article.id, "draft")}>Pasar a borrador</ActionButton>
+              )}
+              <ActionButton onClick={() => handleDelete(article.id)}>Eliminar</ActionButton>
+              <ViewLink href={`/articles/${article.id}`} target="_blank">
+                Ver
+              </ViewLink>
+            </ArticleActions>
+          </ArticleContent>
+        </ArticleCard>
+      ))}
 
       <Pagination>
         <PageButton disabled={currentPage === 1} onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}>
@@ -426,3 +370,4 @@ const ArticlesList: React.FC = () => {
 }
 
 export default ArticlesList
+

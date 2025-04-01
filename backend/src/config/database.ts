@@ -1,13 +1,25 @@
-// src/config/database.ts
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-export const connect = async () => {
+dotenv.config();
+
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/zerosmoke';
+
+export const connectDB = async (): Promise<void> => {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/zerosmoke';
-    await mongoose.connect(mongoURI);
-    console.log('MongoDB conectado');
+    await mongoose.connect(MONGODB_URI);
+    console.log('MongoDB connected successfully');
   } catch (error) {
-    console.error('Error al conectar a MongoDB:', error);
+    console.error('MongoDB connection error:', error);
     process.exit(1);
+  }
+};
+
+export const disconnectDB = async (): Promise<void> => {
+  try {
+    await mongoose.disconnect();
+    console.log('MongoDB disconnected successfully');
+  } catch (error) {
+    console.error('Error disconnecting from MongoDB:', error);
   }
 };

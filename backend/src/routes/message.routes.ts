@@ -1,18 +1,23 @@
-// src/routes/message.routes.ts
-import { Router } from 'express';
-import * as messageController from '../controllers/message.controller';
-import { verifyToken, isAdmin } from '../middleware/auth.middleware';
+import express from "express"
+import {
+  getAllMessages,
+  getMessageById,
+  createMessage,
+  updateMessage,
+  deleteMessage,
+} from "../controllers/message.controller"
+import { authMiddleware, adminMiddleware } from "../middleware/auth.middleware"
 
-const router = Router();
+const router = express.Router()
 
-// Ruta pública para crear mensajes (formulario de contacto)
-router.post('/', messageController.createMessage);
+// Rutas públicas
+router.post("/", createMessage)
 
-// Rutas protegidas por autenticación y rol de administrador
-router.get('/', [verifyToken, isAdmin], messageController.getAllMessages);
-router.get('/:id', [verifyToken, isAdmin], messageController.getMessageById);
-router.put('/:id', [verifyToken, isAdmin], messageController.updateMessage);
-router.post('/:id/respond', [verifyToken, isAdmin], messageController.respondToMessage);
-router.delete('/:id', [verifyToken, isAdmin], messageController.deleteMessage);
+// Rutas protegidas (solo admin)
+router.get("/", authMiddleware, adminMiddleware, getAllMessages)
+router.get("/:id", authMiddleware, adminMiddleware, getMessageById)
+router.put("/:id", authMiddleware, adminMiddleware, updateMessage)
+router.delete("/:id", authMiddleware, adminMiddleware, deleteMessage)
 
-export default router;
+export default router
+

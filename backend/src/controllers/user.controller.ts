@@ -1,140 +1,122 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import { users } from '../config/mockData';
+import { User, IUser } from '../models/interfaces';
 
-export const getAllUsers = (req: Request, res: Response) => {
-  // Filtrar datos sensibles como contraseñas
-  const safeUsers = users.map(user => ({
-    id: user.id,
-    email: user.email,
-    fullName: user.fullName,
-    isActive: user.isActive,
-    isAdmin: user.isAdmin,
-    createdAt: user.createdAt,
-    lastLogin: user.lastLogin
-  }));
-
-  res.status(200).json(safeUsers);
+// Obtener todos los usuarios
+export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ message: 'Error al obtener los usuarios' });
+  }
 };
 
-export const getUserById = (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id);
-  const user = users.find(u => u.id === userId);
-
-  if (!user) {
-    return res.status(404).json({ message: 'Usuario no encontrado' });
+// Obtener un usuario por ID
+export const getUserById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+      return;
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Error al obtener el usuario' });
   }
-
-  // Filtrar datos sensibles
-  const safeUser = {
-    id: user.id,
-    email: user.email,
-    fullName: user.fullName,
-    isActive: user.isActive,
-    isAdmin: user.isAdmin,
-    createdAt: user.createdAt,
-    lastLogin: user.lastLogin
-  };
-
-  res.status(200).json(safeUser);
 };
 
-export const createUser = (req: Request, res: Response) => {
-  const { email, password, fullName, isAdmin = false } = req.body;
+// Crear un nuevo usuario
+export const createUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { name, email, password, role, status } = req.body;
 
-  // Verificar si el email ya existe
-  if (users.some(u => u.email === email)) {
-    return res.status(400).json({ message: 'El email ya está en uso' });
+    // Verificar si el usuario ya existe
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      res.status(400).json({ message: 'El usuario ya existe' });
+      return;
+    }
+
+    // Encriptar contraseña
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Crear nuevo usuario
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role: role || 'user',
+      status: status || 'active',
+      createdAt: new Date()
+    });
+
+    const savedUser = await newUser.save();
+
+    // Enviar respuesta sin la contraseña
+    const userResponse = {
+      _id: savedUser._id,
+      name: savedUser.name,
+      email: savedUser.email,
+      role: savedUser.role,
+      status: savedUser.status,
+      createdAt: savedUser.createdAt
+    };
+
+    res.status(201).json(userResponse);
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ message: 'Error al crear el usuario' });
   }
-
-  // Generar ID (en una base de datos real, esto sería automático)
-  const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-
-  // Crear nuevo usuario
-  const newUser = {
-    id: newId,
-    email,
-    password: bcrypt.hashSync(password, 10),
-    fullName,
-    isActive: true,
-    isAdmin,
-    createdAt: new Date()
-  };
-
-  users.push(newUser);
-
-  // Filtrar datos sensibles para la respuesta
-  const safeUser = {
-    id: newUser.id,
-    email: newUser.email,
-    fullName: newUser.fullName,
-    isActive: newUser.isActive,
-    isAdmin: newUser.isAdmin,
-    createdAt: newUser.createdAt
-  };
-
-  res.status(201).json(safeUser);
 };
 
-export const updateUser = (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id);
-  const { email, password, fullName, isActive, isAdmin } = req.body;
+// Actualizar un usuario
+export const updateUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { password, ...updateData } = req.body;
+    let dataToUpdate = { ...updateData, updatedAt: new Date() };
 
-  // Buscar usuario
-  const userIndex = users.findIndex(u => u.id === userId);
+    // Si se proporciona una nueva contraseña, encriptarla
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      dataToUpdate = { ...dataToUpdate, password: hashedPassword };
+    }
 
-  if (userIndex === -1) {
-    return res.status(404).json({ message: 'Usuario no encontrado' });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      dataToUpdate,
+      { new: true }
+    ).select('-password');
+    
+    if (!updatedUser) {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+      return;
+    }
+    
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ message: 'Error al actualizar el usuario' });
   }
-
-  // Actualizar usuario
-  const user = users[userIndex];
-  
-  if (email) user.email = email;
-  if (password) user.password = bcrypt.hashSync(password, 10);
-  if (fullName) user.fullName = fullName;
-  if (isActive !== undefined) user.isActive = isActive;
-  if (isAdmin !== undefined) user.isAdmin = isAdmin;
-  
-  user.updatedAt = new Date();
-
-  // Filtrar datos sensibles para la respuesta
-  const safeUser = {
-    id: user.id,
-    email: user.email,
-    fullName: user.fullName,
-    isActive: user.isActive,
-    isAdmin: user.isAdmin,
-    createdAt: user.createdAt,
-    lastLogin: user.lastLogin
-  };
-
-  res.status(200).json(safeUser);
 };
 
-export const deleteUser = (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id);
-  
-  // Buscar usuario
-  const userIndex = users.findIndex(u => u.id === userId);
-
-  if (userIndex === -1) {
-    return res.status(404).json({ message: 'Usuario no encontrado' });
+// Eliminar un usuario
+export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    
+    if (!deletedUser) {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+      return;
+    }
+    
+    res.status(200).json({ message: 'Usuario eliminado correctamente' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Error al eliminar el usuario' });
   }
-
-  // Eliminar usuario
-  const deletedUser = users.splice(userIndex, 1)[0];
-
-  // Filtrar datos sensibles para la respuesta
-  const safeUser = {
-    id: deletedUser.id,
-    email: deletedUser.email,
-    fullName: deletedUser.fullName,
-    isActive: deletedUser.isActive,
-    isAdmin: deletedUser.isAdmin,
-    createdAt: deletedUser.createdAt,
-    lastLogin: deletedUser.lastLogin
-  };
-
-  res.status(200).json(safeUser);
 };

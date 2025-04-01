@@ -1,37 +1,39 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import { config } from 'dotenv';
+import helmet from 'helmet';
+import { connectDB } from './config/database';
 
-// Rutas
+// Importar rutas
+import articleRoutes from './routes/article.routes';
+import faqRoutes from './routes/faq.routes';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
-import articleRoutes from './routes/article.routes';
 import messageRoutes from './routes/message.routes';
-import faqRoutes from './routes/faq.routes';
 
-// Inicializar configuración
-config();
-
-// Crear aplicación Express
+// Inicializar la aplicación
 const app = express();
 
-// Configurar middleware
+// Conectar a la base de datos
+connectDB();
+
+// Middleware
 app.use(cors());
+app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
-// Rutas base
+// Rutas
+app.use('/api/articles', articleRoutes);
+app.use('/api/faqs', faqRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/articles', articleRoutes);
 app.use('/api/messages', messageRoutes);
-app.use('/api/faqs', faqRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
-  res.json({ message: 'Bienvenido a la API de ZeroSmoke' });
+  res.send('API de ZeroSmoke funcionando correctamente');
 });
 
 export default app;
