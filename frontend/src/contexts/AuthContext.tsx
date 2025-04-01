@@ -1,87 +1,91 @@
 "use client"
 
 import type React from "react"
-import { createContext, useState, useContext, useEffect } from "react"
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { authAPI } from "../services/api"
-
-interface User {
-  _id: string
-  name: string
-  email: string
-  role: string
-}
+import type { User } from "../types"
 
 interface AuthContextType {
-  isAuthenticated: boolean
-  loading: boolean
-  login: (email: string, password: string) => Promise<boolean>
-  logout: () => void
   user: User | null
+  loading: boolean
+  login: (email: string, password: string) => Promise<void>
+  register: (name: string, email: string, password: string) => Promise<void>
+  logout: () => void
 }
 
-const AuthContext = createContext<AuthContextType>({
-  isAuthenticated: false,
-  loading: true,
-  login: async () => false,
-  logout: () => {},
-  user: null,
-})
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider")
+  }
+  return context
+}
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [loading, setLoading] = useState(true)
+interface AuthProviderProps {
+  children: ReactNode
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Verificar si hay un token guardado
-    const token = localStorage.getItem("token")
-
-    if (token) {
-      // Verificar si el token es válido
-      authAPI
-        .getProfile()
-        .then((response) => {
-          setUser(response.data)
-          setIsAuthenticated(true)
-        })
-        .catch(() => {
-          // Si hay un error, limpiar el token
-          localStorage.removeItem("token")
-        })
-        .finally(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token")
+        if (!token) {
+          setUser(null)
           setLoading(false)
-        })
-    } else {
-      setLoading(false)
+          return
+        }
+
+        const response = await authAPI.getProfile()
+        setUser(response.data)
+      } catch (error) {
+        console.error("Error fetching user:", error)
+        localStorage.removeItem("token")
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
     }
+
+    fetchUser()
   }, [])
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string) => {
     try {
       const response = await authAPI.login({ email, password })
       const { token, user } = response.data
 
       localStorage.setItem("token", token)
       setUser(user)
-      setIsAuthenticated(true)
-
-      return true
     } catch (error) {
-      console.error("Error during login:", error)
-      return false
+      console.error("Login error:", error)
+      throw error
+    }
+  }
+
+  const register = async (name: string, email: string, password: string) => {
+    try {
+      const response = await authAPI.register({ name, email, password })
+      const { token, user } = response.data
+
+      localStorage.setItem("token", token)
+      setUser(user)
+    } catch (error) {
+      console.error("Register error:", error)
+      throw error
     }
   }
 
   const logout = () => {
     localStorage.removeItem("token")
     setUser(null)
-    setIsAuthenticated(false)
   }
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, login, logout, user }}>{children}</AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={{ user, loading, login, register, logout }}>{children}</AuthContext.Provider>
 }
 

@@ -5,14 +5,13 @@ import { AppColors } from "../../styles/colors"
 
 const FooterContainer = styled.footer`
   background-color: ${AppColors.cardBackground};
-  padding: 3rem 0 1.5rem;
-  margin-top: 3rem;
+  padding: 2rem 1rem;
+  margin-top: 2rem;
 `
 
 const FooterContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
@@ -21,19 +20,21 @@ const FooterContent = styled.div`
 const FooterSection = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 `
 
 const FooterTitle = styled.h3`
-  color: ${AppColors.primary};
-  margin-bottom: 1.5rem;
   font-size: 1.25rem;
+  color: ${AppColors.primary};
+  margin-bottom: 0.5rem;
 `
 
 const FooterLink = styled(Link)`
   color: ${AppColors.text};
-  margin-bottom: 0.75rem;
+  text-decoration: none;
+  font-size: 0.875rem;
   transition: color 0.3s ease;
-  
+
   &:hover {
     color: ${AppColors.primary};
   }
@@ -41,7 +42,6 @@ const FooterLink = styled(Link)`
 
 const FooterText = styled.p`
   color: ${AppColors.text};
-  margin-bottom: 1rem;
   font-size: 0.875rem;
   line-height: 1.6;
 `
@@ -49,14 +49,14 @@ const FooterText = styled.p`
 const SocialLinks = styled.div`
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 `
 
 const SocialLink = styled.a`
   color: ${AppColors.text};
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   transition: color 0.3s ease;
-  
+
   &:hover {
     color: ${AppColors.primary};
   }
@@ -64,32 +64,36 @@ const SocialLink = styled.a`
 
 const Copyright = styled.div`
   text-align: center;
-  margin-top: 3rem;
-  padding-top: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  color: ${AppColors.textSecondary};
+  color: ${AppColors.text};
   font-size: 0.875rem;
 `
 
 const Footer: React.FC = () => {
+  const currentYear = new Date().getFullYear()
+
   return (
     <FooterContainer>
       <FooterContent>
         <FooterSection>
           <FooterTitle>ZeroSmoke</FooterTitle>
           <FooterText>
-            Ayudando a fumadores a dejar el hábito y mejorar su calidad de vida a través de información, recursos y
-            apoyo.
+            Plataforma dedicada a ayudar a las personas a dejar de fumar de manera efectiva y permanente.
           </FooterText>
           <SocialLinks>
-            <SocialLink href="#" target="_blank" rel="noopener noreferrer">
-              FB
+            <SocialLink href="#" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              📘
             </SocialLink>
-            <SocialLink href="#" target="_blank" rel="noopener noreferrer">
-              TW
+            <SocialLink href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+              🐦
             </SocialLink>
-            <SocialLink href="#" target="_blank" rel="noopener noreferrer">
-              IG
+            <SocialLink href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              📷
+            </SocialLink>
+            <SocialLink href="#" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              📺
             </SocialLink>
           </SocialLinks>
         </FooterSection>
@@ -97,29 +101,28 @@ const Footer: React.FC = () => {
         <FooterSection>
           <FooterTitle>Enlaces Rápidos</FooterTitle>
           <FooterLink to="/">Inicio</FooterLink>
-          <FooterLink to="/consecuencias">Consecuencias de Fumar</FooterLink>
-          <FooterLink to="/test">Test de Dependencia</FooterLink>
-          <FooterLink to="/recursos">Recursos</FooterLink>
-          <FooterLink to="/faqs">Preguntas Frecuentes</FooterLink>
+          <FooterLink to="/articles">Artículos</FooterLink>
+          <FooterLink to="/faqs">FAQs</FooterLink>
+          <FooterLink to="/contact">Contacto</FooterLink>
         </FooterSection>
 
         <FooterSection>
           <FooterTitle>Recursos</FooterTitle>
-          <FooterLink to="/articulos">Artículos</FooterLink>
-          <FooterLink to="/estadisticas">Estadísticas</FooterLink>
-          <FooterLink to="/testimonios">Testimonios</FooterLink>
-          <FooterLink to="/app">Descargar App</FooterLink>
+          <FooterLink to="/articles">Guías para dejar de fumar</FooterLink>
+          <FooterLink to="/articles">Testimonios de éxito</FooterLink>
+          <FooterLink to="/articles">Consejos de expertos</FooterLink>
+          <FooterLink to="/articles">Investigaciones recientes</FooterLink>
         </FooterSection>
 
         <FooterSection>
           <FooterTitle>Contacto</FooterTitle>
-          <FooterText>¿Tienes preguntas o comentarios? No dudes en contactarnos.</FooterText>
-          <FooterLink to="/contacto">Formulario de Contacto</FooterLink>
-          <FooterText>Email: info@zerosmoke.com</FooterText>
+          <FooterText>📧 info@zerosmoke.com</FooterText>
+          <FooterText>📞 +34 123 456 789</FooterText>
+          <FooterText>📍 Calle Principal 123, Madrid, España</FooterText>
         </FooterSection>
       </FooterContent>
 
-      <Copyright>© {new Date().getFullYear()} ZeroSmoke. Todos los derechos reservados.</Copyright>
+      <Copyright>© {currentYear} ZeroSmoke. Todos los derechos reservados.</Copyright>
     </FooterContainer>
   )
 }

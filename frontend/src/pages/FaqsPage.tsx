@@ -1,10 +1,11 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import styled from "styled-components"
 import { AppColors } from "../styles/colors"
-import Card from "../components/ui/Card"
+import { faqAPI } from "../services/api"
+import type { FAQ } from "../types"
 
 // Componentes estilizados
 const PageContainer = styled.div`
@@ -43,8 +44,12 @@ const CategoryPill = styled.button<{ active: boolean }>`
   }
 `
 
-const FaqCard = styled(Card)`
+const FaqCard = styled.div`
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
   margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `
 
 const FaqQuestion = styled.h3`
@@ -84,50 +89,43 @@ const FaqCategory = styled.span`
   margin-left: 1rem;
 `
 
-// Mock data para pruebas
-const mockFaqs = [
-  {
-    id: 1,
-    question: "¿Cuáles son los beneficios inmediatos de dejar de fumar?",
-    answer:
-      "Los beneficios inmediatos incluyen una mejora en la circulación sanguínea, normalización de la presión arterial y la frecuencia cardíaca, y un aumento en los niveles de oxígeno en la sangre. Además, el sentido del gusto y el olfato comienzan a mejorar en pocos días.",
-    category: "Beneficios",
-  },
-  {
-    id: 2,
-    question: "¿Cómo puedo manejar los antojos de nicotina?",
-    answer:
-      "Para manejar los antojos, puedes intentar técnicas como respiración profunda, beber agua, mantener las manos ocupadas con actividades, masticar chicle sin azúcar, y evitar situaciones que asocias con fumar. También puedes considerar terapias de reemplazo de nicotina como parches o chicles.",
-    category: "Consejos",
-  },
-  {
-    id: 3,
-    question: "¿Cuánto tiempo duran los síntomas de abstinencia?",
-    answer:
-      "Los síntomas físicos de abstinencia suelen alcanzar su punto máximo en los primeros 3-5 días y disminuyen gradualmente durante 2-4 semanas. Sin embargo, los antojos psicológicos pueden persistir durante meses, aunque con menor frecuencia e intensidad con el tiempo.",
-    category: "Abstinencia",
-  },
-  {
-    id: 4,
-    question: "¿Es efectiva la terapia de reemplazo de nicotina?",
-    answer:
-      "Sí, la terapia de reemplazo de nicotina (TRN) ha demostrado ser efectiva para ayudar a las personas a dejar de fumar. Proporciona nicotina en forma controlada sin las toxinas dañinas del humo del tabaco, ayudando a reducir los síntomas de abstinencia mientras se rompe el hábito.",
-    category: "Tratamientos",
-  },
-]
-
 const FaqsPage: React.FC = () => {
+  const [faqs, setFaqs] = useState<FAQ[]>([])
+  const [categories, setCategories] = useState<string[]>([])
   const [selectedCategory, setSelectedCategory] = useState("Todas")
-  const [openFaqId, setOpenFaqId] = useState<number | null>(null)
+  const [openFaqId, setOpenFaqId] = useState<string | number | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
-  // Obtener categorías únicas
-  const categories = ["Todas", ...Array.from(new Set(mockFaqs.map((faq) => faq.category)))]
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        setLoading(true)
+        const response = await faqAPI.getAll()
+        console.log("FAQs response:", response.data)
+
+        setFaqs(response.data)
+
+        // Extract unique categories
+        const uniqueCategories = Array.from(new Set(response.data.map((faq: FAQ) => faq.category))) as string[]
+        setCategories(["Todas", ...uniqueCategories])
+
+        setError("")
+      } catch (err) {
+        console.error("Error fetching FAQs:", err)
+        setError("Error al cargar las preguntas frecuentes. Por favor, intenta de nuevo más tarde.")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFaqs()
+  }, [])
 
   // Filtrar FAQs por categoría
-  const filteredFaqs =
-    selectedCategory === "Todas" ? mockFaqs : mockFaqs.filter((faq) => faq.category === selectedCategory)
+  const filteredFaqs = selectedCategory === "Todas" ? faqs : faqs.filter((faq) => faq.category === selectedCategory)
 
-  const toggleFaq = (id: number) => {
+  const toggleFaq = (id: string | number) => {
     setOpenFaqId(openFaqId === id ? null : id)
   }
 
@@ -135,27 +133,42 @@ const FaqsPage: React.FC = () => {
     <PageContainer>
       <PageTitle>Preguntas Frecuentes</PageTitle>
 
-      <CategoryFilter>
-        {categories.map((category) => (
-          <CategoryPill
-            key={category}
-            active={selectedCategory === category}
-            onClick={() => setSelectedCategory(category)}
-          >
-            {category}
-          </CategoryPill>
-        ))}
-      </CategoryFilter>
+      {loading ? (
+        <p>Cargando preguntas frecuentes...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <>
+          <CategoryFilter>
+            {categories.map((category) => (
+              <CategoryPill
+                key={category}
+                active={selectedCategory === category}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </CategoryPill>
+            ))}
+          </CategoryFilter>
 
-      {filteredFaqs.map((faq) => (
-        <FaqCard key={faq.id}>
-          <FaqQuestion onClick={() => toggleFaq(faq.id)} aria-expanded={openFaqId === faq.id}>
-            {faq.question}
-            <FaqCategory>{faq.category}</FaqCategory>
-          </FaqQuestion>
-          <FaqAnswer isOpen={openFaqId === faq.id}>{faq.answer}</FaqAnswer>
-        </FaqCard>
-      ))}
+          {filteredFaqs.length === 0 ? (
+            <p>No hay preguntas frecuentes disponibles en esta categoría.</p>
+          ) : (
+            filteredFaqs.map((faq) => (
+              <FaqCard key={faq._id || faq.id}>
+                <FaqQuestion
+                  onClick={() => toggleFaq(faq._id || faq.id)}
+                  aria-expanded={openFaqId === (faq._id || faq.id)}
+                >
+                  {faq.question}
+                  <FaqCategory>{faq.category}</FaqCategory>
+                </FaqQuestion>
+                <FaqAnswer isOpen={openFaqId === (faq._id || faq.id)}>{faq.answer}</FaqAnswer>
+              </FaqCard>
+            ))
+          )}
+        </>
+      )}
     </PageContainer>
   )
 }

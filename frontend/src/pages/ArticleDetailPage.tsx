@@ -1,35 +1,18 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import styled from "styled-components"
 import { AppColors } from "../styles/colors"
-import Card from "../components/ui/Card"
-import Button from "../components/ui/Button"
-import { getArticleById, type Article, getArticles } from "../services/storageService"
+import { articleAPI } from "../services/api"
+import type { Article } from "../types"
 
+// Componentes estilizados
 const PageContainer = styled.div`
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
-`
-
-const BackLink = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  color: ${AppColors.primary};
-  margin-bottom: 1.5rem;
-  font-weight: 500;
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:before {
-    content: "←";
-    margin-right: 0.5rem;
-  }
 `
 
 const ArticleHeader = styled.div`
@@ -44,54 +27,26 @@ const ArticleTitle = styled.h1`
 
 const ArticleMeta = styled.div`
   display: flex;
-  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
   font-size: 0.875rem;
-  color: ${AppColors.textSecondary};
-  margin-bottom: 1.5rem;
+  color: ${AppColors.text};
+  opacity: 0.7;
 `
 
-const ArticleImage = styled.div`
+const ArticleImage = styled.img`
   width: 100%;
-  height: 400px;
-  background-color: ${AppColors.cardBackground};
+  max-height: 500px;
+  object-fit: cover;
   border-radius: 8px;
-  overflow: hidden;
   margin-bottom: 2rem;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 `
 
 const ArticleContent = styled.div`
   color: ${AppColors.text};
   line-height: 1.8;
-  font-size: 1.125rem;
-
-  p {
-    margin-bottom: 1.5rem;
-  }
-
-  h2, h3, h4 {
-    color: ${AppColors.textSecondary};
-    margin: 2rem 0 1rem;
-  }
-
-  ul, ol {
-    margin-bottom: 1.5rem;
-    padding-left: 1.5rem;
-  }
-
-  li {
-    margin-bottom: 0.5rem;
-  }
-
-  strong {
-    color: ${AppColors.textSecondary};
-    font-weight: 600;
-  }
+  font-size: 1.1rem;
+  white-space: pre-wrap;
 `
 
 const TagsContainer = styled.div`
@@ -101,17 +56,18 @@ const TagsContainer = styled.div`
   margin: 2rem 0;
 `
 
-const TagPill = styled.span`
-  display: inline-flex;
-  padding: 0.25rem 0.75rem;
+const Tag = styled.span`
   background-color: rgba(76, 175, 80, 0.1);
   color: ${AppColors.primary};
-  border-radius: 16px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
   font-size: 0.875rem;
 `
 
 const RelatedArticlesSection = styled.div`
   margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 `
 
 const SectionTitle = styled.h2`
@@ -122,155 +78,206 @@ const SectionTitle = styled.h2`
 
 const RelatedArticlesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 `
 
-const RelatedArticleCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
+const RelatedArticleCard = styled.div`
+  background-color: ${AppColors.cardBackground};
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+`
+
+const RelatedArticleImage = styled.img`
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+`
+
+const RelatedArticleContent = styled.div`
+  padding: 1rem;
 `
 
 const RelatedArticleTitle = styled.h3`
-  font-size: 1.125rem;
+  font-size: 1.1rem;
   color: ${AppColors.textSecondary};
   margin-bottom: 0.5rem;
 `
 
-const RelatedArticleExcerpt = styled.p`
-  color: ${AppColors.text};
+const RelatedArticleLink = styled(Link)`
+  color: ${AppColors.primary};
+  text-decoration: none;
+  font-weight: bold;
   font-size: 0.875rem;
-  margin-bottom: 1rem;
-  flex-grow: 1;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `
 
-const LoadingContainer = styled.div`
+const BackLink = styled(Link)`
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: ${AppColors.primary};
+  text-decoration: none;
+  font-size: 0.875rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+const LoadingMessage = styled.p`
   text-align: center;
-  margin-top: 2rem;
+  padding: 2rem;
   color: ${AppColors.text};
 `
 
-// Función para convertir texto con formato markdown simple a HTML
-const formatContent = (content: string) => {
-  // Convertir saltos de línea a <br>
-  let formatted = content.replace(/\n/g, "<br>");
-
-  // Convertir **texto** a <strong>texto</strong>
-  formatted = formatted.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-
-  // Convertir listas
-  formatted = formatted.replace(/- (.*?)(?=\n|$)/g, "<li>$1</li>");
-
-  return formatted;
-};
+const ErrorMessage = styled.div`
+  color: ${AppColors.error};
+  background-color: rgba(244, 67, 54, 0.1);
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+`
 
 const ArticleDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const [article, setArticle] = useState<Article | null>(null);
-  const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { id } = useParams<{ id: string }>()
+  const [article, setArticle] = useState<Article | null>(null)
+  const [relatedArticles, setRelatedArticles] = useState<Article[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
-    const loadArticle = async () => {
-      if (!id) return;
-      
+    const fetchArticle = async () => {
       try {
-        setLoading(true);
-        const articleData = await getArticleById(id);
-        
-        if (articleData) {
-          setArticle(articleData);
-          
-          // Cargar artículos relacionados (mismas etiquetas)
-          const allArticles = await getArticles();
-          const published = allArticles.filter(a => a.status === "published" && (a._id !== articleData._id && a.id !== articleData.id));
-          const related = published
-            .filter(a => a.tags.some(tag => articleData.tags.includes(tag)))
-            .slice(0, 3);
-          
-          setRelatedArticles(related);
-        }
-      } catch (error) {
-        console.error("Error loading article:", error);
+        setLoading(true)
+        const response = await articleAPI.getById(id!)
+        setArticle(response.data)
+        setError("")
+      } catch (err) {
+        console.error("Error fetching article:", err)
+        setError("Error al cargar el artículo. Por favor, intenta de nuevo más tarde.")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    loadArticle();
-    
-    // Configurar un intervalo para verificar actualizaciones
-    const intervalId = setInterval(() => {
-      if (id) {
-        loadArticle();
+    if (id) {
+      fetchArticle()
+    }
+  }, [id])
+
+  useEffect(() => {
+    const fetchRelatedArticles = async () => {
+      if (!article || !article.tags || article.tags.length === 0) return
+
+      try {
+        const response = await articleAPI.getAll()
+
+        // Filter published articles and exclude current article
+        const publishedArticles = response.data.filter(
+          (a: Article) => a.status === "published" && a._id !== article._id,
+        )
+
+        // Find articles with matching tags
+        const related = publishedArticles.filter((a: Article) => {
+          if (!a.tags) return false
+          return a.tags.some((tag) => article.tags.includes(tag))
+        })
+
+        setRelatedArticles(related.slice(0, 3))
+      } catch (err) {
+        console.error("Error fetching related articles:", err)
       }
-    }, 10000);
-    
-    return () => clearInterval(intervalId);
-  }, [id]);
+    }
 
-  if (loading && !article) {
+    if (article) {
+      fetchRelatedArticles()
+    }
+  }, [article])
+
+  if (loading) {
+    return <LoadingMessage>Cargando artículo...</LoadingMessage>
+  }
+
+  if (error) {
     return (
       <PageContainer>
-        <BackLink to="/articulos">Volver a artículos</BackLink>
-        <LoadingContainer>Cargando artículo...</LoadingContainer>
+        <BackLink to="/articles">← Volver a Artículos</BackLink>
+        <ErrorMessage>{error}</ErrorMessage>
       </PageContainer>
-    );
+    )
   }
 
   if (!article) {
     return (
       <PageContainer>
-        <BackLink to="/articulos">Volver a artículos</BackLink>
-        <h2>Artículo no encontrado</h2>
+        <BackLink to="/articles">← Volver a Artículos</BackLink>
+        <ErrorMessage>Artículo no encontrado</ErrorMessage>
       </PageContainer>
-    );
+    )
   }
 
   return (
     <PageContainer>
-      <BackLink to="/articulos">Volver a artículos</BackLink>
+      <BackLink to="/articles">← Volver a Artículos</BackLink>
 
       <ArticleHeader>
         <ArticleTitle>{article.title}</ArticleTitle>
         <ArticleMeta>
-          <span>Por: {article.author}</span>
-          <span>Publicado: {new Date(article.createdAt).toLocaleDateString()}</span>
+          <span>Por: {article.author || "Admin"}</span>
+          <span>
+            {new Date(article.createdAt).toLocaleDateString("es-ES", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </span>
         </ArticleMeta>
       </ArticleHeader>
 
-      <ArticleImage>
-        <img src={article.image || "/placeholder.svg"} alt={article.title} />
-      </ArticleImage>
+      {article.image && <ArticleImage src={article.image} alt={article.title} />}
 
-      <ArticleContent dangerouslySetInnerHTML={{ __html: formatContent(article.content) }} />
+      <ArticleContent>{article.content}</ArticleContent>
 
-      <TagsContainer>
-        {article.tags.map((tag) => (
-          <TagPill key={tag}>{tag}</TagPill>
-        ))}
-      </TagsContainer>
+      {article.tags && article.tags.length > 0 && (
+        <TagsContainer>
+          {article.tags.map((tag, index) => (
+            <Tag key={index}>{tag}</Tag>
+          ))}
+        </TagsContainer>
+      )}
 
       {relatedArticles.length > 0 && (
         <RelatedArticlesSection>
-          <SectionTitle>Artículos relacionados</SectionTitle>
+          <SectionTitle>Artículos Relacionados</SectionTitle>
           <RelatedArticlesGrid>
             {relatedArticles.map((relatedArticle) => (
               <RelatedArticleCard key={relatedArticle._id || relatedArticle.id}>
-                <RelatedArticleTitle>{relatedArticle.title}</RelatedArticleTitle>
-                <RelatedArticleExcerpt>{relatedArticle.excerpt}</RelatedArticleExcerpt>
-                <Button variant="outline" size="small">
-                  <Link to={`/articles/${relatedArticle._id || relatedArticle.id}`} style={{ color: "inherit" }}>
+                <RelatedArticleImage
+                  src={relatedArticle.image || "/placeholder.svg?height=150&width=300"}
+                  alt={relatedArticle.title}
+                />
+                <RelatedArticleContent>
+                  <RelatedArticleTitle>{relatedArticle.title}</RelatedArticleTitle>
+                  <RelatedArticleLink to={`/articles/${relatedArticle._id || relatedArticle.id}`}>
                     Leer más
-                  </Link>
-                </Button>
+                  </RelatedArticleLink>
+                </RelatedArticleContent>
               </RelatedArticleCard>
             ))}
           </RelatedArticlesGrid>
         </RelatedArticlesSection>
       )}
     </PageContainer>
-  );
-};
+  )
+}
 
-export default ArticleDetailPage;
+export default ArticleDetailPage
+

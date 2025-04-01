@@ -101,14 +101,16 @@ const LinkText = styled.p`
   }
 `
 
-interface LoginPageProps {
+interface RegisterPageProps {
   setUser: React.Dispatch<React.SetStateAction<User | null>>
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ setUser }) => {
+const RegisterPage: React.FC<RegisterPageProps> = ({ setUser }) => {
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState("")
@@ -124,8 +126,16 @@ const LoginPage: React.FC<LoginPageProps> = ({ setUser }) => {
     setIsSubmitting(true)
     setError("")
 
+    // Validar que las contraseñas coincidan
+    if (formData.password !== formData.confirmPassword) {
+      setError("Las contraseñas no coinciden")
+      setIsSubmitting(false)
+      return
+    }
+
     try {
-      const response = await authAPI.login(formData)
+      const { name, email, password } = formData
+      const response = await authAPI.register({ name, email, password })
       const { token, user } = response.data
 
       // Guardar token en localStorage
@@ -134,15 +144,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ setUser }) => {
       // Actualizar estado de usuario
       setUser(user)
 
-      // Redirigir según el rol
-      if (user.role === "admin") {
-        navigate("/admin")
-      } else {
-        navigate("/")
-      }
+      // Redirigir a la página principal
+      navigate("/")
     } catch (err: any) {
-      console.error("Error en login:", err)
-      setError(err.response?.data?.message || "Error al iniciar sesión. Por favor, verifica tus credenciales.")
+      console.error("Error en registro:", err)
+      setError(err.response?.data?.message || "Error al registrarse. Por favor, intenta con otro email.")
     } finally {
       setIsSubmitting(false)
     }
@@ -150,11 +156,16 @@ const LoginPage: React.FC<LoginPageProps> = ({ setUser }) => {
 
   return (
     <PageContainer>
-      <PageTitle>Iniciar Sesión</PageTitle>
+      <PageTitle>Registro</PageTitle>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
       <Form onSubmit={handleSubmit}>
+        <FormGroup>
+          <Label htmlFor="name">Nombre</Label>
+          <Input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
+        </FormGroup>
+
         <FormGroup>
           <Label htmlFor="email">Email</Label>
           <Input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
@@ -169,20 +180,34 @@ const LoginPage: React.FC<LoginPageProps> = ({ setUser }) => {
             value={formData.password}
             onChange={handleChange}
             required
+            minLength={6}
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
+          <Input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+            minLength={6}
           />
         </FormGroup>
 
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Iniciando sesión..." : "Iniciar Sesión"}
+          {isSubmitting ? "Registrando..." : "Registrarse"}
         </Button>
       </Form>
 
       <LinkText>
-        ¿No tienes una cuenta? <a href="/register">Regístrate</a>
+        ¿Ya tienes una cuenta? <a href="/login">Inicia sesión</a>
       </LinkText>
     </PageContainer>
   )
 }
 
-export default LoginPage
+export default RegisterPage
 
