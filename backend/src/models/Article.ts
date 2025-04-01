@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose"
+import { Schema, model, models } from "mongoose"
 import type { IArticle } from "./interfaces"
 
 const ArticleSchema: Schema = new Schema({
@@ -14,5 +14,6 @@ const ArticleSchema: Schema = new Schema({
   tags: [{ type: String }],
 })
 
-export const Article = mongoose.model<IArticle>("Article", ArticleSchema)
+// Evitar redefinición del modelo
+export const Article = models.Article || model<IArticle>("Article", ArticleSchema)
 

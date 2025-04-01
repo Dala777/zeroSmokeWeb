@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose"
+import { Schema, model, models } from "mongoose"
 import type { IMessage } from "./interfaces"
 
 const MessageSchema: Schema = new Schema({
@@ -11,5 +11,6 @@ const MessageSchema: Schema = new Schema({
   updatedAt: { type: Date },
 })
 
-export const Message = mongoose.model<IMessage>("Message", MessageSchema)
+// Evitar redefinición del modelo
+export const Message = models.Message || model<IMessage>("Message", MessageSchema)
 

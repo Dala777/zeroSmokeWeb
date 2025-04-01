@@ -1,122 +1,127 @@
-import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
-import { User, IUser } from '../models/interfaces';
+import type { Request, Response } from "express"
+import bcrypt from "bcryptjs"
+import { User } from "../models/User"
 
 // Obtener todos los usuarios
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    const users = await User.find().select('-password').sort({ createdAt: -1 });
-    res.status(200).json(users);
+    const users = await User.find().select("-password").sort({ createdAt: -1 })
+    res.status(200).json(users)
   } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ message: 'Error al obtener los usuarios' });
+    console.error("Error al obtener usuarios:", error)
+    res.status(500).json({ message: "Error en el servidor" })
   }
-};
+}
 
 // Obtener un usuario por ID
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await User.findById(req.params.id).select('-password');
+    const user = await User.findById(req.params.id).select("-password")
     if (!user) {
-      res.status(404).json({ message: 'Usuario no encontrado' });
-      return;
+      res.status(404).json({ message: "Usuario no encontrado" })
+      return
     }
-    res.status(200).json(user);
+    res.status(200).json(user)
   } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Error al obtener el usuario' });
+    console.error("Error al obtener usuario:", error)
+    res.status(500).json({ message: "Error en el servidor" })
   }
-};
+}
 
 // Crear un nuevo usuario
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, email, password, role, status } = req.body;
+    const { name, email, password, role } = req.body
 
     // Verificar si el usuario ya existe
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email })
     if (existingUser) {
-      res.status(400).json({ message: 'El usuario ya existe' });
-      return;
+      res.status(400).json({ message: "El usuario ya existe" })
+      return
     }
-
-    // Encriptar contraseña
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
 
     // Crear nuevo usuario
     const newUser = new User({
       name,
       email,
-      password: hashedPassword,
-      role: role || 'user',
-      status: status || 'active',
-      createdAt: new Date()
-    });
+      password,
+      role: role || "user",
+      status: "active",
+      createdAt: new Date(),
+    })
 
-    const savedUser = await newUser.save();
+    // Encriptar contraseña
+    const salt = await bcrypt.genSalt(10)
+    newUser.password = await bcrypt.hash(password, salt)
 
-    // Enviar respuesta sin la contraseña
-    const userResponse = {
-      _id: savedUser._id,
-      name: savedUser.name,
-      email: savedUser.email,
-      role: savedUser.role,
-      status: savedUser.status,
-      createdAt: savedUser.createdAt
-    };
+    // Guardar usuario
+    const savedUser = await newUser.save()
 
-    res.status(201).json(userResponse);
+    res.status(201).json({
+      user: {
+        _id: savedUser._id,
+        name: savedUser.name,
+        email: savedUser.email,
+        role: savedUser.role,
+        status: savedUser.status,
+      },
+    })
   } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ message: 'Error al crear el usuario' });
+    console.error("Error al crear usuario:", error)
+    res.status(500).json({ message: "Error en el servidor" })
   }
-};
+}
 
 // Actualizar un usuario
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { password, ...updateData } = req.body;
-    let dataToUpdate = { ...updateData, updatedAt: new Date() };
+    const { name, email, password, role, status } = req.body
+    const userId = req.params.id
+
+    // Verificar si el usuario existe
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(404).json({ message: "Usuario no encontrado" })
+      return
+    }
+
+    // Preparar datos de actualización
+    const updateData: any = {
+      name: name || user.name,
+      email: email || user.email,
+      role: role || user.role,
+      status: status || user.status,
+      updatedAt: new Date(),
+    }
 
     // Si se proporciona una nueva contraseña, encriptarla
     if (password) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-      dataToUpdate = { ...dataToUpdate, password: hashedPassword };
+      const salt = await bcrypt.genSalt(10)
+      updateData.password = await bcrypt.hash(password, salt)
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      dataToUpdate,
-      { new: true }
-    ).select('-password');
-    
-    if (!updatedUser) {
-      res.status(404).json({ message: 'Usuario no encontrado' });
-      return;
-    }
-    
-    res.status(200).json(updatedUser);
+    // Actualizar usuario
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select("-password")
+
+    res.status(200).json(updatedUser)
   } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ message: 'Error al actualizar el usuario' });
+    console.error("Error al actualizar usuario:", error)
+    res.status(500).json({ message: "Error en el servidor" })
   }
-};
+}
 
 // Eliminar un usuario
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    
+    const deletedUser = await User.findByIdAndDelete(req.params.id)
     if (!deletedUser) {
-      res.status(404).json({ message: 'Usuario no encontrado' });
-      return;
+      res.status(404).json({ message: "Usuario no encontrado" })
+      return
     }
-    
-    res.status(200).json({ message: 'Usuario eliminado correctamente' });
+    res.status(200).json({ message: "Usuario eliminado con éxito" })
   } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ message: 'Error al eliminar el usuario' });
+    console.error("Error al eliminar usuario:", error)
+    res.status(500).json({ message: "Error en el servidor" })
   }
-};
+}
+

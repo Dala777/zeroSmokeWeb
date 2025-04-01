@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose"
+import { Schema, model, models } from "mongoose"
 import type { IFAQ } from "./interfaces"
 
 const FAQSchema: Schema = new Schema({
@@ -9,5 +9,6 @@ const FAQSchema: Schema = new Schema({
   updatedAt: { type: Date },
 })
 
-export const FAQ = mongoose.model<IFAQ>("FAQ", FAQSchema)
+// Evitar redefinición del modelo
+export const FAQ = models.FAQ || model<IFAQ>("FAQ", FAQSchema)
 

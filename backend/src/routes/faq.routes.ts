@@ -1,22 +1,17 @@
-import express from 'express';
-import {
-  getAllFAQs,
-  getFAQById,
-  createFAQ,
-  updateFAQ,
-  deleteFAQ
-} from '../controllers/faq.controller';
-import { authMiddleware } from '../middleware/auth.middleware';
+import express from "express"
+import { getAllFaqs, getFaqById, createFaq, updateFaq, deleteFaq } from "../controllers/faq.controller"
+import { authMiddleware, adminMiddleware } from "../middleware/auth.middleware"
 
-const router = express.Router();
+const router = express.Router()
 
 // Rutas públicas
-router.get('/', getAllFAQs);
-router.get('/:id', getFAQById);
+router.get("/", getAllFaqs)
+router.get("/:id", getFaqById)
 
 // Rutas protegidas (solo admin)
-router.post('/', authMiddleware, createFAQ);
-router.put('/:id', authMiddleware, updateFAQ);
-router.delete('/:id', authMiddleware, deleteFAQ);
+router.post("/", authMiddleware, adminMiddleware, createFaq)
+router.put("/:id", authMiddleware, adminMiddleware, updateFaq)
+router.delete("/:id", authMiddleware, adminMiddleware, deleteFaq)
 
-export default router;
+export default router
+

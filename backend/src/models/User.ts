@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose"
+import { Schema, model, models } from "mongoose"
 import type { IUser } from "./interfaces"
 
 const UserSchema: Schema = new Schema({
@@ -12,5 +12,6 @@ const UserSchema: Schema = new Schema({
   updatedAt: { type: Date },
 })
 
-export const User = mongoose.model<IUser>("User", UserSchema)
+// Evitar redefinición del modelo
+export const User = models.User || model<IUser>("User", UserSchema)
 
