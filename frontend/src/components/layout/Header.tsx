@@ -1,11 +1,12 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import styled from "styled-components"
-import { Link } from "react-router-dom"
-import { AppColors } from "../../styles/colors"
-import Button from "../ui/Button"
+import type React from "react";
+import { useState } from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { AppColors } from "../../styles/colors";
+import Button from "../ui/Button";
+import UserMenu from "../ui/UserMenu"; // Importar UserMenu
 
 const HeaderContainer = styled.header`
   background-color: ${AppColors.background};
@@ -14,7 +15,7 @@ const HeaderContainer = styled.header`
   top: 0;
   z-index: 100;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-`
+`;
 
 const HeaderContent = styled.div`
   display: flex;
@@ -23,7 +24,7 @@ const HeaderContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
-`
+`;
 
 const Logo = styled(Link)`
   font-size: 1.5rem;
@@ -31,11 +32,11 @@ const Logo = styled(Link)`
   color: ${AppColors.primary};
   display: flex;
   align-items: center;
-  
+
   span {
     color: ${AppColors.text};
   }
-`
+`;
 
 const Nav = styled.nav<{ isOpen: boolean }>`
   @media (max-width: 768px) {
@@ -51,39 +52,39 @@ const Nav = styled.nav<{ isOpen: boolean }>`
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
   }
-`
+`;
 
 const NavList = styled.ul`
   display: flex;
   list-style: none;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 1.5rem;
   }
-`
+`;
 
 const NavItem = styled.li`
   margin-left: 2rem;
-  
+
   @media (max-width: 768px) {
     margin-left: 0;
   }
-`
+`;
 
 const NavLink = styled(Link)`
   color: ${AppColors.text};
   font-weight: 500;
   transition: color 0.3s ease;
-  
+
   &:hover {
     color: ${AppColors.primary};
   }
-  
+
   &.active {
     color: ${AppColors.primary};
   }
-`
+`;
 
 const MobileMenuButton = styled.button`
   display: none;
@@ -92,11 +93,11 @@ const MobileMenuButton = styled.button`
   color: ${AppColors.text};
   font-size: 1.5rem;
   cursor: pointer;
-  
+
   @media (max-width: 768px) {
     display: block;
   }
-`
+`;
 
 const CloseButton = styled.button`
   position: absolute;
@@ -108,11 +109,11 @@ const CloseButton = styled.button`
   font-size: 1.5rem;
   cursor: pointer;
   display: none;
-  
+
   @media (max-width: 768px) {
     display: block;
   }
-`
+`;
 
 const Overlay = styled.div<{ isOpen: boolean }>`
   display: ${({ isOpen }) => (isOpen ? "block" : "none")};
@@ -123,18 +124,18 @@ const Overlay = styled.div<{ isOpen: boolean }>`
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
-`
+`;
 
 const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   const closeMenu = () => {
-    setIsMenuOpen(false)
-  }
+    setIsMenuOpen(false);
+  };
 
   return (
     <HeaderContainer>
@@ -183,15 +184,22 @@ const Header: React.FC = () => {
           </NavList>
         </Nav>
 
+        <UserMenu /> {/* Incluir UserMenu en el Header */}
+
         <Button variant="primary" size="small">
           <Link to="/login" style={{ color: "inherit" }}>
             Iniciar Sesión
           </Link>
         </Button>
+
+        <Button variant="primary" size="small">
+          <Link to="/register" style={{ color: "inherit" }}>
+            Registrarse
+          </Link>
+        </Button>
       </HeaderContent>
     </HeaderContainer>
-  )
-}
+  );
+};
 
-export default Header
-
+export default Header;

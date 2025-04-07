@@ -1,14 +1,11 @@
-"use client";
-
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { AppColors } from "../styles/colors";
+import { useAuth } from "../contexts/AuthContext";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Card from "../components/ui/Card";
-import { useAuth } from "../contexts/AuthContext";
+import { AppColors } from "../styles/colors";
 
 const fadeIn = keyframes`
   from {
@@ -64,7 +61,7 @@ const LeftSection = styled.div`
   }
 `;
 
-const LoginCard = styled(Card)`
+const RegisterCard = styled(Card)`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -105,12 +102,13 @@ const ErrorMessage = styled.div`
   text-align: center;
 `;
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -119,21 +117,29 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
 
     // Validación básica
-    if (!email || !password) {
+    if (!name || !email || !password) {
       setError("Por favor, completa todos los campos.");
       setIsLoading(false);
       return;
     }
 
+    // Validación de correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Por favor, introduce un correo electrónico válido.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const success = await login(email, password);
+      const success = await register(name, email, password);
       if (success) {
-        navigate("/admin/dashboard");
+        navigate("/"); // Redirigir a la página principal en lugar del panel de administración
       } else {
-        setError("Credenciales incorrectas. Por favor, inténtalo de nuevo.");
+        setError("No se pudo registrar. Por favor, inténtalo de nuevo.");
       }
     } catch (err) {
-      setError("Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.");
+      setError("Ocurrió un error al registrarse. Por favor, inténtalo de nuevo.");
     } finally {
       setIsLoading(false);
     }
@@ -142,22 +148,31 @@ const LoginPage: React.FC = () => {
   return (
     <PageContainer>
       <LeftSection>
-        <h1>¡Bienvenido de vuelta!</h1>
-        <p>Para mantenerte conectado con nosotros, por favor inicia sesión con tu información personal.</p>
-        <button onClick={() => navigate("/login")}>Iniciar Sesión</button>
+        <h1>¡Crea tu cuenta!</h1>
+        <p>Únete a nosotros para acceder a recursos exclusivos y apoyo en tu camino hacia una vida libre de tabaco.</p>
+        <button onClick={() => navigate("/register")}>Crear Cuenta</button>
       </LeftSection>
-      <LoginCard>
+      <RegisterCard>
         <Logo>
           Zero<span>Smoke</span>
         </Logo>
         {error && <ErrorMessage>{error}</ErrorMessage>}
         <Form onSubmit={handleSubmit}>
           <Input
+            label="Nombre"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Tu nombre"
+            required
+            fullWidth
+          />
+          <Input
             label="Email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="admin@zerosmoke.com"
+            placeholder="tuemail@example.com"
             required
             fullWidth
           />
@@ -166,17 +181,17 @@ const LoginPage: React.FC = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="admin123"
+            placeholder="Tu contraseña"
             required
             fullWidth
           />
           <Button type="submit" fullWidth disabled={isLoading}>
-            {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
+            {isLoading ? "Registrando..." : "Registrarse"}
           </Button>
         </Form>
-      </LoginCard>
+      </RegisterCard>
     </PageContainer>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
