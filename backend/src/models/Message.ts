@@ -1,5 +1,5 @@
-import { Schema, model, models } from "mongoose"
-import type { IMessage } from "./interfaces"
+import { Schema, model, models } from "mongoose";
+import type { IMessage } from "./interfaces";
 
 const MessageSchema: Schema = new Schema({
   name: { type: String, required: true },
@@ -9,8 +9,8 @@ const MessageSchema: Schema = new Schema({
   status: { type: String, enum: ["new", "read", "answered"], default: "new" },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date },
-})
+  reply: { type: String }, // Campo para almacenar la respuesta del administrador
+});
 
 // Evitar redefinición del modelo
-export const Message = models.Message || model<IMessage>("Message", MessageSchema)
-
+export const Message = models.Message || model<IMessage>("Message", MessageSchema);

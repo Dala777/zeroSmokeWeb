@@ -1,12 +1,13 @@
 "use client"
 
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { AppColors } from "../../styles/colors";
-import Button from "../../components/ui/Button";
-import Input from "../../components/ui/Input";
-import Card from "../../components/ui/Card";
-import { getHomePageData, updateHomePageData } from "../../services/storageService";
+import type React from "react"
+import { useState, useEffect } from "react"
+import styled from "styled-components"
+import { AppColors } from "../../styles/colors"
+import Button from "../../components/ui/Button"
+import Input from "../../components/ui/Input"
+import Card from "../../components/ui/Card"
+import { getHomePageData, updateHomePageData } from "../../services/storageService"
 
 const PageContainer = styled.div`
   padding: 1.5rem;
@@ -99,23 +100,54 @@ const TextArea = styled.textarea`
   }
 `
 
+// Enhanced image preview with better UI
 const ImagePreview = styled.div`
   width: 100%;
-  height: 200px;
+  height: 250px;
   background-color: ${AppColors.cardBackground};
   border: 1px dashed rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
   overflow: hidden;
+  position: relative;
   
   img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.2) 0%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+  }
+`
+
+// Add image upload helper text
+const ImageHelperText = styled.p`
+  font-size: 0.85rem;
+  color: ${AppColors.textSecondary};
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
 `
 
 // Reemplazar los estilos inline con componentes styled
@@ -127,34 +159,34 @@ const HeaderContainer = styled.div`
 `
 
 const HomePageEdit: React.FC = () => {
-  const [heroTitle, setHeroTitle] = useState("");
-  const [heroSubtitle, setHeroSubtitle] = useState("");
-  const [heroImage, setHeroImage] = useState("");
-  const [features, setFeatures] = useState<any[]>([]);
-  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [heroTitle, setHeroTitle] = useState("")
+  const [heroSubtitle, setHeroSubtitle] = useState("")
+  const [heroImage, setHeroImage] = useState("")
+  const [features, setFeatures] = useState<any[]>([])
+  const [saveSuccess, setSaveSuccess] = useState(false)
 
   useEffect(() => {
     // Cargar datos actuales
-    const homeData = getHomePageData();
-    setHeroTitle(homeData.heroTitle);
-    setHeroSubtitle(homeData.heroSubtitle);
-    setHeroImage(homeData.heroImage);
-    setFeatures(homeData.features);
-  }, []);
+    const homeData = getHomePageData()
+    setHeroTitle(homeData.heroTitle)
+    setHeroSubtitle(homeData.heroSubtitle)
+    setHeroImage(homeData.heroImage)
+    setFeatures(homeData.features)
+  }, [])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
+      const reader = new FileReader()
 
       reader.onload = (event) => {
         if (event.target?.result) {
-          setHeroImage(event.target.result as string);
+          setHeroImage(event.target.result as string)
         }
-      };
+      }
 
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(e.target.files[0])
     }
-  };
+  }
 
   const handleSave = () => {
     // Guardar cambios
@@ -162,13 +194,13 @@ const HomePageEdit: React.FC = () => {
       heroTitle,
       heroSubtitle,
       heroImage,
-      features
-    });
-    
+      features,
+    })
+
     // Mostrar mensaje de éxito
-    setSaveSuccess(true);
-    setTimeout(() => setSaveSuccess(false), 3000);
-  };
+    setSaveSuccess(true)
+    setTimeout(() => setSaveSuccess(false), 3000)
+  }
 
   const handleAddFeature = () => {
     const newFeature = {
@@ -176,23 +208,23 @@ const HomePageEdit: React.FC = () => {
       title: "Nueva Característica",
       description: "Descripción de la característica",
       icon: "🔍",
-    };
+    }
 
-    setFeatures([...features, newFeature]);
-  };
+    setFeatures([...features, newFeature])
+  }
 
   const handleUpdateFeature = (id: number, field: "title" | "description" | "icon", value: string) => {
-    setFeatures(features.map((feature) => (feature.id === id ? { ...feature, [field]: value } : feature)));
-  };
+    setFeatures(features.map((feature) => (feature.id === id ? { ...feature, [field]: value } : feature)))
+  }
 
   const handleDeleteFeature = (id: number) => {
-    setFeatures(features.filter((feature) => feature.id !== id));
-  };
+    setFeatures(features.filter((feature) => feature.id !== id))
+  }
 
   return (
     <PageContainer>
       <SectionTitle>Editar Página de Inicio</SectionTitle>
-      
+
       {saveSuccess && (
         <SuccessMessage>
           ¡Cambios guardados con éxito! Los cambios ya son visibles en la página de inicio.
@@ -207,6 +239,9 @@ const HomePageEdit: React.FC = () => {
           </ImagePreview>
 
           <Input label="Imagen de Fondo" type="file" accept="image/*" onChange={handleImageChange} />
+          <ImageHelperText>
+            Para mejores resultados, utiliza una imagen de alta resolución (mínimo 1920x1080px) en formato horizontal.
+          </ImageHelperText>
 
           <Input label="Título" fullWidth value={heroTitle} onChange={(e) => setHeroTitle(e.target.value)} />
 
@@ -260,8 +295,8 @@ const HomePageEdit: React.FC = () => {
         </Button>
       </ButtonContainer>
     </PageContainer>
-  );
-};
+  )
+}
 
 // Añadir este nuevo estilo
 const SuccessMessage = styled.div`
@@ -270,7 +305,7 @@ const SuccessMessage = styled.div`
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1.5rem;
-`;
+`
 
-export default HomePageEdit;
+export default HomePageEdit
 

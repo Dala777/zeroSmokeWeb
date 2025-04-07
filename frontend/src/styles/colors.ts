@@ -1,36 +1,18 @@
 export const AppColors = {
   // Main colors - Enhanced green palette
-  primary: "#4CAF50", // More vibrant green
-  secondary: "#81C784", // Medium green
-  tertiary: "#2E7D32", // Dark green
-  accent: "#1B5E20", // Very dark green for accents
-
-  // Additional colors needed by components
-  primaryDark: "#388E3C", // Darker shade of primary
-  sidebarBackground: "#132218", // Dark background for sidebar
-  headerBackground: "#0A1F0D", // Dark background for header
-  errorDark: "#C62828", // Darker shade of error
-  info: "#2196F3", // Info blue
+  primary: "#52B788",      // Mint green for primary actions
+  secondary: "#95D5B2",     // Celadon for secondary actions
+  tertiary: "#74C69D",    // Mint for tertiary elements
+  accent: "#40916C",       // Sea green for accents
 
   // Background and text
-  background: "#0A1F0D", // Dark background with green tone
-  cardBackground: "#132218", // Background for cards
-  text: "#FFFFFF", // White text
-  textSecondary: "#AED581", // Light green for secondary text
+  background: "#FFFFFF",  // White background for a clean look
+  cardBackground: "#D8F3DC",// Nyanza for card backgrounds
+  text: "#081C15",        // Dark green for primary text
+  textSecondary: "#2D6A4F",// Dartmouth green for secondary text
 
   // Status colors
-  success: "#66BB6A", // Success green
-  warning: "#FFB74D", // Warning orange
-  error: "#E57373", // Soft red error
-
-  // Border colors
-  border: "rgba(255, 255, 255, 0.2)", // Border color
-
-  // Additional colors needed by components
-  sidebar: "#132218", // Sidebar background
-  sidebarBorder: "rgba(255, 255, 255, 0.1)", // Sidebar border
-  sidebarForeground: "#FFFFFF", // Sidebar text
-  sidebarAccent: "#4CAF50", // Sidebar accent
-  sidebarAccentForeground: "#FFFFFF", // Sidebar accent text
-}
-
+  success: "#52B788",     // Mint green for success messages
+  warning: "#FFB74D",     // Warning orange
+  error: "#E57373",       // Soft red error
+};
