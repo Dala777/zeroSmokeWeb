@@ -11,11 +11,28 @@ const setAuthToken = (token: string | null) => {
   }
 }
 
-// Obtener token del localStorage
+// Obtener token del localStorage al iniciar
 const token = localStorage.getItem("token")
 if (token) {
   setAuthToken(token)
 }
+
+// Interceptor para manejar errores
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("API Error:", error.response || error)
+
+    // Si el error es 401 (no autorizado) y no estamos en la página de login
+    if (error.response && error.response.status === 401 && !window.location.pathname.includes("/login")) {
+      // Limpiar token y redirigir a login
+      localStorage.removeItem("token")
+      window.location.href = "/login"
+    }
+
+    return Promise.reject(error)
+  },
+)
 
 // API para autenticación
 export const authAPI = {
@@ -28,7 +45,10 @@ export const authAPI = {
 
 // API para artículos
 export const articleAPI = {
-  getAll: () => axios.get(`${API_URL}/articles`),
+  getAll: () => {
+    console.log("Fetching all articles from:", `${API_URL}/articles`)
+    return axios.get(`${API_URL}/articles`)
+  },
 
   getById: (id: string) => axios.get(`${API_URL}/articles/${id}`),
 
@@ -41,7 +61,10 @@ export const articleAPI = {
 
 // API para FAQs
 export const faqAPI = {
-  getAll: () => axios.get(`${API_URL}/faqs`),
+  getAll: () => {
+    console.log("Fetching all FAQs from:", `${API_URL}/faqs`)
+    return axios.get(`${API_URL}/faqs`)
+  },
 
   getById: (id: string) => axios.get(`${API_URL}/faqs/${id}`),
 
@@ -54,14 +77,31 @@ export const faqAPI = {
 
 // API para mensajes
 export const messageAPI = {
-  getAll: () => axios.get(`${API_URL}/messages`),
+  getAll: () => {
+    console.log("Fetching all messages from:", `${API_URL}/messages`)
+    return axios.get(`${API_URL}/messages`)
+  },
 
   getById: (id: string) => axios.get(`${API_URL}/messages/${id}`),
 
-  create: (data: any) => axios.post(`${API_URL}/messages`, data),
+  create: (data: any) => {
+    console.log("Creating message:", data)
+    return axios.post(`${API_URL}/messages`, data)
+  },
 
   update: (id: string, data: any) => axios.put(`${API_URL}/messages/${id}`, data),
 
   delete: (id: string) => axios.delete(`${API_URL}/messages/${id}`),
+
+  // Función para responder a mensajes
+  reply: (id: string, replyText: string) => axios.post(`${API_URL}/messages/${id}/reply`, { replyText }),
+}
+
+export default {
+  setAuthToken,
+  authAPI,
+  articleAPI,
+  faqAPI,
+  messageAPI,
 }
 

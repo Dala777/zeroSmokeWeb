@@ -8,6 +8,7 @@ import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
 import Card from "../components/ui/Card"
 import { useChatbot } from "../components/ChatbotContext"
+import { messageAPI } from "../services/api"
 
 // Componentes estilizados
 const PageContainer = styled.div`
@@ -78,9 +79,9 @@ const TextArea = styled.textarea`
   width: 100%;
   min-height: 150px;
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.9);
   color: ${AppColors.text};
   font-size: 1rem;
   font-family: inherit;
@@ -93,13 +94,22 @@ const TextArea = styled.textarea`
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(0, 0, 0, 0.4);
   }
 `
 
 const SuccessMessage = styled.div`
   background-color: rgba(76, 175, 80, 0.1);
   color: ${AppColors.success};
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+`
+
+const ErrorMessage = styled.div`
+  background-color: rgba(244, 67, 54, 0.1);
+  color: ${AppColors.error};
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1rem;
@@ -123,6 +133,7 @@ const ContactPage: React.FC = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [error, setError] = useState("")
   const { openChat } = useChatbot()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -130,26 +141,39 @@ const ContactPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError("")
 
-    // Simulación de envío de formulario
-    setTimeout(() => {
+    try {
+      // Enviar el mensaje al backend
+      await messageAPI.create({
+        ...formData,
+        status: "new",
+      })
+
+      // Mostrar mensaje de éxito
       setIsSuccess(true)
+
+      // Limpiar el formulario
       setFormData({
         name: "",
         email: "",
         subject: "",
         message: "",
       })
-      setIsSubmitting(false)
 
       // Ocultar mensaje después de 5 segundos
       setTimeout(() => {
         setIsSuccess(false)
       }, 5000)
-    }, 1000)
+    } catch (err: any) {
+      console.error("Error al enviar mensaje:", err)
+      setError(err.response?.data?.message || "Error al enviar el mensaje. Por favor, intenta de nuevo más tarde.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -209,6 +233,8 @@ const ContactPage: React.FC = () => {
               ¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.
             </SuccessMessage>
           )}
+
+          {error && <ErrorMessage>{error}</ErrorMessage>}
 
           <ContactForm onSubmit={handleSubmit}>
             <Input label="Nombre" name="name" value={formData.name} onChange={handleChange} required fullWidth />
