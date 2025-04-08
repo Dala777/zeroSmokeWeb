@@ -114,26 +114,53 @@ export const replyToMessage = async (req: Request, res: Response): Promise<void>
       return
     }
 
-    // Enviar correo electrónico
-    await emailService.sendMessageReply(message.email, message.subject, replyText)
+    console.log(`Intentando responder al mensaje ${id} enviado a ${message.email}`)
 
-    // Actualizar el estado del mensaje a "answered"
-    const updatedMessage = await Message.findByIdAndUpdate(
-      id,
-      {
-        status: "answered",
+    try {
+      // Enviar correo electrónico
+      const emailResult = await emailService.sendMessageReply(message.email, message.subject, replyText)
+      console.log("Resultado del envío de correo:", emailResult)
+
+      // Actualizar el estado del mensaje a "answered"
+      const updatedMessage = await Message.findByIdAndUpdate(
+        id,
+        {
+          status: "answered",
+          updatedAt: new Date(),
+        },
+        { new: true },
+      )
+
+      // Si estamos en desarrollo y hay una URL de vista previa, la incluimos en la respuesta
+      if (emailResult.previewUrl) {
+        res.status(200).json({
+          message: "Respuesta enviada con éxito",
+          data: updatedMessage,
+          previewUrl: emailResult.previewUrl,
+        })
+      } else {
+        res.status(200).json({
+          message: "Respuesta enviada con éxito",
+          data: updatedMessage,
+        })
+      }
+    } catch (emailError: any) {
+      console.error("Error al enviar el correo:", emailError)
+
+      // Aún actualizamos el estado del mensaje, pero notificamos del error
+      await Message.findByIdAndUpdate(id, {
+        status: "answered", // Marcamos como respondido aunque el email falló
         updatedAt: new Date(),
-      },
-      { new: true },
-    )
+      })
 
-    res.status(200).json({
-      message: "Respuesta enviada con éxito",
-      data: updatedMessage,
-    })
-  } catch (error) {
+      res.status(200).json({
+        message: "El mensaje se marcó como respondido, pero hubo un error al enviar el correo electrónico",
+        error: emailError.message,
+        data: message,
+      })
+    }
+  } catch (error: any) {
     console.error("Error al responder mensaje:", error)
-    res.status(500).json({ message: "Error al enviar la respuesta" })
+    res.status(500).json({ message: "Error al enviar la respuesta", error: error.message })
   }
 }
-

@@ -82,19 +82,31 @@ export const messageAPI = {
     return axios.get(`${API_URL}/messages`)
   },
 
-  getById: (id: string) => axios.get(`${API_URL}/messages/${id}`),
+  getById: (id: string) => {
+    console.log("Fetching message details from:", `${API_URL}/messages/${id}`)
+    return axios.get(`${API_URL}/messages/${id}`)
+  },
 
   create: (data: any) => {
     console.log("Creating message:", data)
     return axios.post(`${API_URL}/messages`, data)
   },
 
-  update: (id: string, data: any) => axios.put(`${API_URL}/messages/${id}`, data),
+  update: (id: string, data: any) => {
+    console.log("Updating message:", id, data)
+    return axios.put(`${API_URL}/messages/${id}`, data)
+  },
 
-  delete: (id: string) => axios.delete(`${API_URL}/messages/${id}`),
+  delete: (id: string) => {
+    console.log("Deleting message:", id)
+    return axios.delete(`${API_URL}/messages/${id}`)
+  },
 
   // Función para responder a mensajes
-  reply: (id: string, replyText: string) => axios.post(`${API_URL}/messages/${id}/reply`, { replyText }),
+  reply: (id: string, replyText: string) => {
+    console.log("Replying to message:", id, replyText)
+    return axios.post(`${API_URL}/messages/${id}/reply`, { replyText })
+  },
 }
 
 export default {

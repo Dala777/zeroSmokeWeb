@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useRef, useEffect } from "react"
-import styled from "styled-components"
-import { AppColors } from "../styles/colors"
-import Button from "./ui/Button"
-import Input from "./ui/Input"
+import type React from "react";
+import { useState, useRef, useEffect } from "react";
+import styled from "styled-components";
+import { AppColors } from "../styles/colors";
+import Button from "./ui/Button";
+import Input from "./ui/Input";
 
 // Importar el contexto del chatbot
-import { useChatbot } from "./ChatbotContext"
+import { useChatbot } from "./ChatbotContext";
 
 const ChatbotContainer = styled.div`
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 1000;
-`
+`;
 
 const ChatbotButton = styled.button`
   width: 60px;
@@ -36,7 +36,7 @@ const ChatbotButton = styled.button`
     background-color: ${AppColors.tertiary};
     transform: scale(1.05);
   }
-`
+`;
 
 const ChatWindow = styled.div`
   position: absolute;
@@ -50,7 +50,7 @@ const ChatWindow = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-`
+`;
 
 const ChatHeader = styled.div`
   background-color: ${AppColors.primary};
@@ -59,12 +59,12 @@ const ChatHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 const ChatTitle = styled.h3`
   margin: 0;
   font-size: 1.125rem;
-`
+`;
 
 const CloseButton = styled.button`
   background: none;
@@ -72,7 +72,7 @@ const CloseButton = styled.button`
   color: white;
   font-size: 1.25rem;
   cursor: pointer;
-`
+`;
 
 const ChatMessages = styled.div`
   flex: 1;
@@ -81,7 +81,7 @@ const ChatMessages = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-`
+`;
 
 const Message = styled.div<{ isUser: boolean }>`
   max-width: 80%;
@@ -90,21 +90,21 @@ const Message = styled.div<{ isUser: boolean }>`
   background-color: ${(props) => (props.isUser ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
   color: ${(props) => (props.isUser ? "white" : AppColors.text)};
   align-self: ${(props) => (props.isUser ? "flex-end" : "flex-start")};
-`
+`;
 
 const ChatInputContainer = styled.div`
   padding: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   gap: 0.5rem;
-`
+`;
 
 const SuggestedQuestions = styled.div`
   padding: 0 1rem 1rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-`
+`;
 
 const SuggestedQuestion = styled.button`
   background-color: rgba(255, 255, 255, 0.1);
@@ -119,18 +119,18 @@ const SuggestedQuestion = styled.button`
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);
   }
-`
+`;
 
 interface ChatMessage {
-  text: string
-  isUser: boolean
+  text: string;
+  isUser: boolean;
 }
 
 // Reemplazar la definición del componente Chatbot para usar el contexto
 const Chatbot: React.FC = () => {
-  const { isOpen, messages, toggleChat, addMessage } = useChatbot()
-  const [inputValue, setInputValue] = useState("")
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const { isOpen, messages, toggleChat, addMessage } = useChatbot();
+  const [inputValue, setInputValue] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Preguntas sugeridas
   const suggestedQuestions = [
@@ -140,7 +140,7 @@ const Chatbot: React.FC = () => {
     "¿Cómo manejar la ansiedad?",
     "¿Qué hacer si tengo una recaída?",
     "¿Cómo funciona la app?",
-  ]
+  ];
 
   // Respuestas predefinidas con más opciones y mejor detección
   const responses: Record<string, string[]> = {
@@ -192,66 +192,66 @@ const Chatbot: React.FC = () => {
       "Una alimentación equilibrada puede ayudarte a dejar de fumar. Consume frutas y verduras, bebe mucha agua, limita el alcohol y la cafeína, y come pequeñas comidas frecuentes para mantener estable tu nivel de azúcar en sangre.",
       "Algunos alimentos como frutas cítricas, zanahorias y palitos de apio pueden ayudar a reducir los antojos de nicotina. También es recomendable evitar alimentos que asocies con fumar.",
     ],
-  }
+  };
 
   // Función mejorada para obtener respuesta del bot
   const getBotResponse = (input: string): string => {
-    const lowerInput = input.toLowerCase()
+    const lowerInput = input.toLowerCase();
 
     // Buscar palabras clave en el input
     for (const [keyword, responseOptions] of Object.entries(responses)) {
       if (lowerInput.includes(keyword)) {
         // Seleccionar aleatoriamente una de las respuestas disponibles
-        const randomIndex = Math.floor(Math.random() * responseOptions.length)
-        return responseOptions[randomIndex]
+        const randomIndex = Math.floor(Math.random() * responseOptions.length);
+        return responseOptions[randomIndex];
       }
     }
 
     // Respuestas para preguntas comunes que no coinciden exactamente con palabras clave
     if (lowerInput.includes("cómo") && lowerInput.includes("funciona")) {
-      return "ZeroSmoke funciona a través de un enfoque integral que combina información educativa, herramientas de seguimiento, apoyo comunitario y técnicas basadas en evidencia para ayudarte a dejar de fumar de manera efectiva."
+      return "ZeroSmoke funciona a través de un enfoque integral que combina información educativa, herramientas de seguimiento, apoyo comunitario y técnicas basadas en evidencia para ayudarte a dejar de fumar de manera efectiva.";
     }
 
     if (lowerInput.includes("cuánto") && lowerInput.includes("tiempo")) {
-      return "El tiempo necesario para dejar de fumar varía para cada persona. Mientras que los síntomas físicos de abstinencia suelen durar 2-4 semanas, el aspecto psicológico puede llevar más tiempo. Lo importante es mantener la perseverancia y buscar apoyo cuando lo necesites."
+      return "El tiempo necesario para dejar de fumar varía para cada persona. Mientras que los síntomas físicos de abstinencia suelen durar 2-4 semanas, el aspecto psicológico puede llevar más tiempo. Lo importante es mantener la perseverancia y buscar apoyo cuando lo necesites.";
     }
 
     if (lowerInput.includes("peso") || lowerInput.includes("engordar")) {
-      return "Es común preocuparse por el aumento de peso al dejar de fumar. Puedes minimizarlo con una dieta equilibrada, ejercicio regular, y manteniendo hábitos saludables. Recuerda que los beneficios para la salud de dejar de fumar superan ampliamente cualquier aumento de peso temporal."
+      return "Es común preocuparse por el aumento de peso al dejar de fumar. Puedes minimizarlo con una dieta equilibrada, ejercicio regular, y manteniendo hábitos saludables. Recuerda que los beneficios para la salud de dejar de fumar superan ampliamente cualquier aumento de peso temporal.";
     }
 
     // Respuesta por defecto
-    return "Lo siento, no tengo información específica sobre eso. ¿Puedes reformular tu pregunta o preguntar sobre beneficios de dejar de fumar, síntomas de abstinencia, estrategias para dejar de fumar, o nuestra aplicación?"
-  }
+    return "Lo siento, no tengo información específica sobre eso. ¿Puedes reformular tu pregunta o preguntar sobre beneficios de dejar de fumar, síntomas de abstinencia, estrategias para dejar de fumar, o nuestra aplicación?";
+  };
 
   // Función para manejar la entrada del usuario
   const handleSendMessage = () => {
-    if (inputValue.trim() === "") return
+    if (inputValue.trim() === "") return;
 
     // Añadir mensaje del usuario
     const userMessage: ChatMessage = {
       text: inputValue,
       isUser: true,
-    }
-    addMessage(userMessage)
+    };
+    addMessage(userMessage);
 
     // Procesar respuesta
     setTimeout(() => {
-      const botResponse = getBotResponse(inputValue)
+      const botResponse = getBotResponse(inputValue);
       const botMessage: ChatMessage = {
         text: botResponse,
         isUser: false,
-      }
-      addMessage(botMessage)
-    }, 500)
+      };
+      addMessage(botMessage);
+    }, 500);
 
-    setInputValue("")
-  }
+    setInputValue("");
+  };
 
   // Auto-scroll al último mensaje
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Mensaje de bienvenida
   useEffect(() => {
@@ -259,10 +259,10 @@ const Chatbot: React.FC = () => {
       const welcomeMessage: ChatMessage = {
         text: "¡Hola! Soy el asistente virtual de ZeroSmoke. ¿En qué puedo ayudarte hoy?",
         isUser: false,
-      }
-      addMessage(welcomeMessage)
+      };
+      addMessage(welcomeMessage);
     }
-  }, [isOpen, messages.length, addMessage])
+  }, [isOpen, messages.length, addMessage]);
 
   return (
     <ChatbotContainer>
@@ -292,17 +292,17 @@ const Chatbot: React.FC = () => {
                   const userMessage: ChatMessage = {
                     text: question,
                     isUser: true,
-                  }
-                  addMessage(userMessage)
+                  };
+                  addMessage(userMessage);
 
                   setTimeout(() => {
-                    const botResponse = getBotResponse(question)
+                    const botResponse = getBotResponse(question);
                     const botMessage: ChatMessage = {
                       text: botResponse,
                       isUser: false,
-                    }
-                    addMessage(botMessage)
-                  }, 500)
+                    };
+                    addMessage(botMessage);
+                  }, 500);
                 }}
               >
                 {question}
@@ -318,7 +318,7 @@ const Chatbot: React.FC = () => {
               fullWidth
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
-                  handleSendMessage()
+                  handleSendMessage();
                 }
               }}
             />
@@ -327,8 +327,7 @@ const Chatbot: React.FC = () => {
         </ChatWindow>
       )}
     </ChatbotContainer>
-  )
-}
+  );
+};
 
-export default Chatbot
-
+export default Chatbot;

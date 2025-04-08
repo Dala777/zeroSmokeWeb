@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import type React from "react"
-import styled from "styled-components"
-import { AppColors } from "../styles/colors"
-import { useChatbot } from "./ChatbotContext"
+import type React from "react";
+import styled from "styled-components";
+import { AppColors } from "../styles/colors";
+import { useChatbot } from "./ChatbotContext";
 
 const FloatingButton = styled.button`
   position: fixed;
@@ -28,21 +28,20 @@ const FloatingButton = styled.button`
     background-color: ${AppColors.tertiary};
     transform: scale(1.05);
   }
-`
+`;
 
 interface ChatbotButtonProps {
-  text?: string
+  text?: string;
 }
 
 const ChatbotButton: React.FC<ChatbotButtonProps> = ({ text = "💬" }) => {
-  const { toggleChat, isOpen } = useChatbot()
+  const { toggleChat, isOpen } = useChatbot();
 
   return (
     <FloatingButton onClick={toggleChat} aria-label="Abrir chat de asistencia">
       {isOpen ? "✕" : text}
     </FloatingButton>
-  )
-}
+  );
+};
 
-export default ChatbotButton
-
+export default ChatbotButton;

@@ -5,8 +5,8 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import { AppColors } from "../../styles/colors"
-import { messageAPI } from "../../services/api"
-import type { Message } from "../../types"
+import { getMessages } from "../../services/storageService"
+import type { Message } from "../../services/storageService"
 
 // Componentes estilizados
 const PageContainer = styled.div`
@@ -53,9 +53,9 @@ const SearchContainer = styled.div`
 const SearchInput = styled.input`
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.05);
   color: ${AppColors.text};
   font-size: 1rem;
 
@@ -65,7 +65,7 @@ const SearchInput = styled.input`
   }
 
   &::placeholder {
-    color: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 255, 255, 0.4);
   }
 `
 
@@ -79,13 +79,13 @@ const FilterButton = styled.button<{ active: boolean }>`
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
-  background-color: ${(props) => (props.active ? AppColors.primary : "rgba(0, 0, 0, 0.1)")};
+  background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
   color: ${(props) => (props.active ? "white" : AppColors.text)};
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: ${(props) => (props.active ? AppColors.accent : "rgba(0, 0, 0, 0.2)")};
+    background-color: ${(props) => (props.active ? AppColors.accent : "rgba(255, 255, 255, 0.2)")};
   }
 `
 
@@ -96,17 +96,17 @@ const MessagesTable = styled.table`
 `
 
 const TableHead = styled.thead`
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.05);
 `
 
 const TableRow = styled.tr<{ unread?: boolean }>`
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-weight: ${(props) => (props.unread ? "bold" : "normal")};
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(255, 255, 255, 0.05);
   }
 `
 
@@ -156,14 +156,14 @@ const PageButton = styled.button<{ active?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => (props.active ? AppColors.primary : "rgba(0, 0, 0, 0.1)")};
+  background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
   color: ${(props) => (props.active ? "white" : AppColors.text)};
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover:not([disabled]) {
-    background-color: ${(props) => (props.active ? AppColors.accent : "rgba(0, 0, 0, 0.2)")};
+    background-color: ${(props) => (props.active ? AppColors.accent : "rgba(255, 255, 255, 0.2)")};
   }
 
   &:disabled {
@@ -188,12 +188,12 @@ const MessagesList: React.FC = () => {
   const fetchMessages = async () => {
     try {
       setLoading(true)
-      const response = await messageAPI.getAll()
-      console.log("Mensajes recibidos:", response.data)
-      setMessages(response.data)
-      setFilteredMessages(response.data)
+      const messagesData = await getMessages()
+      console.log("Mensajes recibidos:", messagesData)
+      setMessages(messagesData)
+      setFilteredMessages(messagesData)
       setError("")
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error fetching messages:", err)
       setError("Error al cargar los mensajes. Por favor, intenta de nuevo más tarde.")
     } finally {
@@ -242,7 +242,9 @@ const MessagesList: React.FC = () => {
     setStatusFilter(status)
   }
 
-  const handleRowClick = (id: string | number) => {
+  const handleRowClick = (id: string | number | undefined) => {
+    if (!id) return // No hacer nada si el ID es undefined
+    console.log("Navigating to message detail:", id)
     navigate(`/admin/messages/${id}`)
   }
 
@@ -347,10 +349,10 @@ const MessagesList: React.FC = () => {
               </tr>
             </TableHead>
             <tbody>
-              {currentMessages.map((message) => (
+              {currentMessages.map((message, index) => (
                 <TableRow
-                  key={message._id || message.id}
-                  onClick={() => handleRowClick(message._id || message.id)}
+                  key={message._id || message.id || `message-${index}`}
+                  onClick={() => (message._id || message.id ? handleRowClick(message._id || message.id) : null)}
                   unread={message.status === "new"}
                 >
                   <TableCell>{message.name}</TableCell>
@@ -380,4 +382,3 @@ const MessagesList: React.FC = () => {
 }
 
 export default MessagesList
-

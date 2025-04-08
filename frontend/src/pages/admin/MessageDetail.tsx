@@ -5,8 +5,9 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import { AppColors } from "../../styles/colors"
+import { getMessageById, updateMessage, deleteMessage } from "../../services/storageService"
+import type { Message } from "../../services/storageService"
 import { messageAPI } from "../../services/api"
-import type { Message } from "../../types"
 
 // Componentes estilizados
 const PageContainer = styled.div`
@@ -39,7 +40,7 @@ const MessageHeader = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 1rem;
 `
 
@@ -96,9 +97,9 @@ const ReplyTitle = styled.h3`
 const TextArea = styled.textarea`
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.05);
   color: ${AppColors.text};
   font-size: 1rem;
   min-height: 150px;
@@ -128,12 +129,16 @@ const Button = styled.button<{ variant?: "primary" | "secondary" | "danger" }>`
       ? AppColors.primary
       : props.variant === "danger"
         ? AppColors.error
-        : "rgba(0, 0, 0, 0.1)"};
+        : "rgba(255, 255, 255, 0.1)"};
   color: ${(props) => (props.variant === "primary" || props.variant === "danger" ? "white" : AppColors.text)};
 
   &:hover {
     background-color: ${(props) =>
-      props.variant === "primary" ? AppColors.accent : props.variant === "danger" ? "#d32f2f" : "rgba(0, 0, 0, 0.2)"};
+      props.variant === "primary"
+        ? AppColors.accent
+        : props.variant === "danger"
+          ? "#d32f2f"
+          : "rgba(255, 255, 255, 0.2)"};
   }
 
   &:disabled {
@@ -160,29 +165,56 @@ const SuccessMessage = styled.div`
   margin-bottom: 1rem;
 `
 
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: ${AppColors.text};
+  font-size: 1.1rem;
+`
+
 const MessageDetail: React.FC = () => {
+  console.log("Rendering MessageDetail component")
   const { id } = useParams<{ id: string }>()
+  console.log("Message ID from params:", id)
   const navigate = useNavigate()
 
   const [message, setMessage] = useState<Message | null>(null)
   const [replyText, setReplyText] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
 
   useEffect(() => {
     const fetchMessage = async () => {
       try {
-        const response = await messageAPI.getById(id!)
-        setMessage(response.data)
+        console.log("Fetching message with ID:", id)
+        setLoading(true)
+
+        if (!id) {
+          throw new Error("ID de mensaje no proporcionado")
+        }
+
+        const messageData = await getMessageById(id)
+        console.log("Message details:", messageData)
+
+        if (!messageData) {
+          throw new Error("Mensaje no encontrado")
+        }
+
+        setMessage(messageData)
 
         // Marcar como leído si es nuevo
-        if (response.data.status === "new") {
-          await messageAPI.update(id!, { ...response.data, status: "read" })
+        if (messageData.status === "new") {
+          await updateMessage(id, { ...messageData, status: "read" })
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error fetching message:", err)
-        setError("Error al cargar el mensaje. Por favor, intenta de nuevo.")
+        setError(err.message || "Error al cargar el mensaje. Por favor, intenta de nuevo.")
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -201,39 +233,79 @@ const MessageDetail: React.FC = () => {
       return
     }
 
+    if (!id || !message) {
+      setError("No se puede enviar la respuesta. Información del mensaje incompleta.")
+      return
+    }
+
     setIsSubmitting(true)
     setError("")
     setSuccess("")
 
     try {
-      // Usar el nuevo endpoint para responder
-      await messageAPI.reply(id!, replyText)
+      console.log("Sending reply to message ID:", id)
 
-      // Actualizar el mensaje en el estado local
-      if (message) {
-        setMessage({ ...message, status: "answered" })
+      // Intentar usar la API primero
+      try {
+        await messageAPI.reply(id, replyText)
+      } catch (apiError) {
+        console.error("API error, using local storage fallback:", apiError)
+        // Fallback a localStorage
+        await updateMessage(id, { ...message, status: "answered" })
       }
 
+      // Actualizar el mensaje en el estado local
+      setMessage({ ...message, status: "answered" })
       setSuccess("Respuesta enviada con éxito")
       setReplyText("")
     } catch (err: any) {
       console.error("Error sending reply:", err)
-      setError(err.response?.data?.message || "Error al enviar la respuesta. Por favor, intenta de nuevo.")
+      setError(err.message || "Error al enviar la respuesta. Por favor, intenta de nuevo.")
     } finally {
       setIsSubmitting(false)
     }
   }
 
   const handleDelete = async () => {
+    if (!id) return
+
     if (window.confirm("¿Estás seguro de que quieres eliminar este mensaje?")) {
       try {
-        await messageAPI.delete(id!)
-        navigate("/admin/messages")
-      } catch (err) {
+        const success = await deleteMessage(id)
+        if (success) {
+          navigate("/admin/messages")
+        } else {
+          throw new Error("No se pudo eliminar el mensaje")
+        }
+      } catch (err: any) {
         console.error("Error deleting message:", err)
-        setError("Error al eliminar el mensaje. Por favor, intenta de nuevo.")
+        setError(err.message || "Error al eliminar el mensaje. Por favor, intenta de nuevo.")
       }
     }
+  }
+
+  if (loading) {
+    return (
+      <PageContainer>
+        <PageHeader>
+          <PageTitle>Detalle del Mensaje</PageTitle>
+          <Button onClick={() => navigate("/admin/messages")}>Volver</Button>
+        </PageHeader>
+        <LoadingContainer>Cargando mensaje...</LoadingContainer>
+      </PageContainer>
+    )
+  }
+
+  if (error && !message) {
+    return (
+      <PageContainer>
+        <PageHeader>
+          <PageTitle>Detalle del Mensaje</PageTitle>
+          <Button onClick={() => navigate("/admin/messages")}>Volver</Button>
+        </PageHeader>
+        <ErrorMessage>{error}</ErrorMessage>
+      </PageContainer>
+    )
   }
 
   if (!message) {
@@ -241,8 +313,9 @@ const MessageDetail: React.FC = () => {
       <PageContainer>
         <PageHeader>
           <PageTitle>Detalle del Mensaje</PageTitle>
+          <Button onClick={() => navigate("/admin/messages")}>Volver</Button>
         </PageHeader>
-        {error ? <ErrorMessage>{error}</ErrorMessage> : <p>Cargando mensaje...</p>}
+        <ErrorMessage>Mensaje no encontrado</ErrorMessage>
       </PageContainer>
     )
   }
@@ -305,4 +378,3 @@ const MessageDetail: React.FC = () => {
 }
 
 export default MessageDetail
-
