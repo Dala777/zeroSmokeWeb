@@ -1,5 +1,6 @@
 "use client"
 
+
 import type React from "react"
 import { useState } from "react"
 import styled from "styled-components"
@@ -7,11 +8,13 @@ import { AppColors } from "../../styles/colors"
 import Button from "../../components/ui/Button"
 import Input from "../../components/ui/Input"
 
+
 const PageContainer = styled.div`
   padding: 1.5rem;
   background-color: ${AppColors.background};
   border-radius: 8px;
 `
+
 
 const PageHeader = styled.div`
   display: flex;
@@ -20,10 +23,12 @@ const PageHeader = styled.div`
   margin-bottom: 2rem;
 `
 
+
 const PageTitle = styled.h2`
   font-size: 1.5rem;
   color: ${AppColors.primary};
 `
+
 
 const SearchContainer = styled.div`
   display: flex;
@@ -32,12 +37,14 @@ const SearchContainer = styled.div`
   margin-bottom: 1.5rem;
 `
 
+
 const FilterContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
 `
+
 
 const SelectFilter = styled.select`
   padding: 0.75rem 1rem;
@@ -46,16 +53,18 @@ const SelectFilter = styled.select`
   background-color: rgba(255, 255, 255, 0.05);
   color: ${AppColors.text};
   font-size: 1rem;
-  
+ 
   &:focus {
     outline: none;
     border-color: ${AppColors.primary};
   }
 `
 
+
 const TableContainer = styled.div`
   overflow-x: auto;
 `
+
 
 const Table = styled.table`
   width: 100%;
@@ -65,21 +74,24 @@ const Table = styled.table`
   overflow: hidden;
 `
 
+
 const TableHead = styled.thead`
   background-color: rgba(255, 255, 255, 0.05);
 `
 
+
 const TableRow = styled.tr`
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  
+ 
   &:last-child {
     border-bottom: none;
   }
-  
+ 
   &:hover {
     background-color: rgba(255, 255, 255, 0.05);
   }
 `
+
 
 const TableHeader = styled.th`
   padding: 1rem;
@@ -88,10 +100,12 @@ const TableHeader = styled.th`
   color: ${AppColors.textSecondary};
 `
 
+
 const TableCell = styled.td`
   padding: 1rem;
   color: ${AppColors.text};
 `
+
 
 const UserAvatar = styled.div`
   width: 40px;
@@ -104,6 +118,7 @@ const UserAvatar = styled.div`
   font-weight: 600;
   color: white;
 `
+
 
 const UserStatus = styled.span<{ status: "active" | "inactive" | "pending" }>`
   display: inline-block;
@@ -120,6 +135,7 @@ const UserStatus = styled.span<{ status: "active" | "inactive" | "pending" }>`
     props.status === "active" ? AppColors.success : props.status === "inactive" ? AppColors.error : AppColors.warning};
 `
 
+
 const ActionButton = styled.button`
   background-color: rgba(255, 255, 255, 0.1);
   color: ${AppColors.text};
@@ -130,16 +146,17 @@ const ActionButton = styled.button`
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-right: 0.5rem;
-  
+ 
   &:hover {
     background-color: ${AppColors.primary};
     color: white;
   }
-  
+ 
   &:last-child {
     margin-right: 0;
   }
 `
+
 
 const Pagination = styled.div`
   display: flex;
@@ -147,6 +164,7 @@ const Pagination = styled.div`
   gap: 0.5rem;
   margin-top: 2rem;
 `
+
 
 const PageButton = styled.button<{ isActive?: boolean }>`
   width: 40px;
@@ -164,16 +182,17 @@ const PageButton = styled.button<{ isActive?: boolean }>`
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  
+ 
   &:hover:not([disabled]) {
     background-color: ${(props) => (props.isActive ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
   }
-  
+ 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
 `
+
 
 // Mock data
 const mockUsers = [
@@ -219,11 +238,13 @@ const mockUsers = [
   },
 ]
 
+
 const UserInfoContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.75rem;
 `
+
 
 const UsersList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -232,16 +253,20 @@ const UsersList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [users, setUsers] = useState(mockUsers)
 
+
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
 
+
     const matchesStatus = statusFilter === "all" || user.status === statusFilter
     const matchesRole = roleFilter === "all" || user.role === roleFilter
 
+
     return matchesSearch && matchesStatus && matchesRole
   })
+
 
   const getUserInitials = (name: string) => {
     return name
@@ -251,9 +276,11 @@ const UsersList: React.FC = () => {
       .toUpperCase()
   }
 
+
   const handleStatusChange = (id: number, newStatus: "active" | "inactive" | "pending") => {
     setUsers(users.map((user) => (user.id === id ? { ...user, status: newStatus } : user)))
   }
+
 
   const handleDelete = (id: number) => {
     if (window.confirm("¿Estás seguro de que quieres eliminar este usuario?")) {
@@ -261,12 +288,14 @@ const UsersList: React.FC = () => {
     }
   }
 
+
   return (
     <PageContainer>
       <PageHeader>
         <PageTitle>Gestión de Usuarios</PageTitle>
         <Button>+ Nuevo Usuario</Button>
       </PageHeader>
+
 
       <SearchContainer>
         <Input
@@ -276,6 +305,7 @@ const UsersList: React.FC = () => {
           fullWidth
         />
       </SearchContainer>
+
 
       <FilterContainer>
         <label htmlFor="status-filter">
@@ -294,6 +324,7 @@ const UsersList: React.FC = () => {
           </SelectFilter>
         </label>
 
+
         <label htmlFor="role-filter">
           <span className="sr-only">Filtrar por rol</span>
           <SelectFilter
@@ -309,14 +340,16 @@ const UsersList: React.FC = () => {
           </SelectFilter>
         </label>
 
-        <Button 
-          variant="outline" 
-          size="small" 
+
+        <Button
+          variant="outline"
+          size="small"
           aria-label="Aplicar filtros"
         >
           Filtrar
         </Button>
       </FilterContainer>
+
 
       <TableContainer>
         <Table>
@@ -362,6 +395,7 @@ const UsersList: React.FC = () => {
         </Table>
       </TableContainer>
 
+
       <Pagination>
         <PageButton disabled={currentPage === 1} onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}>
           &lt;
@@ -377,5 +411,5 @@ const UsersList: React.FC = () => {
   )
 }
 
-export default UsersList
 
+export default UsersList

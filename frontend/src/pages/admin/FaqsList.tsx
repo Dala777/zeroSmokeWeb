@@ -1,5 +1,6 @@
 "use client"
 
+
 import type React from "react"
 import { useState } from "react"
 import styled from "styled-components"
@@ -8,11 +9,13 @@ import Button from "../../components/ui/Button"
 import Card from "../../components/ui/Card"
 import Input from "../../components/ui/Input"
 
+
 const PageContainer = styled.div`
   padding: 1.5rem;
   background-color: ${AppColors.background};
   border-radius: 8px;
 `
+
 
 const PageHeader = styled.div`
   display: flex;
@@ -21,10 +24,12 @@ const PageHeader = styled.div`
   margin-bottom: 2rem;
 `
 
+
 const PageTitle = styled.h2`
   font-size: 1.5rem;
   color: ${AppColors.primary};
 `
+
 
 const SearchContainer = styled.div`
   display: flex;
@@ -33,12 +38,14 @@ const SearchContainer = styled.div`
   margin-bottom: 1.5rem;
 `
 
+
 const CategoryFilter = styled.div`
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
   margin-bottom: 1.5rem;
 `
+
 
 const CategoryPill = styled.button<{ active: boolean }>`
   padding: 0.5rem 1rem;
@@ -49,22 +56,24 @@ const CategoryPill = styled.button<{ active: boolean }>`
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+ 
   &:hover {
     background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
   }
 `
+
 
 // Crear un componente wrapper para manejar el onClick
 const ClickableCard = styled(Card)`
   margin-bottom: 1rem;
   cursor: pointer;
   transition: transform 0.3s ease;
-  
+ 
   &:hover {
     transform: translateY(-2px);
   }
 `
+
 
 const FaqHeader = styled.div`
   display: flex;
@@ -73,11 +82,13 @@ const FaqHeader = styled.div`
   margin-bottom: 0.5rem;
 `
 
+
 const FaqQuestion = styled.h3`
   font-size: 1.125rem;
   color: ${AppColors.textSecondary};
   margin-bottom: 0.5rem;
 `
+
 
 const FaqCategory = styled.span`
   font-size: 0.75rem;
@@ -86,6 +97,7 @@ const FaqCategory = styled.span`
   background-color: rgba(76, 175, 80, 0.1);
   color: ${AppColors.primary};
 `
+
 
 const FaqAnswer = styled.p`
   color: ${AppColors.text};
@@ -96,10 +108,12 @@ const FaqAnswer = styled.p`
   overflow: hidden;
 `
 
+
 const FaqActions = styled.div`
   display: flex;
   gap: 0.5rem;
 `
+
 
 const ActionButton = styled.button`
   background-color: rgba(255, 255, 255, 0.1);
@@ -110,12 +124,13 @@ const ActionButton = styled.button`
   font-size: 0.875rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  
+ 
   &:hover {
     background-color: ${AppColors.primary};
     color: white;
   }
 `
+
 
 const TextArea = styled.textarea`
   width: 100%;
@@ -128,17 +143,18 @@ const TextArea = styled.textarea`
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;
-  
+ 
   &:focus {
     outline: none;
     border-color: ${AppColors.primary};
     box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
   }
-  
+ 
   &::placeholder {
     color: rgba(255, 255, 255, 0.4);
   }
 `
+
 
 const Modal = styled.div`
   position: fixed;
@@ -153,12 +169,14 @@ const Modal = styled.div`
   z-index: 1000;
 `
 
+
 const ModalContent = styled(Card)`
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
 `
+
 
 const ModalHeader = styled.div`
   display: flex;
@@ -167,10 +185,12 @@ const ModalHeader = styled.div`
   margin-bottom: 1.5rem;
 `
 
+
 const ModalTitle = styled.h2`
   font-size: 1.25rem;
   color: ${AppColors.primary};
 `
+
 
 const CloseButton = styled.button`
   background: none;
@@ -180,6 +200,7 @@ const CloseButton = styled.button`
   cursor: pointer;
 `
 
+
 const FormLabel = styled.label`
   display: block;
   margin-bottom: 0.5rem;
@@ -188,12 +209,14 @@ const FormLabel = styled.label`
   color: ${AppColors.textSecondary};
 `
 
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1.5rem;
 `
+
 
 const SelectFilter = styled.select`
   width: 100%;
@@ -203,16 +226,18 @@ const SelectFilter = styled.select`
   background-color: rgba(255, 255, 255, 0.05);
   color: ${AppColors.text};
   font-size: 1rem;
-  
+ 
   &:focus {
     outline: none;
     border-color: ${AppColors.primary};
   }
 `
 
+
 const FormGroup = styled.div`
   margin-bottom: 1.5rem;
 `
+
 
 // Mock data
 const mockFaqs = [
@@ -246,7 +271,9 @@ const mockFaqs = [
   },
 ]
 
+
 const categories = ["Todas", "Beneficios", "Consejos", "Abstinencia", "Tratamientos"]
+
 
 const FaqsList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -265,15 +292,19 @@ const FaqsList: React.FC = () => {
     category: "Beneficios",
   })
 
+
   const filteredFaqs = faqs.filter((faq) => {
     const matchesSearch =
       faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
       faq.answer.toLowerCase().includes(searchTerm.toLowerCase())
 
+
     const matchesCategory = selectedCategory === "Todas" || faq.category === selectedCategory
+
 
     return matchesSearch && matchesCategory
   })
+
 
   const handleOpenModal = (faq?: (typeof mockFaqs)[0]) => {
     if (faq) {
@@ -294,14 +325,17 @@ const FaqsList: React.FC = () => {
     setIsModalOpen(true)
   }
 
+
   const handleCloseModal = () => {
     setIsModalOpen(false)
   }
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setCurrentFaq({ ...currentFaq, [name]: value })
   }
+
 
   const handleSave = () => {
     if (currentFaq.id) {
@@ -313,8 +347,10 @@ const FaqsList: React.FC = () => {
       setFaqs([...faqs, { ...currentFaq, id: newId }])
     }
 
+
     handleCloseModal()
   }
+
 
   const handleDelete = (id: number) => {
     if (window.confirm("¿Estás seguro de que quieres eliminar esta pregunta?")) {
@@ -322,12 +358,14 @@ const FaqsList: React.FC = () => {
     }
   }
 
+
   return (
     <PageContainer>
       <PageHeader>
         <PageTitle>Gestión de Preguntas Frecuentes</PageTitle>
         <Button onClick={() => handleOpenModal()}>+ Nueva Pregunta</Button>
       </PageHeader>
+
 
       <SearchContainer>
         <Input
@@ -337,6 +375,7 @@ const FaqsList: React.FC = () => {
           fullWidth
         />
       </SearchContainer>
+
 
       <CategoryFilter>
         {categories.map((category) => (
@@ -350,6 +389,7 @@ const FaqsList: React.FC = () => {
         ))}
       </CategoryFilter>
 
+
       {filteredFaqs.map((faq) => (
         <div key={faq.id} onClick={() => handleOpenModal(faq)}>
           <ClickableCard>
@@ -358,7 +398,9 @@ const FaqsList: React.FC = () => {
               <FaqCategory>{faq.category}</FaqCategory>
             </FaqHeader>
 
+
             <FaqAnswer>{faq.answer}</FaqAnswer>
+
 
             <FaqActions onClick={(e) => e.stopPropagation()}>
               <ActionButton
@@ -382,6 +424,7 @@ const FaqsList: React.FC = () => {
         </div>
       ))}
 
+
       {isModalOpen && (
         <Modal onClick={handleCloseModal}>
           <div onClick={(e) => e.stopPropagation()}>
@@ -390,6 +433,7 @@ const FaqsList: React.FC = () => {
                 <ModalTitle>{currentFaq.id ? "Editar Pregunta" : "Nueva Pregunta"}</ModalTitle>
                 <CloseButton onClick={handleCloseModal}>×</CloseButton>
               </ModalHeader>
+
 
               <FormGroup>
                 <Input
@@ -402,10 +446,12 @@ const FaqsList: React.FC = () => {
                 />
               </FormGroup>
 
+
               <FormGroup>
                 <FormLabel>Respuesta</FormLabel>
                 <TextArea name="answer" value={currentFaq.answer} onChange={handleChange} required />
               </FormGroup>
+
 
               <FormGroup>
                 <FormLabel>Categoría</FormLabel>
@@ -425,6 +471,7 @@ const FaqsList: React.FC = () => {
                 </SelectFilter>
               </FormGroup>
 
+
               <ButtonContainer>
                 <Button variant="outline" onClick={handleCloseModal}>
                   Cancelar
@@ -439,5 +486,5 @@ const FaqsList: React.FC = () => {
   )
 }
 
-export default FaqsList
 
+export default FaqsList

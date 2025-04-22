@@ -70,7 +70,7 @@ const MessageStatus = styled.span<{ status: "new" | "read" | "answered" }>`
   border-radius: 4px;
   background-color: ${(props) =>
     props.status === "new"
-      ? "rgba(255, 183, 77, 0.2)"
+      ? "rgba(21, 17, 10, 0.2)"
       : props.status === "read"
         ? "rgba(33, 150, 243, 0.2)"
         : "rgba(76, 175, 80, 0.2)"};

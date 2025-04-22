@@ -25,6 +25,7 @@ import { ChatbotProvider } from "./components/ChatbotContext"
 import ContactPage from "./pages/ContactPage"
 import AccountPage from "./pages/AccountPage"
 import TobaccoDependencyTest from "./pages/TobaccoDependencyTest"
+import Gallery from "./components/Gallery"
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth()
@@ -49,6 +50,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/account" element={<AccountPage />} />
         <Route path="/test" element={<TobaccoDependencyTest />} />
+        <Route path="/gallery" element={<Gallery />} />
 
         <Route
           path="/admin"

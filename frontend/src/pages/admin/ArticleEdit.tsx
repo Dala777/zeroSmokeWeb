@@ -1,5 +1,6 @@
 "use client"
 
+
 import type React from "react"
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
@@ -9,11 +10,13 @@ import Button from "../../components/ui/Button"
 import Input from "../../components/ui/Input"
 import Card from "../../components/ui/Card"
 
+
 const PageContainer = styled.div`
   padding: 1.5rem;
   background-color: ${AppColors.background};
   border-radius: 8px;
 `
+
 
 const PageHeader = styled.div`
   display: flex;
@@ -22,20 +25,24 @@ const PageHeader = styled.div`
   margin-bottom: 2rem;
 `
 
+
 const PageTitle = styled.h2`
   font-size: 1.5rem;
   color: ${AppColors.primary};
 `
 
+
 const FormSection = styled.div`
   margin-bottom: 2rem;
 `
+
 
 const FormLabel = styled.h3`
   font-size: 1.125rem;
   color: ${AppColors.textSecondary};
   margin-bottom: 1rem;
 `
+
 
 const TextArea = styled.textarea`
   width: 100%;
@@ -48,17 +55,18 @@ const TextArea = styled.textarea`
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;
-  
+ 
   &:focus {
     outline: none;
     border-color: ${AppColors.primary};
     box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
   }
-  
+ 
   &::placeholder {
     color: rgba(255, 255, 255, 0.4);
   }
 `
+
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -66,6 +74,7 @@ const ButtonContainer = styled.div`
   gap: 1rem;
   margin-top: 2rem;
 `
+
 
 const ImagePreview = styled.div`
   width: 100%;
@@ -78,7 +87,7 @@ const ImagePreview = styled.div`
   justify-content: center;
   margin-bottom: 1rem;
   overflow: hidden;
-  
+ 
   img {
     max-width: 100%;
     max-height: 100%;
@@ -86,19 +95,23 @@ const ImagePreview = styled.div`
   }
 `
 
+
 // Mock article data
 const mockArticle = {
   id: 1,
   title: "Efectos del tabaco en el sistema respiratorio",
   content: `Los efectos nocivos del tabaco en el sistema respiratorio son extensos y bien documentados. Desde la irritación inmediata hasta enfermedades graves a largo plazo, el tabaquismo afecta negativamente a todo el sistema respiratorio.
 
+
 El humo del tabaco contiene más de 7,000 sustancias químicas, muchas de las cuales son tóxicas y dañinas para los pulmones. Algunas de estas sustancias son conocidas por causar cáncer.
+
 
 **Efectos a corto plazo:**
 - Irritación de las vías respiratorias
 - Aumento de la mucosidad
 - Tos y respiración sibilante
 - Dificultad para respirar durante el ejercicio
+
 
 **Efectos a largo plazo:**
 - Enfermedad Pulmonar Obstructiva Crónica (EPOC)
@@ -114,11 +127,13 @@ El humo del tabaco contiene más de 7,000 sustancias químicas, muchas de las cu
   tags: ["salud", "respiratorio", "tabaco", "pulmones"],
 }
 
+
 const TagsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 `
+
 
 const InputWithButtonContainer = styled.div`
   display: flex;
@@ -126,14 +141,17 @@ const InputWithButtonContainer = styled.div`
   margin-bottom: 1rem;
 `
 
+
 const FlexContainer = styled.div`
   display: flex;
   gap: 1rem;
 `
 
+
 const FlexItem = styled.div`
   flex: 1;
 `
+
 
 const HelpText = styled.p`
   font-size: 0.875rem;
@@ -141,10 +159,12 @@ const HelpText = styled.p`
   margin-top: 0.5rem;
 `
 
+
 const ArticleEdit: React.FC = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const isEditing = id !== "new"
+
 
   const [article, setArticle] = useState<{
     title: string
@@ -164,7 +184,9 @@ const ArticleEdit: React.FC = () => {
     tags: [],
   })
 
+
   const [newTag, setNewTag] = useState("")
+
 
   useEffect(() => {
     if (isEditing) {
@@ -174,14 +196,17 @@ const ArticleEdit: React.FC = () => {
     }
   }, [isEditing])
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setArticle({ ...article, [name]: value })
   }
 
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader()
+
 
       reader.onload = (event) => {
         if (event.target?.result) {
@@ -189,9 +214,11 @@ const ArticleEdit: React.FC = () => {
         }
       }
 
+
       reader.readAsDataURL(e.target.files[0])
     }
   }
+
 
   const handleAddTag = () => {
     if (newTag && !article.tags.includes(newTag)) {
@@ -200,6 +227,7 @@ const ArticleEdit: React.FC = () => {
     }
   }
 
+
   const handleRemoveTag = (tagToRemove: string) => {
     setArticle({
       ...article,
@@ -207,8 +235,10 @@ const ArticleEdit: React.FC = () => {
     })
   }
 
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
 
     // Here you would save the article to your API
     // For now, just navigate back to the list
@@ -216,17 +246,20 @@ const ArticleEdit: React.FC = () => {
     navigate("/admin/articles")
   }
 
+
   return (
     <PageContainer>
       <PageHeader>
         <PageTitle>{isEditing ? "Editar Artículo" : "Crear Nuevo Artículo"}</PageTitle>
       </PageHeader>
 
+
       <form onSubmit={handleSubmit}>
         <Card>
           <FormSection>
             <FormLabel>Información Básica</FormLabel>
             <Input label="Título" name="title" value={article.title} onChange={handleChange} fullWidth required />
+
 
             <TextArea
               name="excerpt"
@@ -236,8 +269,10 @@ const ArticleEdit: React.FC = () => {
               style={{ minHeight: "80px" }}
             />
 
+
             <FlexContainer>
               <Input label="Autor" name="author" value={article.author} onChange={handleChange} fullWidth />
+
 
               <FlexItem>
                 <FormLabel>Estado</FormLabel>
@@ -249,14 +284,17 @@ const ArticleEdit: React.FC = () => {
             </FlexContainer>
           </FormSection>
 
+
           <FormSection>
             <FormLabel>Imagen Principal</FormLabel>
             <ImagePreview>
               <img src={article.image || "/placeholder.svg"} alt="Preview" />
             </ImagePreview>
 
+
             <Input type="file" accept="image/*" onChange={handleImageChange} />
           </FormSection>
+
 
           <FormSection>
             <FormLabel>Contenido del Artículo</FormLabel>
@@ -269,6 +307,7 @@ const ArticleEdit: React.FC = () => {
             />
             <HelpText>Puedes usar formato markdown para dar estilo al contenido.</HelpText>
           </FormSection>
+
 
           <FormSection>
             <FormLabel>Etiquetas</FormLabel>
@@ -284,6 +323,7 @@ const ArticleEdit: React.FC = () => {
               </Button>
             </InputWithButtonContainer>
 
+
             <TagsContainer>
               {article.tags.map((tag) => (
                 <TagPill key={tag}>
@@ -294,6 +334,7 @@ const ArticleEdit: React.FC = () => {
             </TagsContainer>
           </FormSection>
         </Card>
+
 
         <ButtonContainer>
           <Button type="button" variant="outline" onClick={() => navigate("/admin/articles")}>
@@ -306,6 +347,7 @@ const ArticleEdit: React.FC = () => {
   )
 }
 
+
 const SelectFilter = styled.select`
   width: 100%;
   padding: 0.75rem 1rem;
@@ -314,12 +356,13 @@ const SelectFilter = styled.select`
   background-color: rgba(255, 255, 255, 0.05);
   color: ${AppColors.text};
   font-size: 1rem;
-  
+ 
   &:focus {
     outline: none;
     border-color: ${AppColors.primary};
   }
 `
+
 
 const TagPill = styled.div`
   display: inline-flex;
@@ -331,6 +374,7 @@ const TagPill = styled.div`
   font-size: 0.875rem;
 `
 
+
 const TagRemove = styled.button`
   background: none;
   border: none;
@@ -341,11 +385,11 @@ const TagRemove = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+ 
   &:hover {
     opacity: 0.8;
   }
 `
 
-export default ArticleEdit
 
+export default ArticleEdit

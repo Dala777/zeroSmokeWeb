@@ -191,17 +191,17 @@ const ContactPage: React.FC = () => {
 
             <InfoItem>
               <InfoIcon>📧</InfoIcon>
-              <span>info@zerosmoke.com</span>
+              <span>infozerosmoke@gmail.com</span>
             </InfoItem>
 
             <InfoItem>
               <InfoIcon>📞</InfoIcon>
-              <span>+34 123 456 789</span>
+              <span>+591 64957120</span>
             </InfoItem>
 
             <InfoItem>
               <InfoIcon>📍</InfoIcon>
-              <span>Calle Principal 123, Madrid, España</span>
+              <span>Avenida Villarroel, esquina N° 359</span>
             </InfoItem>
           </InfoCard>
 
