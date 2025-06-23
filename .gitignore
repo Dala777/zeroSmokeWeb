@@ -1,0 +1,30 @@
+# ───── NODE ─────
+node_modules/
+dist/
+build/
+
+# ───── ENV FILES ─────
+.env
+.env.*   # Si usas varios entornos
+
+# ───── LOGS ─────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ───── COVERAGE ─────
+coverage/
+coverage-final.json
+
+# ───── SYSTEM FILES ─────
+.DS_Store
+Thumbs.db
+
+# ───── IDE/EDITOR ─────
+.vscode/
+
+# ───── TEST REPORTS ─────
+*.lcov
+*.lcov.info
+backend/coverage/
