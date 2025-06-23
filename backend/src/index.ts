@@ -10,6 +10,7 @@ import userRoutes from "./routes/user.routes"
 import articleRoutes from "./routes/article.routes"
 import faqRoutes from "./routes/faq.routes"
 import messageRoutes from "./routes/message.routes"
+import progressRoutes from "./routes/progress.routes" // Nueva importación
 
 // Cargar variables de entorno
 dotenv.config()
@@ -43,6 +44,7 @@ app.use("/api/users", userRoutes)
 app.use("/api/articles", articleRoutes)
 app.use("/api/faqs", faqRoutes)
 app.use("/api/messages", messageRoutes)
+app.use("/api/progress", progressRoutes) // Cambiar a /api/progress
 
 // Ruta de prueba
 app.get("/api", (req, res) => {
@@ -62,4 +64,3 @@ if (process.env.NODE_ENV === "production") {
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`)
 })
-

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.zerosmoke.runners.TestRunner
+-------------------------------------------------------------------------------
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1402 s -- in com.zerosmoke.runners.TestRunner

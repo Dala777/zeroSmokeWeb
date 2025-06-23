@@ -3,15 +3,6 @@
 import type React from "react"
 import styled, { keyframes } from "styled-components"
 import { AppColors } from "../styles/colors"
-import Layout from "../components/layout/Layout"
-import gallery1 from "../styles/images/gallery1.jpg"
-import gallery2 from "../styles/images/gallery2.avif"
-import gallery3 from "../styles/images/gallery3.jpg"
-import gallery4 from "../styles/images/gallery4.jpg"
-import gallery5 from "../styles/images/gallery5.jpg"
-import gallery6 from "../styles/images/gallery6.jpg"
-import gallery7 from "../styles/images/gallery7.webp"
-import gallery8 from "../styles/images/gallery8.webp"
 
 // Animaciones
 const fadeIn = keyframes`
@@ -57,7 +48,7 @@ const GallerySection = styled.section`
 const SectionTitle = styled.h2`
   font-size: 2.5rem;
   text-align: center;
-  margin-bottom: 3.5rem;
+  margin-bottom: 1.5rem;
   color: ${AppColors.primary};
   position: relative;
   z-index: 1;
@@ -75,19 +66,43 @@ const SectionTitle = styled.h2`
 
   @media (max-width: 768px) {
     font-size: 2rem;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem;
+  }
+`
+
+const SectionDescription = styled.p`
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 3rem;
+  font-size: 1.1rem;
+  color: ${AppColors.text};
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
   }
 `
 
 const GalleryGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
   position: relative;
   z-index: 1;
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
 `
 
 interface GalleryItemProps {
@@ -103,7 +118,7 @@ const GalleryItem = styled.div<GalleryItemProps>`
   animation: ${zoom} 0.5s ease-out;
   animation-fill-mode: both;
   animation-delay: ${(props) => props.delay}s;
-  height: 250px;
+  height: 300px;
   
   &:hover img {
     transform: scale(1.05);
@@ -111,6 +126,10 @@ const GalleryItem = styled.div<GalleryItemProps>`
   
   &:hover div {
     opacity: 1;
+  }
+  
+  @media (max-width: 768px) {
+    height: 250px;
   }
 `
 
@@ -152,45 +171,45 @@ const GalleryDescription = styled.p`
   line-height: 1.5;
 `
 
-// Datos de la galería
+// Datos de la galería con imágenes de la carpeta especificada
 const galleryData = [
   {
-    image: gallery1,
+    image: require("../styles/images/gallery1.jpg"),
     title: "Cáncer de Pulmón",
     description: "El tabaquismo es la principal causa del cáncer de pulmón en todo el mundo.",
   },
   {
-    image: gallery2,
+    image: require("../styles/images/gallery2.avif"),
     title: "Enfermedad Pulmonar Obstructiva Crónica (EPOC)",
     description: "Fumar daña los pulmones, provocando dificultades respiratorias permanentes.",
   },
   {
-    image: gallery3,
+    image: require("../styles/images/gallery3.jpg"),
     title: "Enfermedades Cardiovasculares",
     description: "Aumenta el riesgo de ataques cardíacos y accidentes cerebrovasculares.",
   },
   {
-    image: gallery4,
+    image: require("../styles/images/gallery4.jpg"),
     title: "Envejecimiento Prematuro",
     description: "El tabaquismo acelera el envejecimiento de la piel y causa arrugas.",
   },
   {
-    image: gallery5,
+    image: require("../styles/images/gallery5.jpg"),
     title: "Cáncer de Boca",
     description: "El tabaco puede causar lesiones y cáncer en la boca y garganta.",
   },
   {
-    image: gallery6,
+    image: require("../styles/images/gallery6.jpg"),
     title: "Infertilidad",
     description: "Reduce la fertilidad tanto en hombres como en mujeres.",
   },
   {
-    image: gallery7,
+    image: require("../styles/images/gallery7.webp"),
     title: "Daño en los Dientes",
     description: "Fumar mancha los dientes, provoca caries y pérdida dental.",
   },
   {
-    image: gallery8,
+    image: require("../styles/images/gallery8.webp"),
     title: "Problemas de Embarazo",
     description: "Aumenta el riesgo de complicaciones durante el embarazo y parto.",
   },
@@ -200,6 +219,10 @@ const Gallery: React.FC = () => {
   return (
     <GallerySection id="consequences">
       <SectionTitle>Consecuencias del Tabaquismo</SectionTitle>
+      <SectionDescription>
+        El consumo de tabaco afecta prácticamente todos los órganos del cuerpo y es responsable de numerosas
+        enfermedades. Conoce las principales consecuencias para tu salud.
+      </SectionDescription>
       <GalleryGrid>
         {galleryData.map((item, index) => (
           <GalleryItem key={index} delay={index * 0.1}>

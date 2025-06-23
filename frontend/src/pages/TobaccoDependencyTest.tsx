@@ -4,7 +4,6 @@ import type React from "react"
 import { useState } from "react"
 import styled, { keyframes } from "styled-components"
 import { AppColors } from "../styles/colors"
-import Layout from "../components/layout/Layout"
 
 // Enhanced animations
 const fadeIn = keyframes`
@@ -510,61 +509,58 @@ const TobaccoDependencyTest: React.FC = () => {
   }
 
   return (
-    <Layout>
-      <TestContainer>
-        {!result ? (
-          <>
-            <Title>Test de Dependencia al Tabaco</Title>
-            <ProgressBar>
-              <ProgressFill width={`${((currentQuestion + 1) / questions.length) * 100}%`} />
-            </ProgressBar>
-            <QuestionCounter>
-              Pregunta {currentQuestion + 1} de {questions.length}
-            </QuestionCounter>
+    <TestContainer>
+      {!result ? (
+        <>
+          <Title>Test de Dependencia al Tabaco</Title>
+          <ProgressBar>
+            <ProgressFill width={`${((currentQuestion + 1) / questions.length) * 100}%`} />
+          </ProgressBar>
+          <QuestionCounter>
+            Pregunta {currentQuestion + 1} de {questions.length}
+          </QuestionCounter>
 
-            <AnimatedDiv
-              style={{
-                opacity: isAnimating ? 0.5 : 1,
-                transform: isAnimating ? "translateX(-10px)" : "translateX(0)",
-              }}
-            >
-              <Question>{questions[currentQuestion].question}</Question>
-              {questions[currentQuestion].options.map((option, index) => (
-                <Option
-                  key={index}
-                  className={answers[questions[currentQuestion].id] === option ? "selected" : ""}
-                  onClick={() => handleAnswerChange(option)}
-                >
-                  {option}
-                </Option>
-              ))}
-            </AnimatedDiv>
+          <AnimatedDiv
+            style={{
+              opacity: isAnimating ? 0.5 : 1,
+              transform: isAnimating ? "translateX(-10px)" : "translateX(0)",
+            }}
+          >
+            <Question>{questions[currentQuestion].question}</Question>
+            {questions[currentQuestion].options.map((option, index) => (
+              <Option
+                key={index}
+                className={answers[questions[currentQuestion].id] === option ? "selected" : ""}
+                onClick={() => handleAnswerChange(option)}
+              >
+                {option}
+              </Option>
+            ))}
+          </AnimatedDiv>
 
-            <ButtonContainer>
-              {currentQuestion > 0 && (
-                <Button onClick={handlePrevious} disabled={isAnimating}>
-                  Anterior
-                </Button>
-              )}
+          <ButtonContainer>
+            {currentQuestion > 0 && (
+              <Button onClick={handlePrevious} disabled={isAnimating}>
+                Anterior
+              </Button>
+            )}
 
-              {currentQuestion < questions.length - 1 ? (
-                <Button onClick={handleNext} disabled={!answers[questions[currentQuestion].id] || isAnimating}>
-                  Siguiente
-                </Button>
-              ) : (
-                <Button onClick={handleSubmit} disabled={!answers[questions[currentQuestion].id] || isAnimating}>
-                  Evaluar Resultados
-                </Button>
-              )}
-            </ButtonContainer>
-          </>
-        ) : (
-          renderResult()
-        )}
-      </TestContainer>
-    </Layout>
+            {currentQuestion < questions.length - 1 ? (
+              <Button onClick={handleNext} disabled={!answers[questions[currentQuestion].id] || isAnimating}>
+                Siguiente
+              </Button>
+            ) : (
+              <Button onClick={handleSubmit} disabled={!answers[questions[currentQuestion].id] || isAnimating}>
+                Evaluar Resultados
+              </Button>
+            )}
+          </ButtonContainer>
+        </>
+      ) : (
+        renderResult()
+      )}
+    </TestContainer>
   )
 }
 
 export default TobaccoDependencyTest
-

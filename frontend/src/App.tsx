@@ -26,6 +26,8 @@ import ContactPage from "./pages/ContactPage"
 import AccountPage from "./pages/AccountPage"
 import TobaccoDependencyTest from "./pages/TobaccoDependencyTest"
 import Gallery from "./components/Gallery"
+import EducationSection from "./components/EducationSection"
+import TestIntroduction from "./components/TestIntroduction"
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth()
@@ -48,9 +50,6 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/account" element={<AccountPage />} />
-        <Route path="/test" element={<TobaccoDependencyTest />} />
-        <Route path="/gallery" element={<Gallery />} />
 
         <Route
           path="/admin"
@@ -72,22 +71,21 @@ const AppRoutes: React.FC = () => {
           <Route path="messages/:id" element={<MessageDetail />} />
         </Route>
 
-        <Route
-          path="/*"
-          element={
-            <Layout>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/articulos" element={<ArticlesPage />} />
-                <Route path="/articles/:id" element={<ArticleDetailPage />} />
-                <Route path="/faqs" element={<FaqsPage />} />
-                <Route path="/contacto" element={<ContactPage />} />
-              </Routes>
-              <Chatbot />
-            </Layout>
-          }
-        />
+        {/* Estructura de rutas para el layout principal */}
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="/articulos" element={<ArticlesPage />} />
+          <Route path="/articles/:id" element={<ArticleDetailPage />} />
+          <Route path="/faqs" element={<FaqsPage />} />
+          <Route path="/contacto" element={<ContactPage />} />
+          <Route path="/account" element={<AccountPage />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/education" element={<EducationSection />} />
+          <Route path="/test" element={<TestIntroduction />} />
+          <Route path="/test/start" element={<TobaccoDependencyTest />} />
+        </Route>
       </Routes>
+      <Chatbot />
     </Router>
   )
 }

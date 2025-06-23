@@ -48,7 +48,30 @@ const GlobalStyles = createGlobalStyle`
     margin-bottom: 1.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
+  
+  /* Estilos para mejorar la apariencia del panel de administración */
+  .admin-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .admin-sidebar {
+    width: 280px;
+    background-color: ${AppColors.cardBackground};
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+  }
+  
+  .admin-content {
+    flex: 1;
+    padding: 2rem;
+  }
+  
+  .admin-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
 `
 
 export default GlobalStyles
-

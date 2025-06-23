@@ -8,8 +8,11 @@ import { AppColors } from "../styles/colors"
 import Button from "../components/ui/Button"
 import Card from "../components/ui/Card"
 import Benefits from "../components/Benefits"
-import Gallery from "../components/Gallery"
 import { getHomePageData, type HomePageData } from "../services/storageService"
+import { ArrowDown, Award, Clock, Heart, Shield } from 'lucide-react'
+import AppPreview from "../components/AppPreview"
+import Gallery from "../components/Gallery"
+
 
 // Add subtle fade-in animation
 const fadeIn = keyframes`
@@ -20,6 +23,18 @@ const fadeIn = keyframes`
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+`
+
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
   }
 `
 
@@ -60,8 +75,8 @@ const HeroBackground = styled.div`
     height: 100%;
     background: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.6) 100%
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.7) 100%
     );
   }
 `
@@ -80,7 +95,7 @@ const HeroContent = styled.div`
 
 // Enhanced title with text shadow for better readability
 const HeroTitle = styled.h1`
-  font-size: 3.5rem;
+  font-size: 3.8rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: white;
@@ -461,8 +476,11 @@ const HomePage: React.FC = () => {
           }}
         />
         <HeroContent>
-          <HeroTitle>{homeData.heroTitle}</HeroTitle>
-          <HeroSubtitle>{homeData.heroSubtitle}</HeroSubtitle>
+          <HeroTitle>Tu camino hacia una vida libre de tabaco</HeroTitle>
+          <HeroSubtitle>
+            ZeroSmoke te acompaña en cada paso de tu proceso para dejar de fumar con apoyo personalizado, seguimiento y
+            recursos educativos.
+          </HeroSubtitle>
           <HeroButtons>
             <Button size="large">
               <Link to="/test" style={{ color: "inherit", textDecoration: "none" }}>
@@ -478,7 +496,9 @@ const HomePage: React.FC = () => {
         </HeroContent>
         <ScrollIndicator onClick={scrollToFeatures}>
           <ScrollText>Descubre más</ScrollText>
-          <ArrowIcon>↓</ArrowIcon>
+          <ArrowIcon>
+            <ArrowDown size={24} />
+          </ArrowIcon>
         </ScrollIndicator>
       </HeroSection>
 
@@ -494,6 +514,9 @@ const HomePage: React.FC = () => {
           ))}
         </FeaturesGrid>
       </FeaturesSection>
+
+      {/* App Preview Section */}
+      <AppPreview />
 
       {/* Sección de Beneficios */}
       <Benefits />
@@ -524,7 +547,7 @@ const HomePage: React.FC = () => {
       </StatsSection>
 
       {/* Sección de Galería */}
-      <Gallery />
+      <Gallery/>
 
       <CtaSection>
         <CtaContent>

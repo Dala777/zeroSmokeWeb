@@ -2,20 +2,19 @@ import type React from "react"
 import styled from "styled-components"
 import Header from "./Header"
 import Footer from "./Footer"
-
-interface LayoutProps {
-  children: React.ReactNode
-}
+import { Outlet } from "react-router-dom"
 
 const Main = styled.main`
-  min-height: calc(100vh - 200px);
+  min-height: calc(100vh - 160px); /* Ajustar según la altura del header y footer */
 `
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC = () => {
   return (
     <>
       <Header />
-      <Main>{children}</Main>
+      <Main>
+        <Outlet />
+      </Main>
       <Footer />
     </>
   )

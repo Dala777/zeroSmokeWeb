@@ -165,10 +165,10 @@ const ChatTitle = styled.h3`
   align-items: center;
   gap: 8px;
 
-  &::before {
+  /*&::before {
     content: '🔹';
     font-size: 1rem;
-  }
+  }*/
 `
 
 const CloseButton = styled.button`

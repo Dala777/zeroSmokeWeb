@@ -6,7 +6,9 @@ import styled from "styled-components"
 import { Link, useLocation } from "react-router-dom"
 import { AppColors } from "../../styles/colors"
 import Button from "../ui/Button"
-//import Gallery from "../../components/Gallery"
+import UserMenu from "../ui/UserMenu"
+import { useAuth } from "../../contexts/AuthContext"
+import { Menu, X } from "lucide-react"
 
 // Animaciones y efectos
 const fadeIn = `
@@ -53,6 +55,7 @@ const Logo = styled(Link)`
   display: flex;
   align-items: center;
   transition: transform 0.3s ease;
+  font-family: 'Montserrat', sans-serif;
   
   &:hover {
     transform: scale(1.05);
@@ -74,6 +77,8 @@ const Nav = styled.nav<{ isOpen: boolean }>`
   
   @media (min-width: 769px) {
     animation: fadeIn 0.5s ease;
+    display: flex;
+    align-items: center;
   }
 
   @media (max-width: 768px) {
@@ -143,6 +148,7 @@ const NavLink = styled(Link)<{ $isActive?: boolean }>`
 const ButtonsContainer = styled.div`
   display: flex;
   gap: 1rem;
+  align-items: center;
   
   @media (max-width: 768px) {
     display: none;
@@ -165,7 +171,6 @@ const MobileMenuButton = styled.button`
   background: none;
   border: none;
   color: ${AppColors.text};
-  font-size: 1.5rem;
   cursor: pointer;
   width: 40px;
   height: 40px;
@@ -190,7 +195,6 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   color: ${AppColors.text};
-  font-size: 1.5rem;
   cursor: pointer;
   width: 40px;
   height: 40px;
@@ -227,6 +231,7 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
+  const { isAuthenticated } = useAuth()
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -273,20 +278,19 @@ const Header: React.FC = () => {
       <HeaderContent>
         <LogoContainer>
           <Logo to="/">
-            
             Zero<span>Smoke</span>
           </Logo>
         </LogoContainer>
 
         <MobileMenuButton onClick={toggleMenu} aria-label="Abrir menú">
-          ☰
+          <Menu size={24} />
         </MobileMenuButton>
 
         <Overlay isOpen={isMenuOpen} onClick={closeMenu} />
 
         <Nav isOpen={isMenuOpen}>
           <CloseButton onClick={closeMenu} aria-label="Cerrar menú">
-            ✕
+            <X size={24} />
           </CloseButton>
           <NavList>
             <NavItem className={isActive("/") ? "active" : ""}>
@@ -297,6 +301,11 @@ const Header: React.FC = () => {
             <NavItem className={isActive("/Gallery") ? "active" : ""}>
               <NavLink to="/Gallery" $isActive={isActive("/Gallery")}>
                 Consecuencias
+              </NavLink>
+            </NavItem>
+            <NavItem className={isActive("/education") ? "active" : ""}>
+              <NavLink to="/education" $isActive={isActive("/education")}>
+                Educación
               </NavLink>
             </NavItem>
             <NavItem className={isActive("/test") ? "active" : ""}>
@@ -317,30 +326,42 @@ const Header: React.FC = () => {
           </NavList>
 
           <MobileButtonsContainer>
-            <Button variant="primary" size="medium" fullWidth>
-              <Link to="/login" style={{ color: "inherit", width: "100%", display: "block" }}>
-                Iniciar Sesión
-              </Link>
-            </Button>
-            <Button variant="outline" size="medium" fullWidth>
-              <Link to="/register" style={{ color: "inherit", width: "100%", display: "block" }}>
-                Registrarse
-              </Link>
-            </Button>
+            {!isAuthenticated ? (
+              <>
+                <Button variant="primary" size="medium" fullWidth>
+                  <Link to="/login" style={{ color: "inherit", width: "100%", display: "block" }}>
+                    Iniciar Sesión
+                  </Link>
+                </Button>
+                <Button variant="outline" size="medium" fullWidth>
+                  <Link to="/register" style={{ color: "inherit", width: "100%", display: "block" }}>
+                    Registrarse
+                  </Link>
+                </Button>
+              </>
+            ) : (
+              <UserMenu isMobile={true} />
+            )}
           </MobileButtonsContainer>
         </Nav>
 
         <ButtonsContainer>
-          <Button variant="outline" size="small">
-            <Link to="/login" style={{ color: "inherit" }}>
-              Iniciar Sesión
-            </Link>
-          </Button>
-          <Button variant="primary" size="small">
-            <Link to="/register" style={{ color: "inherit" }}>
-              Registrarse
-            </Link>
-          </Button>
+          {!isAuthenticated ? (
+            <>
+              <Button variant="outline" size="small">
+                <Link to="/login" style={{ color: "inherit" }}>
+                  Iniciar Sesión
+                </Link>
+              </Button>
+              <Button variant="primary" size="small">
+                <Link to="/register" style={{ color: "inherit" }}>
+                  Registrarse
+                </Link>
+              </Button>
+            </>
+          ) : (
+            <UserMenu />
+          )}
         </ButtonsContainer>
       </HeaderContent>
     </HeaderContainer>
