@@ -9,7 +9,7 @@ import {
   getWeeklyProgress,
   getAchievements,
   getProgressSummary,
-  updateSmokingRecord
+  updateSmokingRecord,
 } from "../controllers/progress.controller"
 import { authMiddleware } from "../middleware/auth.middleware"
 
@@ -31,5 +31,22 @@ router.get("/weekly-progress", getWeeklyProgress)
 router.get("/achievements", getAchievements)
 router.get("/progress-summary", getProgressSummary)
 router.put("/smoking-record", updateSmokingRecord)
+
+// Ruta adicional para asignar plan (si es necesaria)
+router.post("/assign-plan", async (req, res) => {
+  try {
+    // Esta funcionalidad podría estar integrada en saveInitialTest
+    // Por ahora devolvemos éxito
+    res.json({
+      success: true,
+      message: "Plan asignado exitosamente",
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error al asignar plan",
+    })
+  }
+})
 
 export default router

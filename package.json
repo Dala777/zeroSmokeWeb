@@ -3,6 +3,9 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^24.5.2",
     "@types/uuid": "^10.0.0"
-  }
+  },
+  "scripts": {}
 }

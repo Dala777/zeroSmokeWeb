@@ -546,8 +546,8 @@ const HomePage: React.FC = () => {
         </StatsGrid>
       </StatsSection>
 
-      {/* Sección de Galería */}
-      <Gallery/>
+      {/* Sección de Galería <Gallery/> */}
+    
 
       <CtaSection>
         <CtaContent>
