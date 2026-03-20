@@ -109,11 +109,26 @@ export const messageAPI = {
   },
 }
 
+// API para progreso y tests
+export const progressAPI = {
+  saveInitialTest: (data: {
+    cigarettesPerDay: number
+    packagePrice: number
+    dependencyLevel: string
+    fagerstromScore?: number
+    motivations?: string[]
+  }) => axios.post(`${API_URL}/progress/initial-test`, data),
+
+  getUserProgress: () => axios.get(`${API_URL}/progress/user-progress`),
+  updateUserProgress: (data: any) => axios.put(`${API_URL}/progress/user-progress`, data),
+}
+
 export default {
   setAuthToken,
   authAPI,
   articleAPI,
   faqAPI,
   messageAPI,
+  progressAPI,
 }
 

@@ -4,6 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import styled, { keyframes } from "styled-components"
 import { AppColors } from "../styles/colors"
+import { progressAPI } from "../services/api"
 
 // Importar las imágenes
 import bajaImage from "../styles/images/baja-dependencia.webp"
@@ -439,6 +440,84 @@ const TobaccoDependencyTest: React.FC = () => {
     }, 300)
   }
 
+  // derive number of cigarettes per day from answer to question 4
+  const deriveCigarettesPerDay = (): number => {
+    const score = answers[4] // question id 4
+    switch (score) {
+      case 0:
+        return 10
+      case 1:
+        return 15
+      case 2:
+        return 25
+      case 3:
+        return 35
+      default:
+        return 0
+    }
+  }
+
+  const [packagePrice, setPackagePrice] = useState<number>(0)
+  const [saveStatus, setSaveStatus] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+
+  const handleSaveResult = async () => {
+    if (!result) return
+
+    // Si no hay token claramente no tiene sesión activa
+    const token = localStorage.getItem("token")
+    if (!token) {
+      setSaveStatus("Por favor, inicia sesión o regístrate para guardar tu resultado")
+      // opcional: redirigir automáticamente tras un par de segundos
+      setTimeout(() => {
+        window.location.href = "/login"
+      }, 2000)
+      return
+    }
+
+    setIsSaving(true)
+    setSaveStatus(null)
+    const data = {
+      cigarettesPerDay: deriveCigarettesPerDay(),
+      packagePrice,
+      dependencyLevel: result.level,
+      fagerstromScore: result.score,
+    }
+    try {
+      await progressAPI.saveInitialTest(data)
+      setSaveStatus("Resultado guardado correctamente")
+    } catch (err: any) {
+      console.error("Error saving test result:", err)
+      if (err.response && err.response.status === 401) {
+        setSaveStatus("Por favor, inicia sesión o regístrate para guardar tu resultado")
+      } else if (
+        err.response &&
+        err.response.status === 400 &&
+        err.response.data &&
+        err.response.data.message &&
+        err.response.data.message.includes("Ya existe")
+      ) {
+        // usuario ya tiene un test; intentamos actualizar
+        try {
+          await progressAPI.updateUserProgress({
+            dependencyLevel: result.level,
+            fagerstromScore: result.score,
+          })
+          setSaveStatus("Resultado actualizado correctamente")
+        } catch (updateErr: any) {
+          console.error("Error actualizando resultado:", updateErr)
+          setSaveStatus("No se pudo actualizar el resultado")
+        }
+      } else if (err.response && err.response.data && err.response.data.message) {
+        setSaveStatus(err.response.data.message)
+      } else {
+        setSaveStatus("Error al guardar el resultado")
+      }
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   const renderResult = () => {
     if (result) {
       return (
@@ -451,10 +530,50 @@ const TobaccoDependencyTest: React.FC = () => {
             Este test utiliza el <strong>Test de Fagerström para la Dependencia a la Nicotina (FTND)</strong>, el
             instrumento de referencia validado internacionalmente para evaluar la dependencia a la nicotina según:
             <br />
-            <strong>0-3 puntos:</strong> Dependencia Baja | <strong>4-6 puntos:</strong> Dependencia Moderada |{" "}
+            <strong>0-3 puntos:</strong> Dependencia Baja | <strong>4-6 puntos:</strong> Dependencia Moderada |{' '}
             <strong>7-10 puntos:</strong> Dependencia Alta
           </p>
-          <Button onClick={handleReset}>Realizar Test Nuevamente</Button>
+
+          {/* formulario para registrar datos adicionales */}
+          <div style={{ marginTop: 20, textAlign: 'left' }}>
+            <label>
+              Cigarrillos por día (estimado):
+              <input
+                type="number"
+                value={deriveCigarettesPerDay()}
+                readOnly
+                style={{ marginLeft: 8, width: 60 }}
+              />
+            </label>
+            <br />
+            <label style={{ display: 'block', marginTop: 10 }}>
+              Precio aproximado del paquete:
+              <input
+                type="number"
+                value={packagePrice}
+                onChange={(e) => setPackagePrice(Number(e.target.value))}
+                style={{ marginLeft: 8, width: 80 }}
+              />
+            </label>
+          </div>
+
+          <Button onClick={handleSaveResult} disabled={isSaving} style={{ marginTop: 15 }}>
+            {isSaving ? 'Guardando...' : 'Guardar Resultado'}
+          </Button>
+          {saveStatus && (
+            <p style={{ marginTop: 10, color: AppColors.textSecondary }}>
+              {saveStatus}{' '}
+              {saveStatus.toLowerCase().includes('inicia sesión') && (
+                <a href="/login" style={{ textDecoration: 'underline', color: AppColors.accent }}>
+                  Iniciar sesión / Registrarse
+                </a>
+              )}
+            </p>
+          )}
+
+          <Button onClick={handleReset} style={{ marginTop: 10 }}>
+            Realizar Test Nuevamente
+          </Button>
         </ResultCard>
       )
     }

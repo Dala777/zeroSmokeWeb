@@ -8,6 +8,12 @@ interface IActivity {
   type: string;
   durationMinutes: number;
   isCompleted: boolean;
+  justification?: string;
+  secondaryActivity?: {
+    title: string;
+    description: string;
+    isOptional: boolean;
+  };
 }
 
 export interface IDailyPlan extends Document {
@@ -28,6 +34,12 @@ const ActivitySchema: Schema = new Schema({
   type: { type: String, required: true },
   durationMinutes: { type: Number, required: true },
   isCompleted: { type: Boolean, default: false },
+  justification: { type: String, default: '' },
+  secondaryActivity: {
+    title: { type: String, default: '' },
+    description: { type: String, default: '' },
+    isOptional: { type: Boolean, default: true },
+  },
 });
 
 const DailyPlanSchema: Schema = new Schema(

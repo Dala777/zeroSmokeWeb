@@ -2,7 +2,75 @@ import type { Request, Response } from "express"
 import UserProgress from "../models/UserProgress"
 import DailyPlan from "../models/DailyPlan"
 import SmokingRecord from "../models/SmokingRecord"
+import { Plan } from "../models/Plan"
 import { v4 as uuidv4 } from "uuid"
+import fs from "fs"
+import path from "path"
+
+// cargar configuración de planes una sola vez
+let planConfig: any = null
+try {
+  const configPath = path.join(__dirname, "../config/planes_zerosmoke.json")
+  console.log('Cargando configuración de planes desde', configPath)
+  const text = fs.readFileSync(configPath, "utf-8")
+  planConfig = JSON.parse(text)
+  console.log('Configuración de planes cargada, planes disponibles:', planConfig?.planes_zerosmoke?.length)
+} catch (err) {
+  console.error("Error loading plan config:", err)
+}
+
+// obtiene array de días para un nivel de dependencia
+const getDaysForPlan = (dependencyLevel: string): Array<any> => {
+  if (!planConfig || !Array.isArray(planConfig.planes_zerosmoke)) return []
+  const lvl = dependencyLevel.toLowerCase()
+  let planEntry = planConfig.planes_zerosmoke.find((p: any) => {
+    if (lvl.includes("leve") || lvl.includes("baja")) return p.plan === "PLAN 1"
+    if (lvl.includes("moder")) return p.plan === "PLAN 2"
+    if (lvl.includes("alta") || lvl.includes("severo")) return p.plan === "PLAN 3"
+    return false
+  })
+  if (!planEntry) return []
+  let days: any[] = []
+  planEntry.sections.forEach((sec: any) => {
+    if (Array.isArray(sec.days)) days = days.concat(sec.days)
+  })
+  return days
+}
+
+// obtener actividades según día y nivel (retorna una única actividad principal con posible secundaria)
+const getConfigActivities = (dayNumber: number, dependencyLevel: string): Array<any> | null => {
+  const days = getDaysForPlan(dependencyLevel)
+  const dayObj = days.find(d => String(d["Día"]) === String(dayNumber))
+  if (!dayObj) {
+    console.log(`No hay configuración para día ${dayNumber} (dependencia ${dependencyLevel})`) // debug
+    return null
+  }
+
+  const mainTitle = dayObj["Actividad Principal"] || ''
+  // la clave secundaria puede variar en el json entre con o sin “(opcional)”
+  const secondaryTitle = dayObj["Actividad Secundaria (opcional)"] || dayObj["Actividad Secundaria"] || ''
+  const justification = dayObj["Justificación"] || ''
+
+  const acts: Array<any> = []
+  if (mainTitle) {
+    const activity: any = {
+      title: mainTitle,
+      description: '',
+      type: 'exercise',
+      durationMinutes: 10,
+      justification,
+    }
+    if (secondaryTitle) {
+      activity.secondary = {
+        title: secondaryTitle,
+        isOptional: true,
+      }
+    }
+    acts.push(activity)
+  }
+
+  return acts
+}
 
 // Extendemos el tipo Request para incluir el userId
 interface AuthRequest extends Request {
@@ -32,7 +100,18 @@ export const saveInitialTest = async (req: AuthRequest, res: Response): Promise<
       return
     }
 
-    const { cigarettesPerDay, packagePrice, dependencyLevel, motivations } = req.body
+    let { cigarettesPerDay, packagePrice, dependencyLevel, motivations, fagerstromScore } = req.body
+
+    // Normalizar nivel de dependencia para que coincida con el enum interno
+    const normalizeLevel = (lvl: string): string => {
+      if (!lvl) return lvl
+      const lower = lvl.toLowerCase()
+      if (lower.includes('baja') || lower === 'leve') return 'Leve'
+      if (lower.includes('moderada') || lower === 'moderado') return 'Moderado'
+      if (lower.includes('alta') || lower === 'severo') return 'Severo'
+      return lvl
+    }
+    dependencyLevel = normalizeLevel(dependencyLevel)
 
     // Crear nuevo progreso
     const userProgress = new UserProgress({
@@ -41,6 +120,7 @@ export const saveInitialTest = async (req: AuthRequest, res: Response): Promise<
       cigarettesPerDay,
       packagePrice,
       dependencyLevel,
+      fagerstromScore: fagerstromScore || 0,
       motivations,
       daysWithoutSmoking: 0,
       cigarettesAvoided: 0,
@@ -80,13 +160,35 @@ export const saveInitialTest = async (req: AuthRequest, res: Response): Promise<
 
     await userProgress.save()
 
+    // Asignar un plan concreto si existe en la colección Plan
+    try {
+      const score = fagerstromScore || 0
+      const lvl = dependencyLevel.toLowerCase()
+      // buscar plan que corresponda al nivel y rango de Fagerström
+      const planDoc = await Plan.findOne({
+        dependencyLevel: lvl,
+        isActive: true,
+        "fagerstromRange.min": { $lte: score },
+        "fagerstromRange.max": { $gte: score },
+      })
+      if (planDoc) {
+        userProgress.assignedPlan = planDoc._id.toString();
+        await userProgress.save()
+      }
+    } catch (err) {
+      console.warn("No se pudo asignar plan automático:", err)
+    }
+
     // Crear el primer plan diario
     await createInitialDailyPlan(userId)
+
+    // volver a cargar el progreso para incluir el plan poblado
+    const resultProgress = await UserProgress.findById(userProgress._id).populate('assignedPlan')
 
     res.status(201).json({
       success: true,
       message: "Test inicial guardado correctamente",
-      data: userProgress,
+      data: resultProgress,
     })
   } catch (err) {
     const error = err as Error
@@ -112,7 +214,8 @@ export const getUserProgress = async (req: AuthRequest, res: Response): Promise<
       return
     }
 
-    const userProgress = await UserProgress.findOne({ userId })
+    // incluir datos del plan asignado
+    const userProgress = await UserProgress.findOne({ userId }).populate('assignedPlan')
     if (!userProgress) {
       res.status(404).json({
         success: false,
@@ -171,17 +274,47 @@ export const updateUserProgress = async (req: AuthRequest, res: Response): Promi
       "daysWithoutSmoking",
       "healthProgress",
       "dependencyLevel",
+      "fagerstromScore",
       "motivations",
       "healthMetrics",
       "achievements",
     ]
 
+    // cuando se actualiza el nivel, también normalizamos
+    const normalizeLevel = (lvl: string): string => {
+      if (!lvl) return lvl
+      const lower = lvl.toLowerCase()
+      if (lower.includes('baja') || lower === 'leve') return 'Leve'
+      if (lower.includes('moderada') || lower === 'moderado') return 'Moderado'
+      if (lower.includes('alta') || lower === 'severo') return 'Severo'
+      return lvl
+    }
+
+    let dependencyChanged = false
     allowedFields.forEach((field) => {
       if (updatedFields[field] !== undefined) {
-        // Usamos type assertion para evitar el error de índice
-        ;(userProgress as any)[field] = updatedFields[field]
+        // Normalizar antes de asignar
+        const value = field === 'dependencyLevel' ? normalizeLevel(updatedFields[field]) : updatedFields[field]
+        ;(userProgress as any)[field] = value
+        if (field === 'dependencyLevel') {
+          dependencyChanged = true
+        }
       }
     })
+
+    // si cambió el nivel de dependencia, buscamos un nuevo plan correspondiente
+    if (dependencyChanged) {
+      try {
+        const lvl = (userProgress.dependencyLevel || '').toLowerCase()
+        // también podría filtrarse por score si existe
+        const planDoc = await Plan.findOne({ dependencyLevel: lvl, isActive: true })
+        if (planDoc) {
+          userProgress.assignedPlan = planDoc._id.toString();
+        }
+      } catch (err) {
+        console.warn('Error al reasignar plan tras actualización:', err)
+      }
+    }
 
     await userProgress.save()
 
@@ -300,6 +433,29 @@ export const getDailyPlan = async (req: AuthRequest, res: Response): Promise<voi
         $lt: new Date(queryDate.getTime() + 24 * 60 * 60 * 1000),
       },
     })
+
+    // Si ya existía, comprobar si coincide con la configuración actual
+    if (dailyPlan) {
+      try {
+        const userProgress = await UserProgress.findOne({ userId })
+        const dependency = userProgress ? userProgress.dependencyLevel : 'Moderado'
+        const configActs = getConfigActivities(dailyPlan.dayNumber, dependency)
+        if (configActs && configActs.length > 0) {
+          const firstConfig = configActs[0].title || ''
+          // si el título principal almacenado difiere del configurado, regeneramos
+          if (!dailyPlan.activities.some(act => act.title === firstConfig)) {
+            console.log(
+              `Plan diario existente (día ${dailyPlan.dayNumber}) no coincide con config, regenerando`
+            )
+            // eliminar el plan antiguo para evitar duplicados
+            await DailyPlan.deleteOne({ _id: dailyPlan._id })
+            dailyPlan = await createDailyPlan(userId, queryDate)
+          }
+        }
+      } catch (e) {
+        console.warn('Error verificando plan contra configuración:', e)
+      }
+    }
 
     // Si no existe, crear uno nuevo
     if (!dailyPlan) {
@@ -625,72 +781,76 @@ export const updateSmokingRecord = async (req: AuthRequest, res: Response): Prom
 };
 
 // Función auxiliar para crear el plan diario inicial
+// delega en createDailyPlan para aprovechar la lógica basada en nivel de dependencia
 const createInitialDailyPlan = async (userId: string): Promise<any> => {
-  const activities = [
-    {
-      id: uuidv4(),
-      title: "Reflexión inicial",
-      description: "Tómate 5 minutos para reflexionar sobre por qué quieres dejar de fumar",
-      type: "reflection",
-      durationMinutes: 5,
-      isCompleted: false,
-    },
-    {
-      id: uuidv4(),
-      title: "Ejercicio de respiración",
-      description: "Realiza 10 respiraciones profundas cuando sientas ansiedad",
-      type: "breathing",
-      durationMinutes: 3,
-      isCompleted: false,
-    },
-    {
-      id: uuidv4(),
-      title: "Beber agua",
-      description: "Bebe al menos 8 vasos de agua durante el día",
-      type: "health",
-      durationMinutes: 1,
-      isCompleted: false,
-    },
-  ]
-
-  const dailyPlan = new DailyPlan({
-    userId,
-    date: new Date(),
-    activities,
-    isCompleted: false,
-    message: "¡Bienvenido a tu primer día! Completa estas actividades para comenzar tu viaje.",
-    dayNumber: 1,
-  })
-
-  return await dailyPlan.save()
+  return await createDailyPlan(userId, new Date());
 }
 
 // Función para crear un plan diario para una fecha específica
+// ahora tiene en cuenta el nivel de dependencia almacenado en el progreso del usuario
 const createDailyPlan = async (userId: string, date: Date): Promise<any> => {
   // Obtener el progreso del usuario para saber en qué día va
   const userProgress = await UserProgress.findOne({ userId })
   const dayNumber = userProgress ? userProgress.daysWithoutSmoking + 1 : 1
+  const dependencyLevel = userProgress ? userProgress.dependencyLevel : 'Moderado'
 
-  // Generar actividades basadas en el día
-  const activities = generateActivitiesForDay(dayNumber)
+  // intentar obtener del JSON de configuración
+  let activities: any[] = []
+  const configActs = getConfigActivities(dayNumber, dependencyLevel)
+  if (configActs && configActs.length > 0) {
+    console.log(`Usando configuración para día ${dayNumber}, dependencia ${dependencyLevel}`)
+    activities = configActs.map(act => {
+      const activity: any = {
+        id: uuidv4(),
+        title: act.title || '',
+        description: act.description || '',
+        type: act.type || 'education',
+        durationMinutes: act.durationMinutes || 10,
+        justification: act.justification || '',
+        isCompleted: false,
+      }
+      // si la configuración incluye un objeto secondary, incrustarlo
+      if (act.secondary) {
+        activity.secondaryActivity = {
+          title: act.secondary.title || '',
+          description: act.secondary.description || '',
+          isOptional: act.secondary.isOptional || false,
+        }
+      }
+      return activity
+    })
+  } else {
+    console.log(`Usando generador genérico para día ${dayNumber}, dependencia ${dependencyLevel}`)
+    // fallback al generador genérico
+    activities = generateActivitiesForDay(dayNumber, dependencyLevel)
+  }
+
+  // Mensaje informativo de cabecera según dependencia
+  let message = `Día ${dayNumber} de tu viaje sin tabaco. ¡Sigue adelante!`;
+  if (dependencyLevel === 'Leve') {
+    message = `Día ${dayNumber} - Dependencia baja. Avanza con confianza.`;
+  } else if (dependencyLevel === 'Moderado') {
+    message = `Día ${dayNumber} - Dependencia moderada. Mantén el ritmo.`;
+  } else if (dependencyLevel === 'Severo') {
+    message = `Día ${dayNumber} - Dependencia alta. Toma medidas extra de autocuidado.`;
+  }
 
   const dailyPlan = new DailyPlan({
     userId,
     date,
     activities,
     isCompleted: false,
-    message: `Día ${dayNumber} de tu viaje sin tabaco. ¡Sigue adelante!`,
+    message,
     dayNumber,
   })
 
   return await dailyPlan.save()
 }
 
-// Función para generar actividades basadas en el día
-const generateActivitiesForDay = (dayNumber: number): Array<any> => {
-  // Aquí puedes implementar lógica para generar actividades diferentes según el día
-  // Por ahora, usaremos actividades genéricas
-  const activities = [
+// Función para generar actividades basadas en el día y nivel de dependencia
+const generateActivitiesForDay = (dayNumber: number, dependencyLevel: string): Array<any> => {
+  // actividades base comunes a todos los niveles
+  const activities: Array<any> = [
     {
       id: uuidv4(),
       title: "Ejercicio de respiración",
@@ -709,7 +869,41 @@ const generateActivitiesForDay = (dayNumber: number): Array<any> => {
     },
   ]
 
-  // Añadir actividades específicas según el día
+  // Ajustes según nivel de dependencia
+  if (dependencyLevel === 'Severo') {
+    // añadir tareas adicionales de apoyo emocional o físico
+    activities.push({
+      id: uuidv4(),
+      title: "Soporte social",
+      description: "Contacta a un amigo o familiar y comparte cómo te sientes",
+      type: "social",
+      durationMinutes: 10,
+      isCompleted: false,
+    })
+    activities.push({
+      id: uuidv4(),
+      title: "Respiración profunda extra",
+      description: "Cuando sientas un antojo fuerte, haz 15 respiraciones profundas",
+      type: "breathing",
+      durationMinutes: 5,
+      isCompleted: false,
+    })
+  } else if (dependencyLevel === 'Moderado') {
+    // actividades moderadas adicionales
+    activities.push({
+      id: uuidv4(),
+      title: "Mini paseo",
+      description: "Da una caminata de 10 minutos para despejarte",
+      type: "exercise",
+      durationMinutes: 10,
+      isCompleted: false,
+    })
+  } else if (dependencyLevel === 'Leve') {
+    // plan más ligero
+    // puede mantener solo las actividades base
+  }
+
+  // Actividades periódicas basadas en el día
   if (dayNumber % 3 === 0) {
     activities.push({
       id: uuidv4(),

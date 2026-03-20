@@ -1,0 +1,582 @@
+﻿{
+  "planes_zerosmoke": [
+    {
+      "plan": "PLAN 1",
+      "description": "Este plan está orientado a usuarios con bajo nivel de dependencia, que requieren sobre todo estructura, motivación y reducción leve de ansiedad.",
+      "sections": [
+        {
+          "title": "Plan ZeroSmoke – Dependencia Baja",
+          "days": []
+        },
+        {
+          "title": "Días 1–7: Establecimiento de Rutina y Conciencia",
+          "days": [
+            {
+              "Día": "1",
+              "Actividad Principal": "Caminar 15 minutos al aire libre",
+              "Actividad Secundaria (opcional)": "Escribir 3 razones para dejar de fumar",
+              "Justificación": "Establecer motivación intrínseca y actividad física leve (AHA, 2022)"
+            },
+            {
+              "Día": "2",
+              "Actividad Principal": "Ejercicio de respiración profunda (4-7-8)",
+              "Actividad Secundaria (opcional)": "Ver frase motivacional",
+              "Justificación": "Técnicas respiratorias reducen ansiedad leve (Harvard Health, 2021)"
+            },
+            {
+              "Día": "3",
+              "Actividad Principal": "Escuchar audio de visualización guiada",
+              "Actividad Secundaria (opcional)": "Registrar cómo te sentiste hoy",
+              "Justificación": "Refuerzo emocional y mindfulness"
+            },
+            {
+              "Día": "4",
+              "Actividad Principal": "Lectura breve: “Qué pasa en tu cuerpo 24h después de no fumar”",
+              "Actividad Secundaria (opcional)": "Caminar 10 minutos",
+              "Justificación": "Conciencia del cambio fisiológico (CDC, 2021)"
+            },
+            {
+              "Día": "5",
+              "Actividad Principal": "Yoga suave (video guiado 10 min)",
+              "Actividad Secundaria (opcional)": "Frase de motivación en la app",
+              "Justificación": "Yoga = menor ansiedad + más control (Journal of Addiction Medicine, 2018)"
+            },
+            {
+              "Día": "6",
+              "Actividad Principal": "Escribir un “diario de razones” (¿Qué te motivó más esta semana?)",
+              "Actividad Secundaria (opcional)": "Respiración guiada",
+              "Justificación": "Refuerzo positivo y reflexión"
+            },
+            {
+              "Día": "7",
+              "Actividad Principal": "Visualización del progreso (línea de tiempo en app)",
+              "Actividad Secundaria (opcional)": "Autoevaluación emocional (emoji slider)",
+              "Justificación": "Refuerzo visual del cambio"
+            }
+          ],
+          "columns": [
+            "Día",
+            "Actividad Principal",
+            "Actividad Secundaria (opcional)",
+            "Justificación"
+          ]
+        },
+        {
+          "title": "Días 8–14: Fortalecimiento del Hábito y Regulación Emocional",
+          "days": [
+            {
+              "Día": "8",
+              "Actividad Principal": "Caminar 20 minutos",
+              "Actividad Secundaria": "Escribir 3 beneficios de no fumar",
+              "Justificación": "Actividad cardiovascular leve = menor craving"
+            },
+            {
+              "Día": "9",
+              "Actividad Principal": "Técnica de respiración diafragmática",
+              "Actividad Secundaria": "Leer testimonio de exfumador",
+              "Justificación": "Inspiración y regulación emocional"
+            },
+            {
+              "Día": "10",
+              "Actividad Principal": "Escuchar audio: “Tu cuerpo se limpia”",
+              "Actividad Secundaria": "Visualizar pulmón animado",
+              "Justificación": "Educación + motivación"
+            },
+            {
+              "Día": "11",
+              "Actividad Principal": "Hacer estiramientos guiados 10 min",
+              "Actividad Secundaria": "Diario emocional breve",
+              "Justificación": "Estímulo físico suave"
+            },
+            {
+              "Día": "12",
+              "Actividad Principal": "Video corto motivador (1 min)",
+              "Actividad Secundaria": "Frase personalizada en notificación",
+              "Justificación": "Feedback positivo constante"
+            },
+            {
+              "Día": "13",
+              "Actividad Principal": "Escribir una carta a tu “yo futuro” sin fumar",
+              "Actividad Secundaria": "Respiración consciente (3 min)",
+              "Justificación": "Proyección y autosugestión"
+            },
+            {
+              "Día": "14",
+              "Actividad Principal": "Recap de la semana: ¿Qué te funcionó?",
+              "Actividad Secundaria": "Actividad libre de gratitud",
+              "Justificación": "Consolidación emocional"
+            }
+          ],
+          "columns": [
+            "Día",
+            "Actividad Principal",
+            "Actividad Secundaria",
+            "Justificación"
+          ]
+        },
+        {
+          "title": "Días 15–21: Estímulo Físico y Prevención de Recaída",
+          "days": [
+            {
+              "Día": "15",
+              "Actividad Principal": "Caminata rápida 25 minutos",
+              "Actividad Secundaria": "Foto del lugar favorito sin fumar",
+              "Justificación": "Refuerzo positivo"
+            },
+            {
+              "Día": "16",
+              "Actividad Principal": "Yoga suave (nuevo video)",
+              "Actividad Secundaria": "Diario: ¿Qué evitarías hoy?",
+              "Justificación": "Conciencia de detonantes"
+            },
+            {
+              "Día": "17",
+              "Actividad Principal": "Respiración cuadrada (4-4-4-4)",
+              "Actividad Secundaria": "Audio de afirmaciones positivas",
+              "Justificación": "Mejora de enfoque y calma"
+            },
+            {
+              "Día": "18",
+              "Actividad Principal": "Estiramientos + diario emocional",
+              "Actividad Secundaria": "Visualizar logros en app",
+              "Justificación": "Refuerzo visual y emocional"
+            },
+            {
+              "Día": "19",
+              "Actividad Principal": "Autoevaluación emocional semanal",
+              "Actividad Secundaria": "Caminar con música motivadora",
+              "Justificación": "Refuerzo y monitoreo"
+            },
+            {
+              "Día": "20",
+              "Actividad Principal": "Video sobre “cómo cambia tu piel” al dejar de fumar",
+              "Actividad Secundaria": "Ver mensaje sorpresa positivo",
+              "Justificación": "Recompensa + estética"
+            },
+            {
+              "Día": "21",
+              "Actividad Principal": "Meditación guiada (5 min)",
+              "Actividad Secundaria": "Actividad de gratitud escrita",
+              "Justificación": "Mindfulness y control emocional"
+            }
+          ],
+          "columns": [
+            "Día",
+            "Actividad Principal",
+            "Actividad Secundaria",
+            "Justificación"
+          ]
+        },
+        {
+          "title": "Días 22–28: Consolidación de logros y conexión mente-cuerpo",
+          "days": [
+            {
+              "Día": "22",
+              "Actividad Principal": "Caminata consciente (sin música, centrarse en sonidos y respiración)",
+              "Actividad Secundaria": "Registrar 3 cosas que notaste distintas sin fumar",
+              "Justificación": "Mindfulness en movimiento (Kabat-Zinn, 2003)"
+            },
+            {
+              "Día": "23",
+              "Actividad Principal": "Técnica de relajación muscular progresiva (audio guiado)",
+              "Actividad Secundaria": "Frase inspiradora personalizada",
+              "Justificación": "Técnica eficaz contra ansiedad leve (Mayo Clinic)"
+            },
+            {
+              "Día": "24",
+              "Actividad Principal": "Video: “Tu sistema inmunológico mejora”",
+              "Actividad Secundaria": "Respiración + agradecimiento",
+              "Justificación": "Educación fisiológica como motivación"
+            },
+            {
+              "Día": "25",
+              "Actividad Principal": "Crear una playlist de “momentos sin cigarro”",
+              "Actividad Secundaria": "Escucharla en una caminata",
+              "Justificación": "Refuerzo conductual positivo (Condicionamiento operante)"
+            },
+            {
+              "Día": "26",
+              "Actividad Principal": "Estiramientos + 10 min de lectura sobre bienestar",
+              "Actividad Secundaria": "Registrar pensamientos positivos",
+              "Justificación": "Asociar salud física con mental"
+            },
+            {
+              "Día": "27",
+              "Actividad Principal": "“Reto del día”: reemplaza 1 impulso de fumar con beber agua con limón",
+              "Actividad Secundaria": "Escribe cómo te sentiste",
+              "Justificación": "Sustitución conductual y control de impulsos (CDC)"
+            },
+            {
+              "Día": "28",
+              "Actividad Principal": "Autoevaluación emocional + visualización de logros acumulados",
+              "Actividad Secundaria": "Audio: “Tú lo estás logrando”",
+              "Justificación": "Anclaje emocional + visualización"
+            }
+          ],
+          "columns": [
+            "Día",
+            "Actividad Principal",
+            "Actividad Secundaria",
+            "Justificación"
+          ]
+        },
+        {
+          "title": "Días 29–35: Reforzar identidad libre de tabaco y plan de contingencia",
+          "days": [
+            {
+              "Día": "29",
+              "Actividad Principal": "Escribe cómo imaginas tu vida 6 meses sin fumar",
+              "Actividad Secundaria": "Respiración 4-7-8",
+              "Justificación": "Proyección positiva, visión de futuro"
+            },
+            {
+              "Día": "30",
+              "Actividad Principal": "Mini-video “Lo que ya lograste en tu cuerpo” (estilo TikTok)",
+              "Actividad Secundaria": "Diario: “Antes pensaba que fumar me ayudaba a…”",
+              "Justificación": "Desmitificación + autoevaluación"
+            },
+            {
+              "Día": "31",
+              "Actividad Principal": "Yoga + meditación guiada (10 min)",
+              "Actividad Secundaria": "Reflexión: “¿Qué harás si aparece una recaída?”",
+              "Justificación": "Estrategias cognitivas (prevención de recaídas)"
+            },
+            {
+              "Día": "32",
+              "Actividad Principal": "Hacer una lista de hábitos saludables nuevos que surgieron",
+              "Actividad Secundaria": "Compartir uno con alguien (si desea)",
+              "Justificación": "Refuerzo social voluntario"
+            },
+            {
+              "Día": "33",
+              "Actividad Principal": "Reto físico: subir escaleras 3 veces al día",
+              "Actividad Secundaria": "Registrar sensación al hacerlo",
+              "Justificación": "Capacidad pulmonar mejora (NICE, 2020)"
+            },
+            {
+              "Día": "34",
+              "Actividad Principal": "Escribir: “5 cosas buenas que noté desde que dejé el cigarro”",
+              "Actividad Secundaria": "Respiración controlada",
+              "Justificación": "Gratitud y enfoque en beneficios"
+            },
+            {
+              "Día": "35",
+              "Actividad Principal": "Visualización de todo el progreso (calendario animado)",
+              "Actividad Secundaria": "Audio de cierre de etapa: “Mirá todo lo que hiciste”",
+              "Justificación": "Cierre simbólico parcial de proceso"
+            }
+          ],
+          "columns": [
+            "Día",
+            "Actividad Principal",
+            "Actividad Secundaria",
+            "Justificación"
+          ]
+        },
+        {
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "days": [
+            {
+              "Día": "36",
+              "Actividad Principal": "Respiración guiada + paseo largo (30 minutos)",
+              "Actividad Secundaria": "Frase de reafirmación: “Soy una persona libre de tabaco”",
+              "Justificación": "Empoderamiento (terapia conductual)"
+            },
+            {
+              "Día": "37",
+              "Actividad Principal": "Técnica STOP (Stop, Take a breath, Observe, Proceed)",
+              "Actividad Secundaria": "Diario emocional (emoji slider)",
+              "Justificación": "Estrategia cognitiva para impulsos"
+            },
+            {
+              "Día": "38",
+              "Actividad Principal": "Escribir: “¿Qué haría diferente si tuviera una recaída?”",
+              "Actividad Secundaria": "Escuchar audio motivador",
+              "Justificación": "Prevención activa de recaídas"
+            },
+            {
+              "Día": "39",
+              "Actividad Principal": "Reto: pasar todo el día sin pensar en cigarrillos (si ocurre, anotarlo)",
+              "Actividad Secundaria": "Reflexión nocturna: ¿qué lo disparó?",
+              "Justificación": "Autoconciencia de disparadores"
+            },
+            {
+              "Día": "40",
+              "Actividad Principal": "Yoga suave o caminata con estiramientos",
+              "Actividad Secundaria": "Audio: “Tu cuerpo hoy está más sano que hace 40 días”",
+              "Justificación": "Reforzamiento corporal"
+            },
+            {
+              "Día": "41",
+              "Actividad Principal": "Lista de logros personales desde que inició el plan",
+              "Actividad Secundaria": "Compartir uno en el sistema de logros (opcional)",
+              "Justificación": "Autoestima, motivación extrínseca"
+            },
+            {
+              "Día": "42",
+              "Actividad Principal": "Ejercicio físico + visualización de salud mejorada (pulmón animado)",
+              "Actividad Secundaria": "Diario emocional final (breve)",
+              "Justificación": "Integración cuerpo-emoción"
+            },
+            {
+              "Día": "43",
+              "Actividad Principal": "Reto social: invita a alguien a caminar sin celular ni cigarro",
+              "Actividad Secundaria": "Registrar qué hablaron o sintieron",
+              "Justificación": "Refuerzo social y conexión real"
+            },
+            {
+              "Día": "44",
+              "Actividad Principal": "Meditación guiada final: “Soy dueño de mis decisiones”",
+              "Actividad Secundaria": "Frase personalizada",
+              "Justificación": "Empoderamiento emocional"
+            },
+            {
+              "Día": "45",
+              "Actividad Principal": "Autoevaluación final + mensaje de logro visual + botón de “reiniciar”",
+              "Actividad Secundaria": "Bonus: escribe una carta a alguien que quiere dejar de fumar",
+              "Justificación": "Cierre simbólico, transición a independencia"
+            }
+          ],
+          "columns": [
+            "Día",
+            "Actividad Principal",
+            "Actividad Secundaria",
+            "Justificación"
+          ]
+        }
+      ]
+    },
+    {
+      "plan": "PLAN 2",
+      "description": "Este plan es más profundo y gradual, adecuado para quienes presentan una dependencia media a la nicotina.",
+      "sections": [
+        {
+          "title": "🔹 Plan ZeroSmoke – Dependencia Moderada",
+          "days": []
+        },
+        {
+          "title": "🗓️ Días 1–7: Establecimiento de Rutina y Conciencia",
+          "days": [
+            {
+              "Día": "1",
+              "Actividad Principal": "Caminar 15 minutos al aire libre",
+              "Actividad Secundaria (opcional)": "Escribir 3 razones para dejar de fumar",
+              "Justificación": "Establecer motivación intrínseca y actividad física leve (AHA, 2022)"
+            },
+            {
+              "Día": "2",
+              "Actividad Principal": "Ejercicio de respiración profunda (4-7-8)",
+              "Actividad Secundaria (opcional)": "Ver frase motivacional",
+              "Justificación": "Técnicas respiratorias reducen ansiedad leve (Harvard Health, 2021)"
+            },
+            {
+              "Día": "3",
+              "Actividad Principal": "Escuchar audio de visualización guiada",
+              "Actividad Secundaria (opcional)": "Registrar cómo te sentiste hoy",
+              "Justificación": "Refuerzo emocional y mindfulness"
+            },
+            {
+              "Día": "4",
+              "Actividad Principal": "Lectura breve: “Qué pasa en tu cuerpo 24h después de no fumar”",
+              "Actividad Secundaria (opcional)": "Caminar 10 minutos",
+              "Justificación": "Conciencia del cambio fisiológico (CDC, 2021)"
+            },
+            {
+              "Día": "5",
+              "Actividad Principal": "Yoga suave (video guiado 10 min)",
+              "Actividad Secundaria (opcional)": "Frase de motivación en la app",
+              "Justificación": "Yoga = menor ansiedad + más control (Journal of Addiction Medicine, 2018)"
+            },
+            {
+              "Día": "6",
+              "Actividad Principal": "Escribir un “diario de razones” (¿Qué te motivó más esta semana?)",
+              "Actividad Secundaria (opcional)": "Respiración guiada",
+              "Justificación": "Refuerzo positivo y reflexión"
+            },
+            {
+              "Día": "7",
+              "Actividad Principal": "Visualización del progreso (línea de tiempo en app)",
+              "Actividad Secundaria (opcional)": "Autoevaluación emocional (emoji slider)",
+              "Justificación": "Refuerzo visual del cambio"
+            }
+          ],
+          "columns": [
+            "Día",
+            "Actividad Principal",
+            "Actividad Secundaria (opcional)",
+            "Justificación"
+          ]
+        },
+        {
+          "title": "🗓️ Días 8–14: Fortalecimiento del Hábito y Regulación Emocional",
+          "days": [
+            {
+              "Día": "8",
+              "Actividad Principal": "Caminar 20 minutos",
+              "Actividad Secundaria": "Escribir 3 beneficios de no fumar",
+              "Justificación": "Actividad cardiovascular leve = menor craving"
+            },
+            {
+              "Día": "9",
+              "Actividad Principal": "Técnica de respiración diafragmática",
+              "Actividad Secundaria": "Leer testimonio de exfumador",
+              "Justificación": "Inspiración y regulación emocional"
+            },
+            {
+              "Día": "10",
+              "Actividad Principal": "Escuchar audio: “Tu cuerpo se limpia”",
+              "Actividad Secundaria": "Visualizar pulmón animado",
+              "Justificación": "Educación + motivación"
+            },
+            {
+              "Día": "11",
+              "Actividad Principal": "Hacer estiramientos guiados 10 min",
+              "Actividad Secundaria": "Diario emocional breve",
+              "Justificación": "Estímulo físico suave"
+            },
+            {
+              "Día": "12",
+              "Actividad Principal": "Video corto motivador (1 min)",
+              "Actividad Secundaria": "Frase personalizada en notificación",
+              "Justificación": "Feedback positivo constante"
+            },
+            {
+              "Día": "13",
+              "Actividad Principal": "Escribir una carta a tu “yo futuro” sin fumar",
+              "Actividad Secundaria": "Respiración consciente (3 min)",
+              "Justificación": "Proyección y autosugestión"
+            },
+            {
+              "Día": "14",
+              "Actividad Principal": "Recap de la semana: ¿Qué te funcionó?",
+              "Actividad Secundaria": "Actividad libre de gratitud",
+              "Justificación": "Consolidación emocional"
+            }
+          ],
+          "columns": [
+            "Día",
+            "Actividad Principal",
+            "Actividad Secundaria",
+            "Justificación"
+          ]
+        }
+      ]
+    },
+    {
+      "plan": "PLAN 3",
+      "description": "Establecer rutinas sólidas, combatir el síndrome de abstinencia y brindar múltiples frentes de contención emocional, física y cognitiva.",
+      "sections": [
+        {
+          "title": "🔹 Plan ZeroSmoke – Dependencia Alta",
+          "days": []
+        },
+        {
+          "title": "🗓️ Días 1–7: Establecimiento de Rutina y Conciencia",
+          "days": [
+            {
+              "Día": "1",
+              "Actividad Principal": "Caminar 15 minutos al aire libre",
+              "Actividad Secundaria (opcional)": "Escribir 3 razones para dejar de fumar",
+              "Justificación": "Establecer motivación intrínseca y actividad física leve (AHA, 2022)"
+            },
+            {
+              "Día": "2",
+              "Actividad Principal": "Ejercicio de respiración profunda (4-7-8)",
+              "Actividad Secundaria (opcional)": "Ver frase motivacional",
+              "Justificación": "Técnicas respiratorias reducen ansiedad leve (Harvard Health, 2021)"
+            },
+            {
+              "Día": "3",
+              "Actividad Principal": "Escuchar audio de visualización guiada",
+              "Actividad Secundaria (opcional)": "Registrar cómo te sentiste hoy",
+              "Justificación": "Refuerzo emocional y mindfulness"
+            },
+            {
+              "Día": "4",
+              "Actividad Principal": "Lectura breve: “Qué pasa en tu cuerpo 24h después de no fumar”",
+              "Actividad Secundaria (opcional)": "Caminar 10 minutos",
+              "Justificación": "Conciencia del cambio fisiológico (CDC, 2021)"
+            },
+            {
+              "Día": "5",
+              "Actividad Principal": "Yoga suave (video guiado 10 min)",
+              "Actividad Secundaria (opcional)": "Frase de motivación en la app",
+              "Justificación": "Yoga = menor ansiedad + más control (Journal of Addiction Medicine, 2018)"
+            },
+            {
+              "Día": "6",
+              "Actividad Principal": "Escribir un “diario de razones” (¿Qué te motivó más esta semana?)",
+              "Actividad Secundaria (opcional)": "Respiración guiada",
+              "Justificación": "Refuerzo positivo y reflexión"
+            },
+            {
+              "Día": "7",
+              "Actividad Principal": "Visualización del progreso (línea de tiempo en app)",
+              "Actividad Secundaria (opcional)": "Autoevaluación emocional (emoji slider)",
+              "Justificación": "Refuerzo visual del cambio"
+            }
+          ],
+          "columns": [
+            "Día",
+            "Actividad Principal",
+            "Actividad Secundaria (opcional)",
+            "Justificación"
+          ]
+        },
+        {
+          "title": "🗓️ Días 8–14: Fortalecimiento del Hábito y Regulación Emocional",
+          "days": [
+            {
+              "Día": "8",
+              "Actividad Principal": "Caminar 20 minutos",
+              "Actividad Secundaria": "Escribir 3 beneficios de no fumar",
+              "Justificación": "Actividad cardiovascular leve = menor craving"
+            },
+            {
+              "Día": "9",
+              "Actividad Principal": "Técnica de respiración diafragmática",
+              "Actividad Secundaria": "Leer testimonio de exfumador",
+              "Justificación": "Inspiración y regulación emocional"
+            },
+            {
+              "Día": "10",
+              "Actividad Principal": "Escuchar audio: “Tu cuerpo se limpia”",
+              "Actividad Secundaria": "Visualizar pulmón animado",
+              "Justificación": "Educación + motivación"
+            },
+            {
+              "Día": "11",
+              "Actividad Principal": "Hacer estiramientos guiados 10 min",
+              "Actividad Secundaria": "Diario emocional breve",
+              "Justificación": "Estímulo físico suave"
+            },
+            {
+              "Día": "12",
+              "Actividad Principal": "Video corto motivador (1 min)",
+              "Actividad Secundaria": "Frase personalizada en notificación",
+              "Justificación": "Feedback positivo constante"
+            },
+            {
+              "Día": "13",
+              "Actividad Principal": "Escribir una carta a tu “yo futuro” sin fumar",
+              "Actividad Secundaria": "Respiración consciente (3 min)",
+              "Justificación": "Proyección y autosugestión"
+            },
+            {
+              "Día": "14",
+              "Actividad Principal": "Recap de la semana: ¿Qué te funcionó?",
+              "Actividad Secundaria": "Actividad libre de gratitud",
+              "Justificación": "Consolidación emocional"
+            }
+          ],
+          "columns": [
+            "Día",
+            "Actividad Principal",
+            "Actividad Secundaria",
+            "Justificación"
+          ]
+        }
+      ]
+    }
+  ]
+}

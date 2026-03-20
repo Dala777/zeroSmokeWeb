@@ -21,6 +21,7 @@ connectDB()
 // Rutas
 app.use("/api/auth", authRoutes)
 app.use("/api/plans", planRoutes)
+console.log('Registrando rutas de progreso')
 app.use("/api/progress", progressRoutes) // Nueva ruta
 
 // Ruta de prueba

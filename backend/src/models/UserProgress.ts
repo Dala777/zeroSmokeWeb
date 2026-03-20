@@ -11,6 +11,7 @@ export interface IUserProgress extends Document {
   daysWithoutSmoking: number;
   healthProgress: number;
   dependencyLevel: string;
+  assignedPlan?: any; // reference to Plan document or ID (optional)  fagerstromScore: number;
   motivations: string[];
   healthMetrics: Record<string, any>;
   achievements: {
@@ -61,7 +62,25 @@ const UserProgressSchema: Schema = new Schema(
     moneySaved: { type: Number, default: 0 },
     daysWithoutSmoking: { type: Number, default: 0 },
     healthProgress: { type: Number, default: 0 },
-    dependencyLevel: { type: String, enum: ['Leve', 'Moderado', 'Severo'], default: 'Moderado' },
+    // referencia al plan asignado (opcional)
+    assignedPlan: { type: String, ref: 'Plan', default: null },
+    // el nivel de dependencia puede venir en forma amigable desde el cliente
+    // o en una de las etiquetas cortas que se usan internamente.
+    // expandimos el enum para aceptar ambos formatos y prevenir errores de validación.
+    dependencyLevel: { 
+      type: String, 
+      enum: [
+        'Leve',
+        'Moderado',
+        'Severo',
+        'Dependencia Baja',
+        'Dependencia Moderada',
+        'Dependencia Alta',
+      ],
+      default: 'Moderado' 
+    },
+    // puntaje obtenido en el test de Fagerström (0-10)
+    fagerstromScore: { type: Number, default: 0 },
     motivations: [{ type: String }],
     healthMetrics: { type: Map, of: mongoose.Schema.Types.Mixed, default: {} },
     achievements: {

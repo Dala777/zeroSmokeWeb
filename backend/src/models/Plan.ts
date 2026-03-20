@@ -34,3 +34,6 @@ const PlanSchema: Schema = new Schema(
 
 // Evitar redefinición del modelo
 export const Plan = models.Plan || model<IPlan>("Plan", PlanSchema)
+
+// If you prefer default import elsewhere, also export default
+export default Plan
