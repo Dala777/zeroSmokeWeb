@@ -16,10 +16,14 @@ const ActivitySchema: Schema = new Schema(
     title: {
       type: String,
       required: true,
+      trim: true,
+      maxlength: 160,
     },
     description: {
       type: String,
       required: true,
+      trim: true,
+      maxlength: 1200,
     },
     type: {
       type: String,
@@ -54,14 +58,17 @@ const ActivitySchema: Schema = new Schema(
     durationMinutes: {
       type: Number,
       required: true,
+      min: 1,
     },
     scientificBasis: {
       type: String,
       required: true,
+      trim: true,
+      maxlength: 2000,
     },
     secondaryActivity: {
-      title: { type: String },
-      description: { type: String },
+      title: { type: String, trim: true, maxlength: 160 },
+      description: { type: String, trim: true, maxlength: 1200 },
       isOptional: {
         type: Boolean,
         default: true,
@@ -70,12 +77,16 @@ const ActivitySchema: Schema = new Schema(
     order: {
       type: Number,
       default: 0,
+      min: 0,
     },
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 )
 
-// Evitar redefinición del modelo
+ActivitySchema.index({ planId: 1, dayNumber: 1, order: 1 })
+ActivitySchema.index({ planId: 1, dayNumber: 1, title: 1 }, { unique: true })
+
 export const Activity = models.Activity || model<IActivity>("Activity", ActivitySchema)

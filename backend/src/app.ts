@@ -4,7 +4,8 @@ import dotenv from "dotenv"
 import { connectDB } from "./config/database"
 import authRoutes from "./routes/auth.routes"
 import planRoutes from "./routes/plan.routes"
-import progressRoutes from "./routes/progress.routes" // Nueva importación
+import progressRoutes from "./routes/progress.routes"
+import chatRoutes from "./routes/chat.routes" // Nueva importación
 
 dotenv.config()
 
@@ -23,6 +24,7 @@ app.use("/api/auth", authRoutes)
 app.use("/api/plans", planRoutes)
 console.log('Registrando rutas de progreso')
 app.use("/api/progress", progressRoutes) // Nueva ruta
+app.use("/api/chat", chatRoutes)
 
 // Ruta de prueba
 app.get("/", (req, res) => {

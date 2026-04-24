@@ -1,20 +1,27 @@
-import type { Document } from "mongoose"
+import type { Document, Types } from "mongoose"
 
-// Interfaces existentes para los modelos
+export type UserDependencyLevel = "low" | "moderate" | "high"
+export type PlanDependencyLevel = "bajo" | "moderado" | "alto"
+export type UserRole = "admin" | "user"
+export type UserStatus = "active" | "inactive" | "pending"
+export type UserPlanStatus = "active" | "completed" | "paused" | "abandoned"
+
 export interface IUser extends Document {
   name: string
   email: string
   password: string
-  role: "admin" | "user"
-  status: "active" | "inactive" | "pending"
+  role: UserRole
+  status: UserStatus
   lastLogin?: Date
-  createdAt: Date
-  updatedAt?: Date
-
-  // Nuevos campos opcionales para planes (no afectan funcionalidad existente)
-  currentPlanId?: string
+  dependencyLevel?: UserDependencyLevel
+  cigarettesPerDayBaseline?: number
+  cigarettePricePerUnit?: number
+  currentPlanId?: Types.ObjectId | string
   fagerstromScore?: number
+  quitDate?: Date
   planStartDate?: Date
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface IArticle extends Document {
@@ -48,7 +55,6 @@ export interface IMessage extends Document {
   updatedAt?: Date
 }
 
-// Nuevas interfaces para el sistema de planes
 export type ActivityType =
   | "exercise"
   | "breathing"
@@ -78,13 +84,14 @@ export type ActivityType =
 export interface IPlan extends Document {
   name: string
   duration: number
-  dependencyLevel: "bajo" | "moderado" | "alto"
+  dependencyLevel: PlanDependencyLevel
   fagerstromRange: {
     min: number
     max: number
   }
   description?: string
   isActive: boolean
+  version: number
   createdAt: Date
   updatedAt: Date
 }
@@ -96,7 +103,7 @@ export interface ISecondaryActivity {
 }
 
 export interface IActivity extends Document {
-  planId: string
+  planId: Types.ObjectId | string
   dayNumber: number
   title: string
   description: string
@@ -110,24 +117,73 @@ export interface IActivity extends Document {
 }
 
 export interface ICompletedActivity {
-  activityId: string
+  activityId: Types.ObjectId | string
   dayNumber: number
   completedAt: Date
 }
 
 export interface IUserPlan extends Document {
-  userId: string
-  planId: string
+  userId: Types.ObjectId | string
+  planId: Types.ObjectId | string
   startDate: Date
+  endDate?: Date
   currentDay: number
   isCompleted: boolean
+  status: UserPlanStatus
   completedActivities: ICompletedActivity[]
   fagerstromScore: number
+  completionPercentage?: number
+  lastCompletedAt?: Date
   createdAt: Date
   updatedAt: Date
 }
 
-// Interfaces para requests/responses de la API de planes
+export interface IDailyCheckin extends Document {
+  userId: Types.ObjectId | string
+  date: Date
+  dateKey: string
+  mood: string
+  cravingLevel: number
+  smokedToday: boolean
+  cigarettesSmokedCount: number
+  symptoms: string[]
+  note?: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface ICigaretteLog extends Document {
+  userId: Types.ObjectId | string
+  timestamp: Date
+  emotion?: string
+  emotions: string[]
+  symptoms: string[]
+  physicalSymptoms: string[]
+  note?: string
+  cravingLevel?: number
+  contextTags: string[]
+  smokedCount: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface ICompletedAchievement {
+  code: string
+  title: string
+  description?: string
+  completedAt: Date
+  pointsAwarded: number
+  source?: string
+}
+
+export interface IUserGamification extends Document {
+  userId: Types.ObjectId | string
+  motivationPoints: number
+  completedAchievements: ICompletedAchievement[]
+  createdAt: Date
+  updatedAt: Date
+}
+
 export interface AssignPlanRequest {
   userId: string
   fagerstromScore: number

@@ -1,125 +1,125 @@
-// src/models/UserProgress.ts
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, models, model } from "mongoose"
 
-export interface IUserProgress extends Document {
-  userId: string;
-  startDate: Date;
-  cigarettesPerDay: number;
-  packagePrice: number;
-  cigarettesAvoided: number;
-  moneySaved: number;
-  daysWithoutSmoking: number;
-  healthProgress: number;
-  dependencyLevel: string;
-  assignedPlan?: any; // reference to Plan document or ID (optional)  fagerstromScore: number;
-  motivations: string[];
-  healthMetrics: Record<string, any>;
+export interface IUserProgress {
+  userId: string
+  startDate: Date
+  cigarettesPerDay: number
+  packagePrice: number
+  cigarettesAvoided: number
+  moneySaved: number
+  daysWithoutSmoking: number
+  healthProgress: number
+  dependencyLevel: string
+  assignedPlan?: string | null
+  fagerstromScore: number
+  motivations: string[]
+  healthMetrics: Record<string, unknown>
   achievements: {
     firstDay: {
-      title: string;
-      description: string;
-      completed: boolean;
-      date?: string;
-    };
+      title: string
+      description: string
+      completed: boolean
+      date?: string | null
+    }
     firstWeek: {
-      title: string;
-      description: string;
-      completed: boolean;
-      date?: string;
-    };
+      title: string
+      description: string
+      completed: boolean
+      date?: string | null
+    }
     firstMonth: {
-      title: string;
-      description: string;
-      completed: boolean;
-      progress: number;
-      date?: string;
-    };
+      title: string
+      description: string
+      completed: boolean
+      progress: number
+      date?: string | null
+    }
     moneySaved: {
-      title: string;
-      description: string;
-      completed: boolean;
-      progress: number;
-      date?: string;
-    };
-  };
+      title: string
+      description: string
+      completed: boolean
+      progress: number
+      date?: string | null
+    }
+  }
   weeklyData: Array<{
-    weekStart: Date;
-    dailyCigarettes: number[];
-    weeklyGoal: number;
-    totalSmoked: number;
-  }>;
-  createdAt: Date;
-  updatedAt: Date;
+    weekStart: Date
+    dailyCigarettes: number[]
+    weeklyGoal: number
+    totalSmoked: number
+  }>
+  createdAt: Date
+  updatedAt: Date
 }
 
 const UserProgressSchema: Schema = new Schema(
   {
-    userId: { type: String, required: true, ref: 'User' },
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "User", unique: true, index: true },
     startDate: { type: Date, default: Date.now },
-    cigarettesPerDay: { type: Number, required: true },
-    packagePrice: { type: Number, required: true },
-    cigarettesAvoided: { type: Number, default: 0 },
-    moneySaved: { type: Number, default: 0 },
-    daysWithoutSmoking: { type: Number, default: 0 },
-    healthProgress: { type: Number, default: 0 },
-    // referencia al plan asignado (opcional)
-    assignedPlan: { type: String, ref: 'Plan', default: null },
-    // el nivel de dependencia puede venir en forma amigable desde el cliente
-    // o en una de las etiquetas cortas que se usan internamente.
-    // expandimos el enum para aceptar ambos formatos y prevenir errores de validación.
-    dependencyLevel: { 
-      type: String, 
+    cigarettesPerDay: { type: Number, required: true, min: 0, max: 200 },
+    packagePrice: { type: Number, required: true, min: 0 },
+    cigarettesAvoided: { type: Number, default: 0, min: 0 },
+    moneySaved: { type: Number, default: 0, min: 0 },
+    daysWithoutSmoking: { type: Number, default: 0, min: 0 },
+    healthProgress: { type: Number, default: 0, min: 0, max: 1 },
+    assignedPlan: { type: Schema.Types.ObjectId, ref: "Plan", default: null, index: true },
+    dependencyLevel: {
+      type: String,
       enum: [
-        'Leve',
-        'Moderado',
-        'Severo',
-        'Dependencia Baja',
-        'Dependencia Moderada',
-        'Dependencia Alta',
+        "Leve",
+        "Moderado",
+        "Severo",
+        "Dependencia Baja",
+        "Dependencia Moderada",
+        "Dependencia Alta",
       ],
-      default: 'Moderado' 
+      default: "Moderado",
     },
-    // puntaje obtenido en el test de Fagerström (0-10)
-    fagerstromScore: { type: Number, default: 0 },
-    motivations: [{ type: String }],
+    fagerstromScore: { type: Number, default: 0, min: 0, max: 10 },
+    motivations: [{ type: String, trim: true }],
     healthMetrics: { type: Map, of: mongoose.Schema.Types.Mixed, default: {} },
     achievements: {
       firstDay: {
-        title: { type: String, default: "Primer día sin fumar" },
-        description: { type: String, default: "Completaste tu primer día sin fumar" },
+        title: { type: String, default: "Primer dia sin fumar" },
+        description: { type: String, default: "Completaste tu primer dia sin fumar" },
         completed: { type: Boolean, default: false },
-        date: { type: String, default: null }
+        date: { type: String, default: null },
       },
       firstWeek: {
         title: { type: String, default: "Una semana sin fumar" },
         description: { type: String, default: "Completaste una semana sin fumar" },
         completed: { type: Boolean, default: false },
-        date: { type: String, default: null }
+        date: { type: String, default: null },
       },
       firstMonth: {
         title: { type: String, default: "Un mes sin fumar" },
         description: { type: String, default: "Completaste un mes sin fumar" },
         completed: { type: Boolean, default: false },
-        progress: { type: Number, default: 0 },
-        date: { type: String, default: null }
+        progress: { type: Number, default: 0, min: 0 },
+        date: { type: String, default: null },
       },
       moneySaved: {
         title: { type: String, default: "Ahorrar $200" },
         description: { type: String, default: "Has ahorrado $200 al no fumar" },
         completed: { type: Boolean, default: false },
-        progress: { type: Number, default: 0 },
-        date: { type: String, default: null }
-      }
+        progress: { type: Number, default: 0, min: 0 },
+        date: { type: String, default: null },
+      },
     },
-    weeklyData: [{
-      weekStart: { type: Date, default: Date.now },
-      dailyCigarettes: { type: [Number], default: [0, 0, 0, 0, 0, 0, 0] },
-      weeklyGoal: { type: Number, default: 0 },
-      totalSmoked: { type: Number, default: 0 }
-    }]
+    weeklyData: [
+      {
+        weekStart: { type: Date, default: Date.now },
+        dailyCigarettes: { type: [Number], default: [0, 0, 0, 0, 0, 0, 0] },
+        weeklyGoal: { type: Number, default: 0, min: 0 },
+        totalSmoked: { type: Number, default: 0, min: 0 },
+      },
+    ],
   },
-  { timestamps: true }
-);
+  { timestamps: true, versionKey: false },
+)
 
-// Exportar el modelo
-export default mongoose.model<IUserProgress>('UserProgress', UserProgressSchema);
+UserProgressSchema.index({ updatedAt: -1 })
+
+const UserProgress = models.UserProgress || model<IUserProgress>("UserProgress", UserProgressSchema)
+
+export default UserProgress
