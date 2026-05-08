@@ -1,0 +1,11 @@
+com\zerosmoke\stepdefinitions\LoginSteps.class
+com\zerosmoke\pages\AdminPage.class
+com\zerosmoke\runners\TestRunner.class
+com\zerosmoke\stepdefinitions\CommonSteps.class
+com\zerosmoke\pages\LoginPage.class
+com\zerosmoke\pages\ContactPage.class
+com\zerosmoke\stepdefinitions\AdminSteps.class
+com\zerosmoke\pages\HomePage.class
+com\zerosmoke\pages\RegistrationPage.class
+com\zerosmoke\stepdefinitions\RegistrationSteps.class
+com\zerosmoke\stepdefinitions\ContactSteps.class

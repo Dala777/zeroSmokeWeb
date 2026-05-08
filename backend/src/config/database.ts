@@ -21,5 +21,6 @@ export const disconnectDB = async (): Promise<void> => {
     console.log('MongoDB disconnected successfully');
   } catch (error) {
     console.error('Error disconnecting from MongoDB:', error);
+    
   }
 };

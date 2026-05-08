@@ -1,0 +1,8 @@
+﻿=== Testing de Caja Gris - ZeroSmoke ===
+Fecha: 2025-08-29 13:07:33
+
+1. Obteniendo token de usuario normal...
+Usuario ya existe o error: Error en el servidor remoto: (400) Solicitud incorrecta.
+Token obtenido exitosamente
+2. Testing escalaciÃ³n de privilegios...
+Endpoint admin protegido correctamente

@@ -7,7 +7,12 @@ import { Link } from "react-router-dom"
 import { AppColors } from "../styles/colors"
 import Button from "../components/ui/Button"
 import Card from "../components/ui/Card"
+import Benefits from "../components/Benefits"
 import { getHomePageData, type HomePageData } from "../services/storageService"
+import { ArrowDown, Award, Clock, Heart, Shield } from 'lucide-react'
+import AppPreview from "../components/AppPreview"
+import Gallery from "../components/Gallery"
+
 
 // Add subtle fade-in animation
 const fadeIn = keyframes`
@@ -18,6 +23,18 @@ const fadeIn = keyframes`
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+`
+
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
   }
 `
 
@@ -48,7 +65,7 @@ const HeroBackground = styled.div`
   background-attachment: fixed;
   filter: brightness(0.7);
   transition: all 0.5s ease;
-  
+ 
   &::after {
     content: '';
     position: absolute;
@@ -58,8 +75,8 @@ const HeroBackground = styled.div`
     height: 100%;
     background: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.6) 100%
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.7) 100%
     );
   }
 `
@@ -78,7 +95,7 @@ const HeroContent = styled.div`
 
 // Enhanced title with text shadow for better readability
 const HeroTitle = styled.h1`
-  font-size: 3.5rem;
+  font-size: 3.8rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: white;
@@ -129,7 +146,7 @@ const FeaturesSection = styled.section`
   padding: 6rem 0;
   background-color: ${AppColors.background};
   position: relative;
-  
+ 
   &::before {
     content: '';
     position: absolute;
@@ -191,7 +208,7 @@ const FeatureCard = styled(Card)`
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
+ 
   &:hover {
     transform: translateY(-10px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
@@ -211,7 +228,7 @@ const FeatureIcon = styled.div`
   justify-content: center;
   border-radius: 50%;
   transition: transform 0.3s ease;
-  
+ 
   ${FeatureCard}:hover & {
     transform: scale(1.1);
   }
@@ -238,7 +255,7 @@ const StatsSection = styled.section`
   background: linear-gradient(135deg, ${AppColors.cardBackground}, ${AppColors.cardBackground}90);
   position: relative;
   overflow: hidden;
-  
+ 
   &::before {
     content: '';
     position: absolute;
@@ -271,7 +288,7 @@ const StatCard = styled.div`
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  
+ 
   &:hover {
     transform: translateY(-8px);
   }
@@ -300,7 +317,7 @@ const CtaSection = styled.section`
   text-align: center;
   position: relative;
   overflow: hidden;
-  
+ 
   &::before {
     content: '';
     position: absolute;
@@ -327,7 +344,7 @@ const CtaTitle = styled.h2`
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
   color: ${AppColors.primary};
-  
+ 
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -355,11 +372,11 @@ const ScrollIndicator = styled.div`
   opacity: 0.8;
   transition: opacity 0.3s ease;
   cursor: pointer;
-  
+ 
   &:hover {
     opacity: 1;
   }
-  
+ 
   @media (max-width: 768px) {
     bottom: 20px;
   }
@@ -389,6 +406,36 @@ const ScrollArrow = keyframes`
 const ArrowIcon = styled.div`
   font-size: 1.5rem;
   animation: ${ScrollArrow} 2s infinite;
+`
+
+// Add loading components
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`
+
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: ${AppColors.background};
+`
+
+const LoadingSpinner = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 5px solid ${AppColors.secondary}30;
+  border-top: 5px solid ${AppColors.primary};
+  border-radius: 50%;
+  animation: ${spin} 1s linear infinite;
+  margin-bottom: 20px;
+`
+
+const LoadingText = styled.p`
+  color: ${AppColors.textSecondary};
+  font-size: 1.2rem;
 `
 
 const HomePage: React.FC = () => {
@@ -429,8 +476,11 @@ const HomePage: React.FC = () => {
           }}
         />
         <HeroContent>
-          <HeroTitle>{homeData.heroTitle}</HeroTitle>
-          <HeroSubtitle>{homeData.heroSubtitle}</HeroSubtitle>
+          <HeroTitle>Tu camino hacia una vida libre de tabaco</HeroTitle>
+          <HeroSubtitle>
+            ZeroSmoke te acompaña en cada paso de tu proceso para dejar de fumar con apoyo personalizado, seguimiento y
+            recursos educativos.
+          </HeroSubtitle>
           <HeroButtons>
             <Button size="large">
               <Link to="/test" style={{ color: "inherit", textDecoration: "none" }}>
@@ -446,7 +496,9 @@ const HomePage: React.FC = () => {
         </HeroContent>
         <ScrollIndicator onClick={scrollToFeatures}>
           <ScrollText>Descubre más</ScrollText>
-          <ArrowIcon>↓</ArrowIcon>
+          <ArrowIcon>
+            <ArrowDown size={24} />
+          </ArrowIcon>
         </ScrollIndicator>
       </HeroSection>
 
@@ -462,6 +514,12 @@ const HomePage: React.FC = () => {
           ))}
         </FeaturesGrid>
       </FeaturesSection>
+
+      {/* App Preview Section */}
+      <AppPreview />
+
+      {/* Sección de Beneficios */}
+      <Benefits />
 
       <StatsSection>
         <SectionTitle>El impacto del tabaco</SectionTitle>
@@ -487,6 +545,9 @@ const HomePage: React.FC = () => {
           </StatCard>
         </StatsGrid>
       </StatsSection>
+
+      {/* Sección de Galería <Gallery/> */}
+    
 
       <CtaSection>
         <CtaContent>
@@ -537,4 +598,3 @@ const LoadingText = styled.p`
 `
 
 export default HomePage
-

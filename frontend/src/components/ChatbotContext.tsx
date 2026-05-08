@@ -3,14 +3,15 @@
 import type React from "react"
 import { createContext, useContext, useState, type ReactNode } from "react"
 
-// Define el tipo de mensaje
+// Define the structure of a chat message
 interface ChatMessage {
   id: string
   text: string
-  sender: "user" | "bot"
-  timestamp: Date
+  isUser: boolean
+  timestamp?: Date // Añadimos timestamp como opcional
 }
 
+// Define the context value structure
 interface ChatbotContextType {
   isOpen: boolean
   messages: ChatMessage[] // Añadido messages
@@ -60,14 +61,3 @@ export const ChatbotProvider: React.FC<ChatbotProviderProps> = ({ children }) =>
     </ChatbotContext.Provider>
   )
 }
-
-export const useChatbot = (): ChatbotContextType => {
-  const context = useContext(ChatbotContext)
-  if (context === undefined) {
-    throw new Error("useChatbot must be used within a ChatbotProvider")
-  }
-  return context
-}
-
-export default ChatbotProvider
-

@@ -1,0 +1,7 @@
+﻿=== Testing de Caja Blanca - ZeroSmoke ===
+Fecha: 2025-08-29 13:07:32
+
+1. AnÃ¡lisis de dependencias - Backend
+npm audit ejecutado - ver npm-audit-backend.txt
+2. AnÃ¡lisis de dependencias - Frontend
+npm audit ejecutado - ver npm-audit-frontend.txt

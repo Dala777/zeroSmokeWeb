@@ -1,0 +1,25 @@
+# Node
+node_modules/
+*.log
+
+# Env files
+.env
+.env.*
+
+# Build / Coverage
+build/
+dist/
+coverage/
+
+# Archivos grandes
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

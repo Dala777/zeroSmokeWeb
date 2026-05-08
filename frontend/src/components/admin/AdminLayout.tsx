@@ -1,32 +1,37 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
+import React from "react"
+import { useState, useEffect } from "react"
 import styled from "styled-components"
-import { Outlet, NavLink, useNavigate } from "react-router-dom"
+import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom"
 import { AppColors } from "../../styles/colors"
 import Button from "../ui/Button"
+import { useAuth } from "../../contexts/AuthContext"
+import { ChevronRight } from "lucide-react"
 
 const AdminContainer = styled.div`
   display: flex;
   min-height: 100vh;
-  background-color: ${AppColors.background};
+  background-color: #f8f9fa;
+  font-family: 'Poppins', sans-serif;
 `
 
 const Sidebar = styled.aside<{ isOpen: boolean }>`
-  width: ${(props) => (props.isOpen ? "250px" : "0")};
+  width: ${(props) => (props.isOpen ? "280px" : "0")};
   background-color: ${AppColors.cardBackground};
   transition: width 0.3s ease;
   overflow-x: hidden;
   position: fixed;
   height: 100vh;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   z-index: 10;
+  display: flex;
+  flex-direction: column;
   
   @media (min-width: 768px) {
     position: sticky;
     top: 0;
-    width: 250px;
+    width: 280px;
   }
 `
 
@@ -52,9 +57,18 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   color: ${AppColors.text};
-  font-size: 1.25rem;
   cursor: pointer;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
   
   @media (min-width: 768px) {
     display: none;
@@ -64,15 +78,26 @@ const CloseButton = styled.button`
 const SidebarContent = styled.div`
   padding: 1rem 0;
   overflow-y: auto;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 180px);
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+  }
 `
 
 const SidebarFooter = styled.div`
   padding: 1rem 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+  margin-top: auto;
 `
 
 const MenuSection = styled.div`
@@ -85,7 +110,9 @@ const MenuTitle = styled.h3`
   letter-spacing: 1px;
   color: ${AppColors.textSecondary};
   padding: 0 1.5rem;
-  margin-bottom: 0.5rem;
+  margin: 1rem 0 0.5rem;
+  font-weight: 600;
+  opacity: 0.7;
 `
 
 const MenuItem = styled(NavLink)`
@@ -94,7 +121,8 @@ const MenuItem = styled(NavLink)`
   padding: 0.75rem 1.5rem;
   color: ${AppColors.text};
   text-decoration: none;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
   
   &:hover {
     background-color: rgba(255, 255, 255, 0.05);
@@ -105,6 +133,7 @@ const MenuItem = styled(NavLink)`
     background-color: rgba(76, 175, 80, 0.1);
     color: ${AppColors.primary};
     border-left: 3px solid ${AppColors.primary};
+    font-weight: 500;
   }
 `
 
@@ -113,6 +142,9 @@ const MenuIcon = styled.span`
   font-size: 1.25rem;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
 `
 
 const Content = styled.main<{ isSidebarOpen: boolean }>`
@@ -121,7 +153,7 @@ const Content = styled.main<{ isSidebarOpen: boolean }>`
   transition: margin-left 0.3s ease;
   
   @media (max-width: 767px) {
-    margin-left: ${(props) => (props.isSidebarOpen ? "250px" : "0")};
+    margin-left: ${(props) => (props.isSidebarOpen ? "280px" : "0")};
     width: 100%;
   }
 `
@@ -135,9 +167,37 @@ const TopBar = styled.header`
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 `
 
-const PageTitle = styled.h1`
+const PageTitle = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const PageTitleText = styled.h1`
   font-size: 1.5rem;
   color: ${AppColors.primary};
+  font-weight: 600;
+`
+
+const BreadcrumbContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: ${AppColors.textSecondary};
+  margin-bottom: 0.5rem;
+`
+
+const BreadcrumbItem = styled.span`
+  display: flex;
+  align-items: center;
+  
+  &:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+`
+
+const BreadcrumbSeparator = styled.span`
+  margin: 0 0.5rem;
+  opacity: 0.5;
 `
 
 const MenuButton = styled.button`
@@ -147,6 +207,16 @@ const MenuButton = styled.button`
   font-size: 1.5rem;
   cursor: pointer;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
   
   @media (min-width: 768px) {
     display: none;
@@ -156,6 +226,10 @@ const MenuButton = styled.button`
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
+  background-color: ${AppColors.cardBackground};
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `
 
 const UserAvatar = styled.div`
@@ -171,8 +245,14 @@ const UserAvatar = styled.div`
   margin-right: 0.75rem;
 `
 
+const UserDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 const UserName = styled.div`
   font-weight: 500;
+  font-size: 0.9rem;
 `
 
 const UserRole = styled.div`
@@ -180,15 +260,85 @@ const UserRole = styled.div`
   color: ${AppColors.textSecondary};
 `
 
-// Reemplazar los estilos inline con componentes styled
 const MenuButtonContainer = styled.div`
   display: flex;
   align-items: center;
+  gap: 1rem;
+`
+
+const DashboardContent = styled.div`
+  animation: fadeIn 0.5s ease;
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+`
+
+const ContentWrapper = styled.div`
+  flex: 1;
+  margin-left: 280px;
+  padding: 30px;
+  overflow-y: auto;
+  
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
+`
+
+const PageHeader = styled.div`
+  margin-bottom: 30px;
+  
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: ${AppColors.textSecondary};
+    margin: 0 0 10px 0;
+  }
+  
+  p {
+    color: ${AppColors.text};
+    margin: 0;
+  }
+`
+
+const ContentCard = styled.div`
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  padding: 24px;
 `
 
 const AdminLayout: React.FC = () => {
+  const { user, logout } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const [isLargeScreen, setIsLargeScreen] = useState(false)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 768)
+    }
+
+    handleResize()
+    window.addEventListener("resize", handleResize)
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isLargeScreen) {
+      setSidebarOpen(true)
+    }
+  }, [isLargeScreen])
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
@@ -199,14 +349,55 @@ const AdminLayout: React.FC = () => {
   }
 
   const handleLogout = () => {
-    // Add logout logic here
+    logout()
     navigate("/login")
   }
 
-  // Mock user data
-  const user = {
-    name: "Admin User",
-    role: "admin",
+  // Generar breadcrumbs basados en la ruta actual
+  const generateBreadcrumbs = () => {
+    const paths = location.pathname.split("/").filter((path) => path)
+
+    if (paths.length <= 1) {
+      return (
+        <BreadcrumbContainer>
+          <BreadcrumbItem>Dashboard</BreadcrumbItem>
+        </BreadcrumbContainer>
+      )
+    }
+
+    return (
+      <BreadcrumbContainer>
+        <BreadcrumbItem>
+          <NavLink to="/admin/dashboard" style={{ color: "inherit", opacity: 0.7 }}>
+            Dashboard
+          </NavLink>
+        </BreadcrumbItem>
+        {paths.slice(1).map((path, index) => (
+          <React.Fragment key={index}>
+            <BreadcrumbSeparator>
+              <ChevronRight size={14} />
+            </BreadcrumbSeparator>
+            <BreadcrumbItem>{path.charAt(0).toUpperCase() + path.slice(1)}</BreadcrumbItem>
+          </React.Fragment>
+        ))}
+      </BreadcrumbContainer>
+    )
+  }
+
+  // Determinar el título de la página basado en la ruta actual
+  const getPageTitle = () => {
+    const path = location.pathname
+
+    if (path.includes("/dashboard")) return "Dashboard"
+    if (path.includes("/homepage")) return "Página de Inicio"
+    if (path.includes("/articles")) return "Artículos"
+    if (path.includes("/faqs")) return "FAQs"
+    if (path.includes("/users")) return "Gestión de Usuarios"
+    if (path.includes("/admins")) return "Administradores"
+    if (path.includes("/messages")) return "Mensajes"
+    if (path.includes("/settings")) return "Configuración"
+
+    return "Panel de Administración"
   }
 
   return (
@@ -276,23 +467,27 @@ const AdminLayout: React.FC = () => {
         <TopBar>
           <MenuButtonContainer>
             <MenuButton onClick={toggleSidebar}>☰</MenuButton>
-            <PageTitle>Panel de Administración</PageTitle>
+            <PageTitle>
+              {generateBreadcrumbs()}
+              <PageTitleText>{getPageTitle()}</PageTitleText>
+            </PageTitle>
           </MenuButtonContainer>
 
           <UserInfo>
             <UserAvatar>{user?.name?.charAt(0) || "A"}</UserAvatar>
-            <div>
+            <UserDetails>
               <UserName>{user?.name || "Admin Usuario"}</UserName>
               <UserRole>{user?.role === "admin" ? "Administrador" : "Usuario"}</UserRole>
-            </div>
+            </UserDetails>
           </UserInfo>
         </TopBar>
 
-        <Outlet />
+        <DashboardContent>
+          <Outlet />
+        </DashboardContent>
       </Content>
     </AdminContainer>
   )
 }
 
 export default AdminLayout
-

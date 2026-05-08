@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["jest", "node"],
     "target": "es6",
     "module": "commonjs",
     "outDir": "./dist",
@@ -7,7 +8,9 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

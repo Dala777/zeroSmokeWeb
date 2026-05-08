@@ -5,8 +5,9 @@ import {
   createMessage,
   updateMessage,
   deleteMessage,
-} from "../controllers/message.controller";
-import { authMiddleware, adminMiddleware } from "../middleware/auth.middleware";
+  replyToMessage,
+} from "../controllers/message.controller"
+import { authMiddleware, adminMiddleware } from "../middleware/auth.middleware"
 
 const router = express.Router();
 
@@ -14,9 +15,12 @@ const router = express.Router();
 router.post("/", createMessage);
 
 // Rutas protegidas (solo admin)
-router.get("/", authMiddleware, adminMiddleware, getAllMessages);
-router.get("/:id", authMiddleware, adminMiddleware, getMessageById);
-router.put("/:id", authMiddleware, adminMiddleware, updateMessage);
-router.delete("/:id", authMiddleware, adminMiddleware, deleteMessage);
+router.get("/", authMiddleware, adminMiddleware, getAllMessages)
+router.get("/:id", authMiddleware, adminMiddleware, getMessageById)
+router.put("/:id", authMiddleware, adminMiddleware, updateMessage)
+router.delete("/:id", authMiddleware, adminMiddleware, deleteMessage)
+router.post("/:id/reply", authMiddleware, adminMiddleware, replyToMessage)
+
+export default router
 
 export default router;

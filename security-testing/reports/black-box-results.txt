@@ -1,0 +1,8 @@
+﻿=== Testing de Caja Negra - ZeroSmoke ===
+Fecha: 2025-08-29 13:07:32
+
+1. Testing SQL Injection en login...
+Error: Error en el servidor remoto: (401) No autorizado.
+
+2. Testing acceso directo a endpoints protegidos...
+Admin endpoint Error: Error en el servidor remoto: (404) No se encontró.

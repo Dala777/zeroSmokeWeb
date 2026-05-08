@@ -1,0 +1,777 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report-3.0.xsd" version="3.0" name="com.zerosmoke.runners.TestRunner" time="1406.614" tests="14" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="23"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.class.path" value="C:\Users\Daleska\OneDrive\Desktop\ZEROSMOKE_LIMPIO\cucumber-tests\target\test-classes;C:\Users\Daleska\OneDrive\Desktop\ZEROSMOKE_LIMPIO\cucumber-tests\target\zerosmoke-cucumber-tests-1.0.0.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-core\4.2.22\serenity-core-4.2.22.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-model\4.2.22\serenity-model-4.2.22.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-text\1.12.0\commons-text-1.12.0.jar;C:\Users\Daleska\.m2\repository\commons-net\commons-net\3.11.1\commons-net-3.11.1.jar;C:\Users\Daleska\.m2\repository\com\google\guava\guava\33.3.1-jre\guava-33.3.1-jre.jar;C:\Users\Daleska\.m2\repository\com\google\guava\failureaccess\1.0.2\failureaccess-1.0.2.jar;C:\Users\Daleska\.m2\repository\com\google\guava\listenablefuture\9999.0-empty-to-avoid-conflict-with-guava\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar;C:\Users\Daleska\.m2\repository\com\google\code\findbugs\jsr305\3.0.2\jsr305-3.0.2.jar;C:\Users\Daleska\.m2\repository\org\checkerframework\checker-qual\3.43.0\checker-qual-3.43.0.jar;C:\Users\Daleska\.m2\repository\com\google\j2objc\j2objc-annotations\3.0.0\j2objc-annotations-3.0.0.jar;C:\Users\Daleska\.m2\repository\org\jsoup\jsoup\1.15.4\jsoup-1.15.4.jar;C:\Users\Daleska\.m2\repository\com\thoughtworks\xstream\xstream\1.4.21\xstream-1.4.21.jar;C:\Users\Daleska\.m2\repository\io\github\x-stream\mxparser\1.2.2\mxparser-1.2.2.jar;C:\Users\Daleska\.m2\repository\xmlpull\xmlpull\1.1.3.1\xmlpull-1.1.3.1.jar;C:\Users\Daleska\.m2\repository\com\opencsv\opencsv\5.9\opencsv-5.9.jar;C:\Users\Daleska\.m2\repository\commons-beanutils\commons-beanutils\1.9.4\commons-beanutils-1.9.4.jar;C:\Users\Daleska\.m2\repository\commons-collections\commons-collections\3.2.2\commons-collections-3.2.2.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-collections4\4.4\commons-collections4-4.4.jar;C:\Users\Daleska\.m2\repository\com\typesafe\config\1.4.3\config-1.4.3.jar;C:\Users\Daleska\.m2\repository\org\imgscalr\imgscalr-lib\4.2\imgscalr-lib-4.2.jar;C:\Users\Daleska\.m2\repository\org\awaitility\awaitility\4.3.0\awaitility-4.3.0.jar;C:\Users\Daleska\.m2\repository\org\freemarker\freemarker\2.3.33\freemarker-2.3.33.jar;C:\Users\Daleska\.m2\repository\io\github\classgraph\classgraph\4.8.157\classgraph-4.8.157.jar;C:\Users\Daleska\.m2\repository\com\github\ben-manes\caffeine\caffeine\2.9.2\caffeine-2.9.2.jar;C:\Users\Daleska\.m2\repository\org\ehcache\ehcache\3.10.8\ehcache-3.10.8.jar;C:\Users\Daleska\.m2\repository\javax\cache\cache-api\1.1.0\cache-api-1.1.0.jar;C:\Users\Daleska\.m2\repository\net\sourceforge\jexcelapi\jxl\2.6.12\jxl-2.6.12.jar;C:\Users\Daleska\.m2\repository\net\bytebuddy\byte-buddy\1.15.11\byte-buddy-1.15.11.jar;C:\Users\Daleska\.m2\repository\net\bytebuddy\byte-buddy-agent\1.15.11\byte-buddy-agent-1.15.11.jar;C:\Users\Daleska\.m2\repository\org\objenesis\objenesis\3.4\objenesis-3.4.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-all\0.64.8\flexmark-all-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark\0.64.8\flexmark-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-abbreviation\0.64.8\flexmark-ext-abbreviation-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-admonition\0.64.8\flexmark-ext-admonition-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-anchorlink\0.64.8\flexmark-ext-anchorlink-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-aside\0.64.8\flexmark-ext-aside-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-attributes\0.64.8\flexmark-ext-attributes-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-autolink\0.64.8\flexmark-ext-autolink-0.64.8.jar;C:\Users\Daleska\.m2\repository\org\nibor\autolink\autolink\0.6.0\autolink-0.6.0.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-definition\0.64.8\flexmark-ext-definition-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-emoji\0.64.8\flexmark-ext-emoji-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-enumerated-reference\0.64.8\flexmark-ext-enumerated-reference-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-escaped-character\0.64.8\flexmark-ext-escaped-character-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-footnotes\0.64.8\flexmark-ext-footnotes-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-gfm-issues\0.64.8\flexmark-ext-gfm-issues-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-gfm-strikethrough\0.64.8\flexmark-ext-gfm-strikethrough-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-gfm-tasklist\0.64.8\flexmark-ext-gfm-tasklist-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-gfm-users\0.64.8\flexmark-ext-gfm-users-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-gitlab\0.64.8\flexmark-ext-gitlab-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-jekyll-front-matter\0.64.8\flexmark-ext-jekyll-front-matter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-jekyll-tag\0.64.8\flexmark-ext-jekyll-tag-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-media-tags\0.64.8\flexmark-ext-media-tags-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-macros\0.64.8\flexmark-ext-macros-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-ins\0.64.8\flexmark-ext-ins-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-xwiki-macros\0.64.8\flexmark-ext-xwiki-macros-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-superscript\0.64.8\flexmark-ext-superscript-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-toc\0.64.8\flexmark-ext-toc-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-typographic\0.64.8\flexmark-ext-typographic-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-wikilink\0.64.8\flexmark-ext-wikilink-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-yaml-front-matter\0.64.8\flexmark-ext-yaml-front-matter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-youtube-embedded\0.64.8\flexmark-ext-youtube-embedded-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-html2md-converter\0.64.8\flexmark-html2md-converter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-jira-converter\0.64.8\flexmark-jira-converter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-pdf-converter\0.64.8\flexmark-pdf-converter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\openhtmltopdf\openhtmltopdf-core\1.0.10\openhtmltopdf-core-1.0.10.jar;C:\Users\Daleska\.m2\repository\com\openhtmltopdf\openhtmltopdf-pdfbox\1.0.10\openhtmltopdf-pdfbox-1.0.10.jar;C:\Users\Daleska\.m2\repository\org\apache\pdfbox\pdfbox\2.0.24\pdfbox-2.0.24.jar;C:\Users\Daleska\.m2\repository\org\apache\pdfbox\fontbox\2.0.24\fontbox-2.0.24.jar;C:\Users\Daleska\.m2\repository\org\apache\pdfbox\xmpbox\2.0.24\xmpbox-2.0.24.jar;C:\Users\Daleska\.m2\repository\de\rototor\pdfbox\graphics2d\0.32\graphics2d-0.32.jar;C:\Users\Daleska\.m2\repository\com\openhtmltopdf\openhtmltopdf-rtl-support\1.0.10\openhtmltopdf-rtl-support-1.0.10.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-profile-pegdown\0.64.8\flexmark-profile-pegdown-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-ast\0.64.8\flexmark-util-ast-0.64.8.jar;C:\Users\Daleska\.m2\repository\org\jetbrains\annotations\24.0.1\annotations-24.0.1.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-builder\0.64.8\flexmark-util-builder-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-collection\0.64.8\flexmark-util-collection-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-data\0.64.8\flexmark-util-data-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-dependency\0.64.8\flexmark-util-dependency-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-format\0.64.8\flexmark-util-format-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-html\0.64.8\flexmark-util-html-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-misc\0.64.8\flexmark-util-misc-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-options\0.64.8\flexmark-util-options-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-sequence\0.64.8\flexmark-util-sequence-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-visitor\0.64.8\flexmark-util-visitor-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-youtrack-converter\0.64.8\flexmark-youtrack-converter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-resizable-image\0.64.8\flexmark-ext-resizable-image-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-tables\0.64.8\flexmark-ext-tables-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util\0.64.8\flexmark-util-0.64.8.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-reports\4.2.22\serenity-reports-4.2.22.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-stats\4.2.22\serenity-stats-4.2.22.jar;C:\Users\Daleska\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\2.1.10\kotlin-stdlib-2.1.10.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-reports-configuration\4.2.22\serenity-reports-configuration-4.2.22.jar;C:\Users\Daleska\.m2\repository\com\ibm\icu\icu4j\72.1\icu4j-72.1.jar;C:\Users\Daleska\.m2\repository\es\nitaur\markdown\txtmark\0.16\txtmark-0.16.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-report-resources\4.2.22\serenity-report-resources-4.2.22.jar;C:\Users\Daleska\.m2\repository\com\google\code\gson\gson\2.11.0\gson-2.11.0.jar;C:\Users\Daleska\.m2\repository\com\google\errorprone\error_prone_annotations\2.27.0\error_prone_annotations-2.27.0.jar;C:\Users\Daleska\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.18.1\jackson-core-2.18.1.jar;C:\Users\Daleska\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.18.1\jackson-databind-2.18.1.jar;C:\Users\Daleska\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.18.1\jackson-annotations-2.18.1.jar;C:\Users\Daleska\.m2\repository\commons-codec\commons-codec\1.17.1\commons-codec-1.17.1.jar;C:\Users\Daleska\.m2\repository\commons-io\commons-io\2.17.0\commons-io-2.17.0.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\httpclient\4.5.13\httpclient-4.5.13.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\httpcore\4.4.13\httpcore-4.4.13.jar;C:\Users\Daleska\.m2\repository\commons-logging\commons-logging\1.2\commons-logging-1.2.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-java\4.29.0\selenium-java-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-devtools-v131\4.29.0\selenium-devtools-v131-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-devtools-v132\4.29.0\selenium-devtools-v132-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-devtools-v133\4.29.0\selenium-devtools-v133-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-devtools-v85\4.29.0\selenium-devtools-v85-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-remote-driver\4.29.0\selenium-remote-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\semconv\opentelemetry-semconv\1.28.0-alpha\opentelemetry-semconv-1.28.0-alpha.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-api\1.46.0\opentelemetry-api-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-context\1.46.0\opentelemetry-context-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-exporter-logging\1.46.0\opentelemetry-exporter-logging-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-common\1.46.0\opentelemetry-sdk-common-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-extension-autoconfigure-spi\1.46.0\opentelemetry-sdk-extension-autoconfigure-spi-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-extension-autoconfigure\1.46.0\opentelemetry-sdk-extension-autoconfigure-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-api-incubator\1.46.0-alpha\opentelemetry-api-incubator-1.46.0-alpha.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-trace\1.46.0\opentelemetry-sdk-trace-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk\1.46.0\opentelemetry-sdk-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-metrics\1.46.0\opentelemetry-sdk-metrics-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-logs\1.46.0\opentelemetry-sdk-logs-1.46.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-os\4.29.0\selenium-os-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-exec\1.4.0\commons-exec-1.4.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-safari-driver\4.29.0\selenium-safari-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-api\4.29.0\selenium-api-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\jspecify\jspecify\1.0.0\jspecify-1.0.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-support\4.29.0\selenium-support-4.29.0.jar;C:\Users\Daleska\.m2\repository\com\google\auto\service\auto-service-annotations\1.1.1\auto-service-annotations-1.1.1.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-json\4.29.0\selenium-json-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-chrome-driver\4.29.0\selenium-chrome-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-chromium-driver\4.29.0\selenium-chromium-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-manager\4.29.0\selenium-manager-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-firefox-driver\4.29.0\selenium-firefox-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-http\4.29.0\selenium-http-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-edge-driver\4.29.0\selenium-edge-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-ie-driver\4.29.0\selenium-ie-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit\4.7.0\htmlunit-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\httpmime\4.5.14\httpmime-4.5.14.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit-core-js\4.7.0\htmlunit-core-js-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\neko-htmlunit\4.7.0\neko-htmlunit-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit-cssparser\4.7.0\htmlunit-cssparser-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit-xpath\4.7.0\htmlunit-xpath-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit-csp\4.7.0\htmlunit-csp-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit-websocket-client\4.7.0\htmlunit-websocket-client-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\htmlunit3-driver\4.29.0\htmlunit3-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\io\appium\java-client\9.4.0\java-client-9.4.0.jar;C:\Users\Daleska\.m2\repository\org\apache\groovy\groovy\4.0.23\groovy-4.0.23.jar;C:\Users\Daleska\.m2\repository\net\sf\opencsv\opencsv\2.3\opencsv-2.3.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-lang3\3.17.0\commons-lang3-3.17.0.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-compress\1.27.1\commons-compress-1.27.1.jar;C:\Users\Daleska\.m2\repository\org\fluentlenium\fluentlenium-core\0.10.2\fluentlenium-core-0.10.2.jar;C:\Users\Daleska\.m2\repository\com\jhlabs\filters\2.0.235\filters-2.0.235.jar;C:\Users\Daleska\.m2\repository\com\paulhammant\ngwebdriver\1.2\ngwebdriver-1.2.jar;C:\Users\Daleska\.m2\repository\joda-time\joda-time\2.13.0\joda-time-2.13.0.jar;C:\Users\Daleska\.m2\repository\org\hamcrest\hamcrest\2.2\hamcrest-2.2.jar;C:\Users\Daleska\.m2\repository\com\google\jimfs\jimfs\1.3.0\jimfs-1.3.0.jar;C:\Users\Daleska\.m2\repository\org\mockito\mockito-core\3.3.3\mockito-core-3.3.3.jar;C:\Users\Daleska\.m2\repository\javax\xml\bind\jaxb-api\2.3.1\jaxb-api-2.3.1.jar;C:\Users\Daleska\.m2\repository\javax\activation\javax.activation-api\1.2.0\javax.activation-api-1.2.0.jar;C:\Users\Daleska\.m2\repository\com\sun\xml\bind\jaxb-core\2.3.0.1\jaxb-core-2.3.0.1.jar;C:\Users\Daleska\.m2\repository\com\sun\xml\bind\jaxb-impl\2.3.3\jaxb-impl-2.3.3.jar;C:\Users\Daleska\.m2\repository\jakarta\xml\bind\jakarta.xml.bind-api\2.3.3\jakarta.xml.bind-api-2.3.3.jar;C:\Users\Daleska\.m2\repository\com\sun\activation\jakarta.activation\1.2.2\jakarta.activation-1.2.2.jar;C:\Users\Daleska\.m2\repository\javax\activation\activation\1.1.1\activation-1.1.1.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-cucumber\4.2.22\serenity-cucumber-4.2.22.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-core\7.20.1\cucumber-core-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-gherkin\7.20.1\cucumber-gherkin-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-gherkin-messages\7.20.1\cucumber-gherkin-messages-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\gherkin\28.0.0\gherkin-28.0.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\messages\24.1.0\messages-24.1.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\testng-xml-formatter\0.2.0\testng-xml-formatter-0.2.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\query\12.2.0\query-12.2.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\tag-expressions\6.1.0\tag-expressions-6.1.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-expressions\17.1.0\cucumber-expressions-17.1.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\datatable\7.20.1\datatable-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-plugin\7.20.1\cucumber-plugin-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\docstring\7.20.1\docstring-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\html-formatter\21.7.0\html-formatter-21.7.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\junit-xml-formatter\0.5.0\junit-xml-formatter-0.5.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\ci-environment\10.0.1\ci-environment-10.0.1.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-csv\1.12.0\commons-csv-1.12.0.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-screenplay\4.2.22\serenity-screenplay-4.2.22.jar;C:\Users\Daleska\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-screenplay-webdriver\4.2.22\serenity-screenplay-webdriver-4.2.22.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-java\7.17.0\cucumber-java-7.17.0.jar;C:\Users\Daleska\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-junit\7.17.0\cucumber-junit-7.17.0.jar;C:\Users\Daleska\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\Daleska\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\Daleska\.m2\repository\io\github\bonigarcia\webdrivermanager\5.6.2\webdrivermanager-5.6.2.jar;C:\Users\Daleska\.m2\repository\org\slf4j\slf4j-api\2.0.9\slf4j-api-2.0.9.jar;C:\Users\Daleska\.m2\repository\com\github\docker-java\docker-java\3.3.4\docker-java-3.3.4.jar;C:\Users\Daleska\.m2\repository\com\github\docker-java\docker-java-core\3.3.4\docker-java-core-3.3.4.jar;C:\Users\Daleska\.m2\repository\com\github\docker-java\docker-java-api\3.3.4\docker-java-api-3.3.4.jar;C:\Users\Daleska\.m2\repository\org\bouncycastle\bcpkix-jdk18on\1.76\bcpkix-jdk18on-1.76.jar;C:\Users\Daleska\.m2\repository\org\bouncycastle\bcprov-jdk18on\1.76\bcprov-jdk18on-1.76.jar;C:\Users\Daleska\.m2\repository\org\bouncycastle\bcutil-jdk18on\1.76\bcutil-jdk18on-1.76.jar;C:\Users\Daleska\.m2\repository\org\slf4j\jcl-over-slf4j\1.7.30\jcl-over-slf4j-1.7.30.jar;C:\Users\Daleska\.m2\repository\com\github\docker-java\docker-java-transport-httpclient5\3.3.4\docker-java-transport-httpclient5-3.3.4.jar;C:\Users\Daleska\.m2\repository\com\github\docker-java\docker-java-transport\3.3.4\docker-java-transport-3.3.4.jar;C:\Users\Daleska\.m2\repository\net\java\dev\jna\jna\5.13.0\jna-5.13.0.jar;C:\Users\Daleska\.m2\repository\org\brotli\dec\0.1.2\dec-0.1.2.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\client5\httpclient5\5.2.1\httpclient5-5.2.1.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\core5\httpcore5\5.2\httpcore5-5.2.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\core5\httpcore5-h2\5.2\httpcore5-h2-5.2.jar;C:\Users\Daleska\.m2\repository\ch\qos\logback\logback-classic\1.4.14\logback-classic-1.4.14.jar;C:\Users\Daleska\.m2\repository\ch\qos\logback\logback-core\1.4.14\logback-core-1.4.14.jar;"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="user.timezone" value="America/La_Paz"/>
+    <property name="os.name" value="Windows 11"/>
+    <property name="java.vm.specification.version" value="23"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="ES"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-23\bin"/>
+    <property name="sun.java.command" value="C:\Users\Daleska\AppData\Local\Temp\surefire13751794167091088262\surefirebooter-20250625103945822_3.jar C:\Users\Daleska\AppData\Local\Temp\surefire13751794167091088262 2025-06-25T10-39-45_484-jvmRun1 surefire-20250625103945822_1tmp surefire_0-20250625103945822_2tmp"/>
+    <property name="webdriver.driver" value="chrome"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="C:\Users\Daleska\OneDrive\Desktop\ZEROSMOKE_LIMPIO\cucumber-tests\target\test-classes;C:\Users\Daleska\OneDrive\Desktop\ZEROSMOKE_LIMPIO\cucumber-tests\target\zerosmoke-cucumber-tests-1.0.0.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-core\4.2.22\serenity-core-4.2.22.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-model\4.2.22\serenity-model-4.2.22.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-text\1.12.0\commons-text-1.12.0.jar;C:\Users\Daleska\.m2\repository\commons-net\commons-net\3.11.1\commons-net-3.11.1.jar;C:\Users\Daleska\.m2\repository\com\google\guava\guava\33.3.1-jre\guava-33.3.1-jre.jar;C:\Users\Daleska\.m2\repository\com\google\guava\failureaccess\1.0.2\failureaccess-1.0.2.jar;C:\Users\Daleska\.m2\repository\com\google\guava\listenablefuture\9999.0-empty-to-avoid-conflict-with-guava\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar;C:\Users\Daleska\.m2\repository\com\google\code\findbugs\jsr305\3.0.2\jsr305-3.0.2.jar;C:\Users\Daleska\.m2\repository\org\checkerframework\checker-qual\3.43.0\checker-qual-3.43.0.jar;C:\Users\Daleska\.m2\repository\com\google\j2objc\j2objc-annotations\3.0.0\j2objc-annotations-3.0.0.jar;C:\Users\Daleska\.m2\repository\org\jsoup\jsoup\1.15.4\jsoup-1.15.4.jar;C:\Users\Daleska\.m2\repository\com\thoughtworks\xstream\xstream\1.4.21\xstream-1.4.21.jar;C:\Users\Daleska\.m2\repository\io\github\x-stream\mxparser\1.2.2\mxparser-1.2.2.jar;C:\Users\Daleska\.m2\repository\xmlpull\xmlpull\1.1.3.1\xmlpull-1.1.3.1.jar;C:\Users\Daleska\.m2\repository\com\opencsv\opencsv\5.9\opencsv-5.9.jar;C:\Users\Daleska\.m2\repository\commons-beanutils\commons-beanutils\1.9.4\commons-beanutils-1.9.4.jar;C:\Users\Daleska\.m2\repository\commons-collections\commons-collections\3.2.2\commons-collections-3.2.2.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-collections4\4.4\commons-collections4-4.4.jar;C:\Users\Daleska\.m2\repository\com\typesafe\config\1.4.3\config-1.4.3.jar;C:\Users\Daleska\.m2\repository\org\imgscalr\imgscalr-lib\4.2\imgscalr-lib-4.2.jar;C:\Users\Daleska\.m2\repository\org\awaitility\awaitility\4.3.0\awaitility-4.3.0.jar;C:\Users\Daleska\.m2\repository\org\freemarker\freemarker\2.3.33\freemarker-2.3.33.jar;C:\Users\Daleska\.m2\repository\io\github\classgraph\classgraph\4.8.157\classgraph-4.8.157.jar;C:\Users\Daleska\.m2\repository\com\github\ben-manes\caffeine\caffeine\2.9.2\caffeine-2.9.2.jar;C:\Users\Daleska\.m2\repository\org\ehcache\ehcache\3.10.8\ehcache-3.10.8.jar;C:\Users\Daleska\.m2\repository\javax\cache\cache-api\1.1.0\cache-api-1.1.0.jar;C:\Users\Daleska\.m2\repository\net\sourceforge\jexcelapi\jxl\2.6.12\jxl-2.6.12.jar;C:\Users\Daleska\.m2\repository\net\bytebuddy\byte-buddy\1.15.11\byte-buddy-1.15.11.jar;C:\Users\Daleska\.m2\repository\net\bytebuddy\byte-buddy-agent\1.15.11\byte-buddy-agent-1.15.11.jar;C:\Users\Daleska\.m2\repository\org\objenesis\objenesis\3.4\objenesis-3.4.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-all\0.64.8\flexmark-all-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark\0.64.8\flexmark-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-abbreviation\0.64.8\flexmark-ext-abbreviation-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-admonition\0.64.8\flexmark-ext-admonition-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-anchorlink\0.64.8\flexmark-ext-anchorlink-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-aside\0.64.8\flexmark-ext-aside-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-attributes\0.64.8\flexmark-ext-attributes-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-autolink\0.64.8\flexmark-ext-autolink-0.64.8.jar;C:\Users\Daleska\.m2\repository\org\nibor\autolink\autolink\0.6.0\autolink-0.6.0.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-definition\0.64.8\flexmark-ext-definition-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-emoji\0.64.8\flexmark-ext-emoji-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-enumerated-reference\0.64.8\flexmark-ext-enumerated-reference-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-escaped-character\0.64.8\flexmark-ext-escaped-character-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-footnotes\0.64.8\flexmark-ext-footnotes-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-gfm-issues\0.64.8\flexmark-ext-gfm-issues-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-gfm-strikethrough\0.64.8\flexmark-ext-gfm-strikethrough-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-gfm-tasklist\0.64.8\flexmark-ext-gfm-tasklist-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-gfm-users\0.64.8\flexmark-ext-gfm-users-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-gitlab\0.64.8\flexmark-ext-gitlab-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-jekyll-front-matter\0.64.8\flexmark-ext-jekyll-front-matter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-jekyll-tag\0.64.8\flexmark-ext-jekyll-tag-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-media-tags\0.64.8\flexmark-ext-media-tags-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-macros\0.64.8\flexmark-ext-macros-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-ins\0.64.8\flexmark-ext-ins-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-xwiki-macros\0.64.8\flexmark-ext-xwiki-macros-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-superscript\0.64.8\flexmark-ext-superscript-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-toc\0.64.8\flexmark-ext-toc-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-typographic\0.64.8\flexmark-ext-typographic-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-wikilink\0.64.8\flexmark-ext-wikilink-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-yaml-front-matter\0.64.8\flexmark-ext-yaml-front-matter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-youtube-embedded\0.64.8\flexmark-ext-youtube-embedded-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-html2md-converter\0.64.8\flexmark-html2md-converter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-jira-converter\0.64.8\flexmark-jira-converter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-pdf-converter\0.64.8\flexmark-pdf-converter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\openhtmltopdf\openhtmltopdf-core\1.0.10\openhtmltopdf-core-1.0.10.jar;C:\Users\Daleska\.m2\repository\com\openhtmltopdf\openhtmltopdf-pdfbox\1.0.10\openhtmltopdf-pdfbox-1.0.10.jar;C:\Users\Daleska\.m2\repository\org\apache\pdfbox\pdfbox\2.0.24\pdfbox-2.0.24.jar;C:\Users\Daleska\.m2\repository\org\apache\pdfbox\fontbox\2.0.24\fontbox-2.0.24.jar;C:\Users\Daleska\.m2\repository\org\apache\pdfbox\xmpbox\2.0.24\xmpbox-2.0.24.jar;C:\Users\Daleska\.m2\repository\de\rototor\pdfbox\graphics2d\0.32\graphics2d-0.32.jar;C:\Users\Daleska\.m2\repository\com\openhtmltopdf\openhtmltopdf-rtl-support\1.0.10\openhtmltopdf-rtl-support-1.0.10.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-profile-pegdown\0.64.8\flexmark-profile-pegdown-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-ast\0.64.8\flexmark-util-ast-0.64.8.jar;C:\Users\Daleska\.m2\repository\org\jetbrains\annotations\24.0.1\annotations-24.0.1.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-builder\0.64.8\flexmark-util-builder-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-collection\0.64.8\flexmark-util-collection-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-data\0.64.8\flexmark-util-data-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-dependency\0.64.8\flexmark-util-dependency-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-format\0.64.8\flexmark-util-format-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-html\0.64.8\flexmark-util-html-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-misc\0.64.8\flexmark-util-misc-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-options\0.64.8\flexmark-util-options-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-sequence\0.64.8\flexmark-util-sequence-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util-visitor\0.64.8\flexmark-util-visitor-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-youtrack-converter\0.64.8\flexmark-youtrack-converter-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-resizable-image\0.64.8\flexmark-ext-resizable-image-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-ext-tables\0.64.8\flexmark-ext-tables-0.64.8.jar;C:\Users\Daleska\.m2\repository\com\vladsch\flexmark\flexmark-util\0.64.8\flexmark-util-0.64.8.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-reports\4.2.22\serenity-reports-4.2.22.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-stats\4.2.22\serenity-stats-4.2.22.jar;C:\Users\Daleska\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\2.1.10\kotlin-stdlib-2.1.10.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-reports-configuration\4.2.22\serenity-reports-configuration-4.2.22.jar;C:\Users\Daleska\.m2\repository\com\ibm\icu\icu4j\72.1\icu4j-72.1.jar;C:\Users\Daleska\.m2\repository\es\nitaur\markdown\txtmark\0.16\txtmark-0.16.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-report-resources\4.2.22\serenity-report-resources-4.2.22.jar;C:\Users\Daleska\.m2\repository\com\google\code\gson\gson\2.11.0\gson-2.11.0.jar;C:\Users\Daleska\.m2\repository\com\google\errorprone\error_prone_annotations\2.27.0\error_prone_annotations-2.27.0.jar;C:\Users\Daleska\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.18.1\jackson-core-2.18.1.jar;C:\Users\Daleska\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.18.1\jackson-databind-2.18.1.jar;C:\Users\Daleska\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.18.1\jackson-annotations-2.18.1.jar;C:\Users\Daleska\.m2\repository\commons-codec\commons-codec\1.17.1\commons-codec-1.17.1.jar;C:\Users\Daleska\.m2\repository\commons-io\commons-io\2.17.0\commons-io-2.17.0.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\httpclient\4.5.13\httpclient-4.5.13.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\httpcore\4.4.13\httpcore-4.4.13.jar;C:\Users\Daleska\.m2\repository\commons-logging\commons-logging\1.2\commons-logging-1.2.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-java\4.29.0\selenium-java-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-devtools-v131\4.29.0\selenium-devtools-v131-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-devtools-v132\4.29.0\selenium-devtools-v132-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-devtools-v133\4.29.0\selenium-devtools-v133-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-devtools-v85\4.29.0\selenium-devtools-v85-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-remote-driver\4.29.0\selenium-remote-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\semconv\opentelemetry-semconv\1.28.0-alpha\opentelemetry-semconv-1.28.0-alpha.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-api\1.46.0\opentelemetry-api-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-context\1.46.0\opentelemetry-context-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-exporter-logging\1.46.0\opentelemetry-exporter-logging-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-common\1.46.0\opentelemetry-sdk-common-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-extension-autoconfigure-spi\1.46.0\opentelemetry-sdk-extension-autoconfigure-spi-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-extension-autoconfigure\1.46.0\opentelemetry-sdk-extension-autoconfigure-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-api-incubator\1.46.0-alpha\opentelemetry-api-incubator-1.46.0-alpha.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-trace\1.46.0\opentelemetry-sdk-trace-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk\1.46.0\opentelemetry-sdk-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-metrics\1.46.0\opentelemetry-sdk-metrics-1.46.0.jar;C:\Users\Daleska\.m2\repository\io\opentelemetry\opentelemetry-sdk-logs\1.46.0\opentelemetry-sdk-logs-1.46.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-os\4.29.0\selenium-os-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-exec\1.4.0\commons-exec-1.4.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-safari-driver\4.29.0\selenium-safari-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-api\4.29.0\selenium-api-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\jspecify\jspecify\1.0.0\jspecify-1.0.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-support\4.29.0\selenium-support-4.29.0.jar;C:\Users\Daleska\.m2\repository\com\google\auto\service\auto-service-annotations\1.1.1\auto-service-annotations-1.1.1.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-json\4.29.0\selenium-json-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-chrome-driver\4.29.0\selenium-chrome-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-chromium-driver\4.29.0\selenium-chromium-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-manager\4.29.0\selenium-manager-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-firefox-driver\4.29.0\selenium-firefox-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-http\4.29.0\selenium-http-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-edge-driver\4.29.0\selenium-edge-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\selenium-ie-driver\4.29.0\selenium-ie-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit\4.7.0\htmlunit-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\httpmime\4.5.14\httpmime-4.5.14.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit-core-js\4.7.0\htmlunit-core-js-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\neko-htmlunit\4.7.0\neko-htmlunit-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit-cssparser\4.7.0\htmlunit-cssparser-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit-xpath\4.7.0\htmlunit-xpath-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit-csp\4.7.0\htmlunit-csp-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\htmlunit\htmlunit-websocket-client\4.7.0\htmlunit-websocket-client-4.7.0.jar;C:\Users\Daleska\.m2\repository\org\seleniumhq\selenium\htmlunit3-driver\4.29.0\htmlunit3-driver-4.29.0.jar;C:\Users\Daleska\.m2\repository\io\appium\java-client\9.4.0\java-client-9.4.0.jar;C:\Users\Daleska\.m2\repository\org\apache\groovy\groovy\4.0.23\groovy-4.0.23.jar;C:\Users\Daleska\.m2\repository\net\sf\opencsv\opencsv\2.3\opencsv-2.3.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-lang3\3.17.0\commons-lang3-3.17.0.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-compress\1.27.1\commons-compress-1.27.1.jar;C:\Users\Daleska\.m2\repository\org\fluentlenium\fluentlenium-core\0.10.2\fluentlenium-core-0.10.2.jar;C:\Users\Daleska\.m2\repository\com\jhlabs\filters\2.0.235\filters-2.0.235.jar;C:\Users\Daleska\.m2\repository\com\paulhammant\ngwebdriver\1.2\ngwebdriver-1.2.jar;C:\Users\Daleska\.m2\repository\joda-time\joda-time\2.13.0\joda-time-2.13.0.jar;C:\Users\Daleska\.m2\repository\org\hamcrest\hamcrest\2.2\hamcrest-2.2.jar;C:\Users\Daleska\.m2\repository\com\google\jimfs\jimfs\1.3.0\jimfs-1.3.0.jar;C:\Users\Daleska\.m2\repository\org\mockito\mockito-core\3.3.3\mockito-core-3.3.3.jar;C:\Users\Daleska\.m2\repository\javax\xml\bind\jaxb-api\2.3.1\jaxb-api-2.3.1.jar;C:\Users\Daleska\.m2\repository\javax\activation\javax.activation-api\1.2.0\javax.activation-api-1.2.0.jar;C:\Users\Daleska\.m2\repository\com\sun\xml\bind\jaxb-core\2.3.0.1\jaxb-core-2.3.0.1.jar;C:\Users\Daleska\.m2\repository\com\sun\xml\bind\jaxb-impl\2.3.3\jaxb-impl-2.3.3.jar;C:\Users\Daleska\.m2\repository\jakarta\xml\bind\jakarta.xml.bind-api\2.3.3\jakarta.xml.bind-api-2.3.3.jar;C:\Users\Daleska\.m2\repository\com\sun\activation\jakarta.activation\1.2.2\jakarta.activation-1.2.2.jar;C:\Users\Daleska\.m2\repository\javax\activation\activation\1.1.1\activation-1.1.1.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-cucumber\4.2.22\serenity-cucumber-4.2.22.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-core\7.20.1\cucumber-core-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-gherkin\7.20.1\cucumber-gherkin-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-gherkin-messages\7.20.1\cucumber-gherkin-messages-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\gherkin\28.0.0\gherkin-28.0.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\messages\24.1.0\messages-24.1.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\testng-xml-formatter\0.2.0\testng-xml-formatter-0.2.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\query\12.2.0\query-12.2.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\tag-expressions\6.1.0\tag-expressions-6.1.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-expressions\17.1.0\cucumber-expressions-17.1.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\datatable\7.20.1\datatable-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-plugin\7.20.1\cucumber-plugin-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\docstring\7.20.1\docstring-7.20.1.jar;C:\Users\Daleska\.m2\repository\io\cucumber\html-formatter\21.7.0\html-formatter-21.7.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\junit-xml-formatter\0.5.0\junit-xml-formatter-0.5.0.jar;C:\Users\Daleska\.m2\repository\io\cucumber\ci-environment\10.0.1\ci-environment-10.0.1.jar;C:\Users\Daleska\.m2\repository\org\apache\commons\commons-csv\1.12.0\commons-csv-1.12.0.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-screenplay\4.2.22\serenity-screenplay-4.2.22.jar;C:\Users\Daleska\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\Daleska\.m2\repository\net\serenity-bdd\serenity-screenplay-webdriver\4.2.22\serenity-screenplay-webdriver-4.2.22.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-java\7.17.0\cucumber-java-7.17.0.jar;C:\Users\Daleska\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Daleska\.m2\repository\io\cucumber\cucumber-junit\7.17.0\cucumber-junit-7.17.0.jar;C:\Users\Daleska\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\Daleska\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\Daleska\.m2\repository\io\github\bonigarcia\webdrivermanager\5.6.2\webdrivermanager-5.6.2.jar;C:\Users\Daleska\.m2\repository\org\slf4j\slf4j-api\2.0.9\slf4j-api-2.0.9.jar;C:\Users\Daleska\.m2\repository\com\github\docker-java\docker-java\3.3.4\docker-java-3.3.4.jar;C:\Users\Daleska\.m2\repository\com\github\docker-java\docker-java-core\3.3.4\docker-java-core-3.3.4.jar;C:\Users\Daleska\.m2\repository\com\github\docker-java\docker-java-api\3.3.4\docker-java-api-3.3.4.jar;C:\Users\Daleska\.m2\repository\org\bouncycastle\bcpkix-jdk18on\1.76\bcpkix-jdk18on-1.76.jar;C:\Users\Daleska\.m2\repository\org\bouncycastle\bcprov-jdk18on\1.76\bcprov-jdk18on-1.76.jar;C:\Users\Daleska\.m2\repository\org\bouncycastle\bcutil-jdk18on\1.76\bcutil-jdk18on-1.76.jar;C:\Users\Daleska\.m2\repository\org\slf4j\jcl-over-slf4j\1.7.30\jcl-over-slf4j-1.7.30.jar;C:\Users\Daleska\.m2\repository\com\github\docker-java\docker-java-transport-httpclient5\3.3.4\docker-java-transport-httpclient5-3.3.4.jar;C:\Users\Daleska\.m2\repository\com\github\docker-java\docker-java-transport\3.3.4\docker-java-transport-3.3.4.jar;C:\Users\Daleska\.m2\repository\net\java\dev\jna\jna\5.13.0\jna-5.13.0.jar;C:\Users\Daleska\.m2\repository\org\brotli\dec\0.1.2\dec-0.1.2.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\client5\httpclient5\5.2.1\httpclient5-5.2.1.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\core5\httpcore5\5.2\httpcore5-5.2.jar;C:\Users\Daleska\.m2\repository\org\apache\httpcomponents\core5\httpcore5-h2\5.2\httpcore5-h2-5.2.jar;C:\Users\Daleska\.m2\repository\ch\qos\logback\logback-classic\1.4.14\logback-classic-1.4.14.jar;C:\Users\Daleska\.m2\repository\ch\qos\logback\logback-core\1.4.14\logback-core-1.4.14.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\Daleska"/>
+    <property name="user.language" value="es"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2024-10-15"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk-23"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="C:\Users\Daleska\OneDrive\Desktop\ZEROSMOKE_LIMPIO\cucumber-tests"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="surefire.real.class.path" value="C:\Users\Daleska\AppData\Local\Temp\surefire13751794167091088262\surefirebooter-20250625103945822_3.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="23.0.1+11-39"/>
+    <property name="user.name" value="Daleska"/>
+    <property name="stdout.encoding" value="Cp1252"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="localRepository" value="C:\Users\Daleska\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="java.io.tmpdir" value="C:\Users\Daleska\AppData\Local\Temp\"/>
+    <property name="java.version" value="23.0.1"/>
+    <property name="user.dir" value="C:\Users\Daleska\OneDrive\Desktop\ZEROSMOKE_LIMPIO\cucumber-tests"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="native.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-23\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\Eclipse Adoptium\jdk-21.0.7.6-hotspot\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Ruby33-x64\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\dotnet\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\PROGRA~2\PICC;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\MySQL\MySQL Server 9.1\bin;C:\Users\Daleska\AppData\Local\Programs\Python\Python312\Scripts\;C:\Users\Daleska\AppData\Local\Programs\Python\Python313\;C:\flutter\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\MATLAB\R2024b\bin;C:\Program Files\Java\jdk-23\\bin;C:\Program Files\Apache\Maven\apache-maven-3.9.9\bin;C:\Users\Daleska\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\Daleska\AppData\Local\Programs\Python\Python310\;C:\Users\Daleska\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\Daleska\AppData\Local\Programs\Python\Python313\;C:\Users\Daleska\AppData\Local\Programs\Python\Launcher\;C:\Users\Daleska\AppData\Local\Programs\Python\Python312\Scripts\;C:\Users\Daleska\AppData\Local\Programs\Python\Python312\;C:\Users\Daleska\AppData\Local\Microsoft\WindowsApps;C:\Users\Daleska\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\JetBrains\PyCharm Community Edition 2024.2.1\bin;;C:\Program Files\MySQL\MySQL Server 9.1\bin;C:\Ruby33-x64\bin;C:\Users\Daleska\AppData\Roaming\npm;C:\Users\Daleska\.dotnet\tools;C:\Users\Daleska\AppData\Local\Microsoft\WinGet\Packages\Microsoft.devtunnel_Microsoft.Winget.Source_8wekyb3d8bbwe;;c:\Users\Daleska\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\debugCommand;."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="Cp1252"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="java.vm.version" value="23.0.1+11-39"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="67.0"/>
+  </properties>
+  <testcase name="Registro exitoso de usuario" classname="Registro de Usuario" time="151.141">
+    <system-out><![CDATA[10:39:49.511 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/01_user_registration.feature
+10:39:49.645 [main] INFO  -- 
+
+-------------------------------------------------------------------------------------
+     _______. _______ .______       _______ .__   __.  __  .___________.____    ____ 
+    /       ||   ____||   _  \     |   ____||  \ |  | |  | |           |\   \  /   / 
+   |   (----`|  |__   |  |_)  |    |  |__   |   \|  | |  | `---|  |----` \   \/   /  
+    \   \    |   __|  |      /     |   __|  |  . `  | |  |     |  |       \_    _/   
+.----)   |   |  |____ |  |\  \----.|  |____ |  |\   | |  |     |  |         |  |     
+|_______/    |_______|| _| `._____||_______||__| \__| |__|     |__|         |__|    
+                                                                                     
+ News and tutorials at https://serenity-bdd.info                                     
+ Documentation at https://serenity-bdd.github.io                                     
+ Test Automation Training and Coaching: https://www.serenity-dojo.com                
+ Commercial Support: https://www.serenity-dojo.com/serenity-bdd-enterprise-support   
+ Join the Serenity Community on Gitter: https://gitter.im/serenity-bdd/serenity-core 
+-------------------------------------------------------------------------------------
+
+10:39:49.653 [main] DEBUG net.thucydides.core.steps.StepEventBus -- Test suite started for story net.thucydides.model.domain.Story@571f3de0
+10:39:49.661 [main] INFO  -- Test Suite Started: Registro de Usuario
+10:39:49.901 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/02_user_login.feature
+10:39:49.907 [main] DEBUG net.thucydides.core.steps.StepEventBus -- Test suite started for story net.thucydides.model.domain.Story@a1fa8a40
+10:39:49.909 [main] INFO  -- Test Suite Started: Inicio de Sesión de Usuario
+10:39:49.913 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/03_contact_form.feature
+10:39:49.920 [main] DEBUG net.thucydides.core.steps.StepEventBus -- Test suite started for story net.thucydides.model.domain.Story@e2f6c7e0
+10:39:49.921 [main] INFO  -- Test Suite Started: Formulario de Contacto
+10:39:49.927 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/04_admin_message_response.feature
+10:39:49.933 [main] DEBUG net.thucydides.core.steps.StepEventBus -- Test suite started for story net.thucydides.model.domain.Story@a9272080
+10:39:49.933 [main] INFO  -- Test Suite Started: Respuesta de Administrador a Mensajes de Contacto
+10:39:49.940 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/01_user_registration.feature
+10:39:49.942 [main] DEBUG net.thucydides.core.steps.StepEventBus -- Test suite started for story net.thucydides.model.domain.Story@571f3de0
+10:39:49.943 [main] INFO  -- Test Suite Started: Registro de Usuario
+
+@funcionalidades_principales @smoke @registro
+Scenario: Registro exitoso de usuario                        &amp#27;[90m# src/test/resources/features/01_user_registration.feature:12&amp#27;[0m
+10:39:50.157 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/01_user_registration.feature
+10:39:50.430 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Registro exitoso de usuario(registro-de-usuario;registro-exitoso-de-usuario)
+--------------------------------------------------------------------------------
+10:39:50.507 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+10:39:52.087 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+10:39:52.090 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m         &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+10:40:03.170 [main] INFO  -- |-- And estoy en la página principal
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mestoy en la página principal&amp#27;[0m                           &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.estoyEnLaPaginaPrincipal()&amp#27;[0m
+10:40:03.341 [main] INFO  -- |-- Given navego a la página de registro
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mnavego a la página de registro&amp#27;[0m                       &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.navegoALaPaginaDeRegistro()&amp#27;[0m
+10:42:09.016 [main] INFO  -- |-- When completo el formulario de registro con datos válidos:
+| campo | valor |
+| nombre | Juan Pérez |
+| email | juan.perez@test.com |
+| contraseña | MiPassword123! |
+| confirmar_password | MiPassword123! |
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mcompleto el formulario de registro con datos válidos:&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.completoElFormularioDeRegistroConDatosValidos(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | campo              | valor               |
+    | nombre             | Juan Pérez          |
+    | email              | juan.perez@test.com |
+    | contraseña         | MiPassword123!      |
+    | confirmar_password | MiPassword123!      |
+10:42:09.252 [main] INFO  -- |-- And acepto los términos y condiciones
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32macepto los términos y condiciones&amp#27;[0m                      &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.aceptoLosTerminosYCondiciones()&amp#27;[0m
+10:42:19.333 [main] INFO  -- |-- And hago clic en el botón registrar
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mhago clic en el botón registrar&amp#27;[0m                        &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.hagoClicEnElBotonRegistrar()&amp#27;[0m
+10:42:19.640 [main] INFO  -- |-- Then debería ver un mensaje de registro exitoso
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32mdebería ver un mensaje de registro exitoso&amp#27;[0m            &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.deberiaVerUnMensajeDeRegistroExitoso()&amp#27;[0m
+10:42:19.647 [main] INFO  -- |-- And debería ser redirigido a la página de login
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería ser redirigido a la página de login&amp#27;[0m            &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.deberiaSerRedirigidoALaPaginaDeLogin()&amp#27;[0m
+10:42:20.674 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Registro exitoso de usuario
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 10:40:01 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Registro con email inválido" classname="Registro de Usuario" time="130.385">
+    <system-out><![CDATA[
+@funcionalidades_principales @registro @validacion
+Scenario: Registro con email inválido                                                        &amp#27;[90m# src/test/resources/features/01_user_registration.feature:26&amp#27;[0m
+10:42:21.112 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/01_user_registration.feature
+10:42:21.113 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Registro con email inválido(registro-de-usuario;registro-con-email-inválido)
+--------------------------------------------------------------------------------
+10:42:21.115 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+10:42:21.236 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+10:42:21.237 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m                                         &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+10:42:25.231 [main] INFO  -- |-- And estoy en la página principal
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mestoy en la página principal&amp#27;[0m                                                           &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.estoyEnLaPaginaPrincipal()&amp#27;[0m
+10:42:25.321 [main] INFO  -- |-- Given navego a la página de registro
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mnavego a la página de registro&amp#27;[0m                                                       &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.navegoALaPaginaDeRegistro()&amp#27;[0m
+10:44:29.910 [main] INFO  -- |-- When completo el formulario de registro con:
+| campo | valor |
+| nombre | Juan Pérez |
+| email | email-invalido |
+| contraseña | MiPassword123! |
+| confirmar_password | MiPassword123! |
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mcompleto el formulario de registro con:&amp#27;[0m                                               &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.completoElFormularioDeRegistroCon(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | campo              | valor          |
+    | nombre             | Juan Pérez     |
+    | email              | email-invalido |
+    | contraseña         | MiPassword123! |
+    | confirmar_password | MiPassword123! |
+10:44:30.769 [main] INFO  -- |-- And hago clic en el botón registrar
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mhago clic en el botón registrar&amp#27;[0m                                                        &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.hagoClicEnElBotonRegistrar()&amp#27;[0m
+10:44:31.148 [main] INFO  -- |-- Then en el registro debería ver un mensaje de error "Por favor, introduce un email válido"
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32men el registro debería ver un mensaje de error &amp#27;[0m&amp#27;[32m&amp#27;[1m"Por favor, introduce un email válido"&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.enElRegistroDeberiaVerUnMensajeDeError(java.lang.String)&amp#27;[0m
+10:44:31.154 [main] INFO  -- |-- And debería permanecer en la página de registro
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería permanecer en la página de registro&amp#27;[0m                                            &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.deberiaPermanecerenLaPaginaDeRegistro()&amp#27;[0m
+10:44:31.173 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Registro con email inválido
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 10:42:23 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Registro con contraseñas que no coinciden" classname="Registro de Usuario" time="130.759">
+    <system-out><![CDATA[
+@funcionalidades_principales @registro @validacion
+Scenario: Registro con contraseñas que no coinciden                                  &amp#27;[90m# src/test/resources/features/01_user_registration.feature:39&amp#27;[0m
+10:44:31.503 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/01_user_registration.feature
+10:44:31.503 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Registro con contraseñas que no coinciden(registro-de-usuario;registro-con-contraseñas-que-no-coinciden)
+--------------------------------------------------------------------------------
+10:44:31.505 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+10:44:31.637 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+10:44:31.638 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m                                 &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+10:44:36.195 [main] INFO  -- |-- And estoy en la página principal
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mestoy en la página principal&amp#27;[0m                                                   &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.estoyEnLaPaginaPrincipal()&amp#27;[0m
+10:44:36.390 [main] INFO  -- |-- Given navego a la página de registro
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mnavego a la página de registro&amp#27;[0m                                               &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.navegoALaPaginaDeRegistro()&amp#27;[0m
+10:46:41.401 [main] INFO  -- |-- When completo el formulario de registro con:
+| campo | valor |
+| nombre | Juan Pérez |
+| email | juan.perez@test.com |
+| contraseña | MiPassword123! |
+| confirmar_password | OtraPassword456! |
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mcompleto el formulario de registro con:&amp#27;[0m                                       &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.completoElFormularioDeRegistroCon(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | campo              | valor               |
+    | nombre             | Juan Pérez          |
+    | email              | juan.perez@test.com |
+    | contraseña         | MiPassword123!      |
+    | confirmar_password | OtraPassword456!    |
+10:46:41.661 [main] INFO  -- |-- And hago clic en el botón registrar
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mhago clic en el botón registrar&amp#27;[0m                                                &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.hagoClicEnElBotonRegistrar()&amp#27;[0m
+10:46:41.941 [main] INFO  -- |-- Then en el registro debería ver un mensaje de error "Las contraseñas no coinciden"
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32men el registro debería ver un mensaje de error &amp#27;[0m&amp#27;[32m&amp#27;[1m"Las contraseñas no coinciden"&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.enElRegistroDeberiaVerUnMensajeDeError(java.lang.String)&amp#27;[0m
+10:46:41.944 [main] INFO  -- |-- And debería permanecer en la página de registro
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería permanecer en la página de registro&amp#27;[0m                                    &amp#27;[90m# com.zerosmoke.stepdefinitions.RegistrationSteps.deberiaPermanecerenLaPaginaDeRegistro()&amp#27;[0m
+10:46:41.963 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Registro con contraseñas que no coinciden
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 10:44:34 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Login exitoso con credenciales válidas" classname="Inicio de Sesión de Usuario" time="130.258">
+    <system-out><![CDATA[10:46:42.256 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/02_user_login.feature
+10:46:42.259 [main] DEBUG net.thucydides.core.steps.StepEventBus -- Test suite started for story net.thucydides.model.domain.Story@a1fa8a40
+10:46:42.260 [main] INFO  -- Test Suite Started: Inicio de Sesión de Usuario
+
+@funcionalidades_principales @smoke @login
+Scenario: Login exitoso con credenciales válidas     &amp#27;[90m# src/test/resources/features/02_user_login.feature:12&amp#27;[0m
+10:46:42.269 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/02_user_login.feature
+10:46:42.270 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Login exitoso con credenciales válidas(inicio-de-sesión-de-usuario;login-exitoso-con-credenciales-válidas)
+--------------------------------------------------------------------------------
+10:46:42.272 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+10:46:42.391 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+10:46:42.392 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+10:46:46.575 [main] INFO  -- |-- And estoy en la página principal
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mestoy en la página principal&amp#27;[0m                   &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.estoyEnLaPaginaPrincipal()&amp#27;[0m
+10:46:46.661 [main] INFO  -- |-- Given navego a la página de login
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mnavego a la página de login&amp#27;[0m                  &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.navegoALaPaginaDeLogin()&amp#27;[0m
+10:48:51.693 [main] INFO  -- |-- When ingreso las credenciales:
+| email | usuario@test.com |
+| contraseña | password123 |
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mingreso las credenciales:&amp#27;[0m                     &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.ingresoLasCredenciales(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | email      | usuario@test.com |
+    | contraseña | password123      |
+10:48:51.818 [main] INFO  -- |-- And hago clic en iniciar sesión
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mhago clic en iniciar sesión&amp#27;[0m                    &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.hagoClicEnIniciarSesion()&amp#27;[0m
+10:48:52.132 [main] INFO  -- |-- Then debería ser redirigido al dashboard
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32mdebería ser redirigido al dashboard&amp#27;[0m           &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.deberiaSerRedirigidoAlDashboard()&amp#27;[0m
+10:48:52.138 [main] INFO  -- |-- And debería ver el menú de usuario
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería ver el menú de usuario&amp#27;[0m                 &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.deberiaVerElMenuDeUsuario()&amp#27;[0m
+10:48:52.143 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Login exitoso con credenciales válidas
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 10:46:45 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Login con credenciales inválidas" classname="Inicio de Sesión de Usuario" time="135.971">
+    <system-out><![CDATA[
+@funcionalidades_principales @login @validacion
+Scenario: Login con credenciales inválidas                                  &amp#27;[90m# src/test/resources/features/02_user_login.feature:22&amp#27;[0m
+10:48:52.540 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/02_user_login.feature
+10:48:52.541 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Login con credenciales inválidas(inicio-de-sesión-de-usuario;login-con-credenciales-inválidas)
+--------------------------------------------------------------------------------
+10:48:52.542 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+10:48:52.661 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+10:48:52.661 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m                        &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+10:48:56.529 [main] INFO  -- |-- And estoy en la página principal
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mestoy en la página principal&amp#27;[0m                                          &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.estoyEnLaPaginaPrincipal()&amp#27;[0m
+10:48:56.624 [main] INFO  -- |-- Given navego a la página de login
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mnavego a la página de login&amp#27;[0m                                         &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.navegoALaPaginaDeLogin()&amp#27;[0m
+10:51:05.065 [main] INFO  -- |-- When ingreso credenciales inválidas:
+| email | usuario@inexistente.com |
+| contraseña | passwordIncorrecto |
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mingreso credenciales inválidas:&amp#27;[0m                                      &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.ingresoCredencialesInvalidas(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | email      | usuario@inexistente.com |
+    | contraseña | passwordIncorrecto      |
+10:51:05.717 [main] INFO  -- |-- And hago clic en iniciar sesión
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mhago clic en iniciar sesión&amp#27;[0m                                           &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.hagoClicEnIniciarSesion()&amp#27;[0m
+10:51:06.540 [main] INFO  -- |-- Then en el login debería ver un mensaje de error "Credenciales inválidas"
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32men el login debería ver un mensaje de error &amp#27;[0m&amp#27;[32m&amp#27;[1m"Credenciales inválidas"&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.enElLoginDeberiaVerUnMensajeDeError(java.lang.String)&amp#27;[0m
+10:51:06.558 [main] INFO  -- |-- And debería permanecer en la página de login
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería permanecer en la página de login&amp#27;[0m                              &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.deberiaPermanecerenLaPaginaDeLogin()&amp#27;[0m
+10:51:06.617 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Login con credenciales inválidas
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 10:48:55 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Login sin completar campos" classname="Inicio de Sesión de Usuario" time="130.969">
+    <system-out><![CDATA[
+@funcionalidades_principales @login @validacion
+Scenario: Login sin completar campos                                                     &amp#27;[90m# src/test/resources/features/02_user_login.feature:32&amp#27;[0m
+10:51:08.560 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/02_user_login.feature
+10:51:08.563 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Login sin completar campos(inicio-de-sesión-de-usuario;login-sin-completar-campos)
+--------------------------------------------------------------------------------
+10:51:08.592 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+10:51:08.820 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+10:51:08.821 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m                                     &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+10:51:13.879 [main] INFO  -- |-- And estoy en la página principal
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mestoy en la página principal&amp#27;[0m                                                       &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.estoyEnLaPaginaPrincipal()&amp#27;[0m
+10:51:14.046 [main] INFO  -- |-- Given navego a la página de login
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mnavego a la página de login&amp#27;[0m                                                      &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.navegoALaPaginaDeLogin()&amp#27;[0m
+10:53:18.771 [main] INFO  -- |-- When intento hacer login sin credenciales
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mintento hacer login sin credenciales&amp#27;[0m                                              &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.intentoHacerLoginSinCredenciales()&amp#27;[0m
+10:53:19.043 [main] INFO  -- |-- Then en el login debería ver un mensaje de error "Por favor complete todos los campos"
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32men el login debería ver un mensaje de error &amp#27;[0m&amp#27;[32m&amp#27;[1m"Por favor complete todos los campos"&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.enElLoginDeberiaVerUnMensajeDeError(java.lang.String)&amp#27;[0m
+10:53:19.052 [main] INFO  -- |-- And debería permanecer en la página de login
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería permanecer en la página de login&amp#27;[0m                                           &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.deberiaPermanecerenLaPaginaDeLogin()&amp#27;[0m
+10:53:19.079 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Login sin completar campos
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 10:51:11 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Cerrar sesión correctamente" classname="Inicio de Sesión de Usuario" time="140.076">
+    <system-out><![CDATA[
+@funcionalidades_principales @smoke @logout
+Scenario: Cerrar sesión correctamente                &amp#27;[90m# src/test/resources/features/02_user_login.feature:39&amp#27;[0m
+10:53:19.501 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/02_user_login.feature
+10:53:19.502 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Cerrar sesión correctamente(inicio-de-sesión-de-usuario;cerrar-sesión-correctamente)
+--------------------------------------------------------------------------------
+10:53:19.503 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+10:53:19.661 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+10:53:19.663 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+10:53:23.649 [main] INFO  -- |-- And estoy en la página principal
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mestoy en la página principal&amp#27;[0m                   &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.estoyEnLaPaginaPrincipal()&amp#27;[0m
+10:53:23.755 [main] INFO  -- |-- Given estoy autenticado como usuario
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mestoy autenticado como usuario&amp#27;[0m               &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.estoyAutenticadoComoUsuario()&amp#27;[0m
+10:55:29.018 [main] INFO  -- |-- When hago clic en cerrar sesión
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mhago clic en cerrar sesión&amp#27;[0m                    &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.hagoClicEnCerrarSesion()&amp#27;[0m
+10:55:39.093 [main] INFO  -- |-- Then debería ser redirigido a la página principal
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32mdebería ser redirigido a la página principal&amp#27;[0m  &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.deberiaSerRedirigidoALaPaginaPrincipal()&amp#27;[0m
+10:55:39.107 [main] INFO  -- |-- And no debería ver el menú de usuario
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mno debería ver el menú de usuario&amp#27;[0m              &amp#27;[90m# com.zerosmoke.stepdefinitions.LoginSteps.noDeberiaVerElMenuDeUsuario()&amp#27;[0m
+10:55:39.113 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Cerrar sesión correctamente
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 10:53:22 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Envío exitoso de mensaje de contacto" classname="Formulario de Contacto" time="130.193">
+    <system-out><![CDATA[10:55:39.563 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/03_contact_form.feature
+10:55:39.566 [main] DEBUG net.thucydides.core.steps.StepEventBus -- Test suite started for story net.thucydides.model.domain.Story@e2f6c7e0
+10:55:39.567 [main] INFO  -- Test Suite Started: Formulario de Contacto
+
+@funcionalidades_principales @smoke @contacto
+Scenario: Envío exitoso de mensaje de contacto                                &amp#27;[90m# src/test/resources/features/03_contact_form.feature:12&amp#27;[0m
+10:55:39.597 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/03_contact_form.feature
+10:55:39.599 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Envío exitoso de mensaje de contacto(formulario-de-contacto;envío-exitoso-de-mensaje-de-contacto)
+--------------------------------------------------------------------------------
+10:55:39.601 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+10:55:39.765 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+10:55:39.766 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m                          &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+10:55:43.791 [main] INFO  -- |-- And estoy en la página principal
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mestoy en la página principal&amp#27;[0m                                            &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.estoyEnLaPaginaPrincipal()&amp#27;[0m
+10:55:43.915 [main] INFO  -- |-- Given navego a la página de contacto
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mnavego a la página de contacto&amp#27;[0m                                        &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.navegoALaPaginaDeContacto()&amp#27;[0m
+10:55:44.396 [main] INFO  -- |-- When completo el formulario de contacto con:
+| nombre | María García |
+| email | maria.garcia@test.com |
+| asunto | Consulta sobre el programa |
+| mensaje | Me interesa saber más detalles |
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mcompleto el formulario de contacto con:&amp#27;[0m                                &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.completoElFormularioDeContactoCon(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | nombre  | María García                   |
+    | email   | maria.garcia@test.com          |
+    | asunto  | Consulta sobre el programa     |
+    | mensaje | Me interesa saber más detalles |
+10:55:45.178 [main] INFO  -- |-- And hago clic en enviar mensaje
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mhago clic en enviar mensaje&amp#27;[0m                                             &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.hagoClicEnEnviarMensaje()&amp#27;[0m
+10:57:49.290 [main] INFO  -- |-- Then debería ver un mensaje de confirmación "Mensaje enviado correctamente"
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32mdebería ver un mensaje de confirmación &amp#27;[0m&amp#27;[32m&amp#27;[1m"Mensaje enviado correctamente"&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.deberiaVerUnMensajeDeConfirmacion(java.lang.String)&amp#27;[0m
+10:57:49.296 [main] INFO  -- |-- And el formulario debería limpiarse
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mel formulario debería limpiarse&amp#27;[0m                                         &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.elFormularioDeberiaLimpiarse()&amp#27;[0m
+10:57:49.300 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Envío exitoso de mensaje de contacto
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 10:55:42 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Envío de formulario incompleto" classname="Formulario de Contacto" time="129.938">
+    <system-out><![CDATA[
+@funcionalidades_principales @contacto @validacion
+Scenario: Envío de formulario incompleto                                                               &amp#27;[90m# src/test/resources/features/03_contact_form.feature:24&amp#27;[0m
+10:57:49.797 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/03_contact_form.feature
+10:57:49.799 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Envío de formulario incompleto(formulario-de-contacto;envío-de-formulario-incompleto)
+--------------------------------------------------------------------------------
+10:57:49.804 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+10:57:49.981 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+10:57:49.981 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m                                                   &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+10:57:54.792 [main] INFO  -- |-- And estoy en la página principal
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mestoy en la página principal&amp#27;[0m                                                                     &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.estoyEnLaPaginaPrincipal()&amp#27;[0m
+10:57:54.919 [main] INFO  -- |-- Given navego a la página de contacto
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mnavego a la página de contacto&amp#27;[0m                                                                 &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.navegoALaPaginaDeContacto()&amp#27;[0m
+10:57:55.295 [main] INFO  -- |-- When intento enviar el formulario sin completar los campos requeridos
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mintento enviar el formulario sin completar los campos requeridos&amp#27;[0m                                &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.intentoEnviarElFormularioSinCompletarLosCamposRequeridos()&amp#27;[0m
+10:59:59.335 [main] INFO  -- |-- Then en el contacto debería ver un mensaje de error "Por favor complete todos los campos requeridos"
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32men el contacto debería ver un mensaje de error &amp#27;[0m&amp#27;[32m&amp#27;[1m"Por favor complete todos los campos requeridos"&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.enElContactoDeberiaVerUnMensajeDeError(java.lang.String)&amp#27;[0m
+10:59:59.338 [main] INFO  -- |-- And debería permanecer en la página de contacto
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería permanecer en la página de contacto&amp#27;[0m                                                      &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.deberiaPermanecerenLaPaginaDeContacto()&amp#27;[0m
+10:59:59.359 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Envío de formulario incompleto
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 10:57:53 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Envío con email inválido" classname="Formulario de Contacto" time="129.013">
+    <system-out><![CDATA[
+@funcionalidades_principales @contacto @validacion
+Scenario: Envío con email inválido                                                        &amp#27;[90m# src/test/resources/features/03_contact_form.feature:31&amp#27;[0m
+10:59:59.732 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/03_contact_form.feature
+10:59:59.732 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Envío con email inválido(formulario-de-contacto;envío-con-email-inválido)
+--------------------------------------------------------------------------------
+10:59:59.734 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+10:59:59.861 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+10:59:59.861 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m                                      &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+11:00:03.517 [main] INFO  -- |-- And estoy en la página principal
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mestoy en la página principal&amp#27;[0m                                                        &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.estoyEnLaPaginaPrincipal()&amp#27;[0m
+11:00:03.631 [main] INFO  -- |-- Given navego a la página de contacto
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mnavego a la página de contacto&amp#27;[0m                                                    &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.navegoALaPaginaDeContacto()&amp#27;[0m
+11:00:03.920 [main] INFO  -- |-- When completo el formulario con un email inválido:
+| nombre | María García |
+| email | email-invalido |
+| asunto | Consulta |
+| mensaje | Mensaje de prueba |
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mcompleto el formulario con un email inválido:&amp#27;[0m                                      &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.completoElFormularioConUnEmailInvalido(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | nombre  | María García      |
+    | email   | email-invalido    |
+    | asunto  | Consulta          |
+    | mensaje | Mensaje de prueba |
+11:00:04.324 [main] INFO  -- |-- And hago clic en enviar mensaje
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mhago clic en enviar mensaje&amp#27;[0m                                                         &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.hagoClicEnEnviarMensaje()&amp#27;[0m
+11:02:08.271 [main] INFO  -- |-- Then en el contacto debería ver un mensaje de error "Por favor ingrese un email válido"
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32men el contacto debería ver un mensaje de error &amp#27;[0m&amp#27;[32m&amp#27;[1m"Por favor ingrese un email válido"&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.enElContactoDeberiaVerUnMensajeDeError(java.lang.String)&amp#27;[0m
+11:02:08.274 [main] INFO  -- |-- And debería permanecer en la página de contacto
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería permanecer en la página de contacto&amp#27;[0m                                         &amp#27;[90m# com.zerosmoke.stepdefinitions.ContactSteps.deberiaPermanecerenLaPaginaDeContacto()&amp#27;[0m
+11:02:08.294 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Envío con email inválido
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 11:00:02 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Responder mensaje de contacto exitosamente" classname="Respuesta de Administrador a Mensajes de Contacto" time="26.679">
+    <system-out><![CDATA[11:02:08.738 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/04_admin_message_response.feature
+11:02:08.741 [main] DEBUG net.thucydides.core.steps.StepEventBus -- Test suite started for story net.thucydides.model.domain.Story@a9272080
+11:02:08.742 [main] INFO  -- Test Suite Started: Respuesta de Administrador a Mensajes de Contacto
+
+@funcionalidades_principales @smoke @admin
+Scenario: Responder mensaje de contacto exitosamente                                                 &amp#27;[90m# src/test/resources/features/04_admin_message_response.feature:14&amp#27;[0m
+11:02:08.769 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/04_admin_message_response.feature
+11:02:08.770 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Responder mensaje de contacto exitosamente(respuesta-de-administrador-a-mensajes-de-contacto;responder-mensaje-de-contacto-exitosamente)
+--------------------------------------------------------------------------------
+11:02:08.772 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+11:02:08.904 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+11:02:08.904 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m                                                 &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+11:02:13.203 [main] INFO  -- |-- And existe un mensaje de contacto pendiente de respuesta:
+| nombre | email | asunto | mensaje |
+| María | maria.garcia@test.com | Consulta general | Necesito más información |
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mexiste un mensaje de contacto pendiente de respuesta:&amp#27;[0m                                          &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.existeUnMensajeDeContactoPendienteDeRespuesta(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | nombre | email                 | asunto           | mensaje                  |
+    | María  | maria.garcia@test.com | Consulta general | Necesito más información |
+11:02:13.522 [main] INFO  -- |-- Given estoy en el panel de administración
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mestoy en el panel de administración&amp#27;[0m                                                          &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.estoyEnElPanelDeAdministracion()&amp#27;[0m
+11:02:14.730 [main] INFO  -- |-- When navego a la gestión de mensajes
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mnavego a la gestión de mensajes&amp#27;[0m                                                               &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.navegoALaGestionDeMensajes()&amp#27;[0m
+11:02:14.787 [main] INFO  -- |-- And selecciono el mensaje de "María"
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mselecciono el mensaje de &amp#27;[0m&amp#27;[32m&amp#27;[1m"María"&amp#27;[0m                                                               &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.seleccionoElMensajeDe(java.lang.String)&amp#27;[0m
+11:02:24.853 [main] INFO  -- |-- And escribo una respuesta:
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mescribo una respuesta:&amp#27;[0m                                                                         &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.escriboUnaRespuesta(java.lang.String)&amp#27;[0m
+11:02:34.905 [main] INFO  -- |-- And hago clic en enviar respuesta
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mhago clic en enviar respuesta&amp#27;[0m                                                                  &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.hagoClicEnEnviarRespuesta()&amp#27;[0m
+11:02:34.979 [main] INFO  -- |-- Then en el panel de admin debería ver un mensaje de confirmación "Respuesta enviada correctamente"
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32men el panel de admin debería ver un mensaje de confirmación &amp#27;[0m&amp#27;[32m&amp#27;[1m"Respuesta enviada correctamente"&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.enElPanelDeAdminDeberiaVerUnMensajeDeConfirmacion(java.lang.String)&amp#27;[0m
+11:02:34.983 [main] INFO  -- |-- And el mensaje debería marcarse como respondido
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mel mensaje debería marcarse como respondido&amp#27;[0m                                                    &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.elMensajeDeberiaMarcarse_ComoRespondido()&amp#27;[0m
+11:02:34.987 [main] INFO  -- |-- And debería enviarse un email a "maria.garcia@test.com"
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería enviarse un email a &amp#27;[0m&amp#27;[32m&amp#27;[1m"maria.garcia@test.com"&amp#27;[0m                                            &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.deberiaEnviarseUnEmailA(java.lang.String)&amp#27;[0m
+11:02:34.991 [main] INFO  -- |-- And el email debería contener la respuesta del administrador
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mel email debería contener la respuesta del administrador&amp#27;[0m                                       &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.elEmailDeberiaContenerLaRespuestaDelAdministrador()&amp#27;[0m
+11:02:34.998 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Responder mensaje de contacto exitosamente
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 11:02:11 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Intentar enviar respuesta vacía" classname="Respuesta de Administrador a Mensajes de Contacto" time="16.14">
+    <system-out><![CDATA[
+@funcionalidades_principales @admin @validacion
+Scenario: Intentar enviar respuesta vacía                                              &amp#27;[90m# src/test/resources/features/04_admin_message_response.feature:34&amp#27;[0m
+11:02:35.439 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/04_admin_message_response.feature
+11:02:35.441 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Intentar enviar respuesta vacía(respuesta-de-administrador-a-mensajes-de-contacto;intentar-enviar-respuesta-vacía)
+--------------------------------------------------------------------------------
+11:02:35.442 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+11:02:35.587 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+11:02:35.587 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m                                   &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+11:02:39.700 [main] INFO  -- |-- And existe un mensaje de contacto pendiente de respuesta:
+| nombre | email | asunto | mensaje |
+| María | maria.garcia@test.com | Consulta general | Necesito más información |
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mexiste un mensaje de contacto pendiente de respuesta:&amp#27;[0m                            &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.existeUnMensajeDeContactoPendienteDeRespuesta(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | nombre | email                 | asunto           | mensaje                  |
+    | María  | maria.garcia@test.com | Consulta general | Necesito más información |
+11:02:39.712 [main] INFO  -- |-- Given estoy en el panel de administración
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mestoy en el panel de administración&amp#27;[0m                                            &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.estoyEnElPanelDeAdministracion()&amp#27;[0m
+11:02:41.033 [main] INFO  -- |-- When navego a la gestión de mensajes
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mnavego a la gestión de mensajes&amp#27;[0m                                                 &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.navegoALaGestionDeMensajes()&amp#27;[0m
+11:02:41.109 [main] INFO  -- |-- And selecciono el mensaje de "María"
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mselecciono el mensaje de &amp#27;[0m&amp#27;[32m&amp#27;[1m"María"&amp#27;[0m                                                 &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.seleccionoElMensajeDe(java.lang.String)&amp#27;[0m
+11:02:51.173 [main] INFO  -- |-- And dejo el campo de respuesta vacío
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdejo el campo de respuesta vacío&amp#27;[0m                                                 &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.dejoElCampoDeRespuestaVacio()&amp#27;[0m
+11:02:51.178 [main] INFO  -- |-- And hago clic en enviar respuesta
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mhago clic en enviar respuesta&amp#27;[0m                                                    &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.hagoClicEnEnviarRespuesta()&amp#27;[0m
+11:02:51.239 [main] INFO  -- |-- Then en el admin debería ver un mensaje de error "La respuesta no puede estar vacía"
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32men el admin debería ver un mensaje de error &amp#27;[0m&amp#27;[32m&amp#27;[1m"La respuesta no puede estar vacía"&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.enElAdminDeberiaVerUnMensajeDeError(java.lang.String)&amp#27;[0m
+11:02:51.244 [main] INFO  -- |-- And el mensaje no debería marcarse como respondido
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mel mensaje no debería marcarse como respondido&amp#27;[0m                                   &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.elMensajeNoDeberiaMarcarse_ComoRespondido()&amp#27;[0m
+11:02:51.249 [main] INFO  -- |-- And no debería enviarse ningún email
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mno debería enviarse ningún email&amp#27;[0m                                                 &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.noDeberiaEnviarseNingunEmail()&amp#27;[0m
+11:02:51.252 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Intentar enviar respuesta vacía
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 11:02:38 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Visualizar lista de mensajes de contacto" classname="Respuesta de Administrador a Mensajes de Contacto" time="5.406">
+    <system-out><![CDATA[
+@funcionalidades_principales @admin
+Scenario: Visualizar lista de mensajes de contacto               &amp#27;[90m# src/test/resources/features/04_admin_message_response.feature:45&amp#27;[0m
+11:02:51.582 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/04_admin_message_response.feature
+11:02:51.583 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Visualizar lista de mensajes de contacto(respuesta-de-administrador-a-mensajes-de-contacto;visualizar-lista-de-mensajes-de-contacto)
+--------------------------------------------------------------------------------
+11:02:51.585 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+11:02:51.733 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+11:02:51.733 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m             &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+11:02:55.380 [main] INFO  -- |-- And existe un mensaje de contacto pendiente de respuesta:
+| nombre | email | asunto | mensaje |
+| María | maria.garcia@test.com | Consulta general | Necesito más información |
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mexiste un mensaje de contacto pendiente de respuesta:&amp#27;[0m      &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.existeUnMensajeDeContactoPendienteDeRespuesta(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | nombre | email                 | asunto           | mensaje                  |
+    | María  | maria.garcia@test.com | Consulta general | Necesito más información |
+11:02:55.392 [main] INFO  -- |-- Given estoy en el panel de administración
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mestoy en el panel de administración&amp#27;[0m                      &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.estoyEnElPanelDeAdministracion()&amp#27;[0m
+11:02:56.630 [main] INFO  -- |-- When navego a la gestión de mensajes
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mnavego a la gestión de mensajes&amp#27;[0m                           &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.navegoALaGestionDeMensajes()&amp#27;[0m
+11:02:56.709 [main] INFO  -- |-- Then debería ver una lista de mensajes de contacto
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32mdebería ver una lista de mensajes de contacto&amp#27;[0m             &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.deberiaVerUnaListaDeMensajesDeContacto()&amp#27;[0m
+11:02:56.716 [main] INFO  -- |-- And cada mensaje debería mostrar nombre, email, fecha y estado
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mcada mensaje debería mostrar nombre, email, fecha y estado&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.cadaMensajeDeberiaMostrarNombreEmailFechaYEstado()&amp#27;[0m
+11:02:56.720 [main] INFO  -- |-- And debería poder filtrar mensajes por estado (leído/no leído)
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería poder filtrar mensajes por estado (leído/no leído)&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.deberiaPoderFiltrarMensajesPorEstado()&amp#27;[0m
+11:02:56.722 [main] INFO  -- |-- And debería poder buscar mensajes por nombre o email
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería poder buscar mensajes por nombre o email&amp#27;[0m           &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.deberiaPoderBuscarMensajesPorNombreOEmail()&amp#27;[0m
+11:02:56.727 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Visualizar lista de mensajes de contacto
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 11:02:53 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+  <testcase name="Marcar mensaje como leído sin responder" classname="Respuesta de Administrador a Mensajes de Contacto" time="15.846">
+    <system-out><![CDATA[
+@funcionalidades_principales @admin
+Scenario: Marcar mensaje como leído sin responder           &amp#27;[90m# src/test/resources/features/04_admin_message_response.feature:54&amp#27;[0m
+11:02:56.989 [main] DEBUG io.cucumber.core.plugin.SerenityReporter -- Running feature from file:///C:/Users/Daleska/OneDrive/Desktop/ZEROSMOKE_LIMPIO/cucumber-tests/src/test/resources/features/04_admin_message_response.feature
+11:02:56.990 [main] INFO  -- 
+  _____   ___   ___   _____     ___   _____     _     ___   _____   ___   ___  
+ |_   _| | __| / __| |_   _|   / __| |_   _|   /_\   | _ \ |_   _| | __| |   \ 
+   | |   | _|  \__ \   | |     \__ \   | |    / _ \  |   /   | |   | _|  | |) |
+   |_|   |___| |___/   |_|     |___/   |_|   /_/ \_\ |_|_\   |_|   |___| |___/ 
+
+Marcar mensaje como leído sin responder(respuesta-de-administrador-a-mensajes-de-contacto;marcar-mensaje-como-leído-sin-responder)
+--------------------------------------------------------------------------------
+11:02:56.990 [main] INFO  -- |-- Given que la aplicación ZeroSmoke está funcionando
+11:02:57.120 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Starting Chrome driver instance with capabilities:
+11:02:57.121 [main] INFO net.serenitybdd.core.webdriver.driverproviders.ChromeDriverProvider -- Capabilities {acceptInsecureCerts: false, browserName: chrome, goog:chromeOptions: {args: [remote-allow-origins=*, --disable-extensions,--disa...], extensions: []}}
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mque la aplicación ZeroSmoke está funcionando&amp#27;[0m        &amp#27;[90m# com.zerosmoke.stepdefinitions.CommonSteps.quelaAplicacionZeroSmokeEstaFuncionando()&amp#27;[0m
+11:03:01.072 [main] INFO  -- |-- And existe un mensaje de contacto pendiente de respuesta:
+| nombre | email | asunto | mensaje |
+| María | maria.garcia@test.com | Consulta general | Necesito más información |
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mexiste un mensaje de contacto pendiente de respuesta:&amp#27;[0m &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.existeUnMensajeDeContactoPendienteDeRespuesta(io.cucumber.datatable.DataTable)&amp#27;[0m
+    | nombre | email                 | asunto           | mensaje                  |
+    | María  | maria.garcia@test.com | Consulta general | Necesito más información |
+11:03:01.083 [main] INFO  -- |-- Given estoy en el panel de administración
+  &amp#27;[32mGiven &amp#27;[0m&amp#27;[32mestoy en el panel de administración&amp#27;[0m                 &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.estoyEnElPanelDeAdministracion()&amp#27;[0m
+11:03:02.274 [main] INFO  -- |-- When navego a la gestión de mensajes
+  &amp#27;[32mWhen &amp#27;[0m&amp#27;[32mnavego a la gestión de mensajes&amp#27;[0m                      &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.navegoALaGestionDeMensajes()&amp#27;[0m
+11:03:02.323 [main] INFO  -- |-- And selecciono el mensaje de "María"
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mselecciono el mensaje de &amp#27;[0m&amp#27;[32m&amp#27;[1m"María"&amp#27;[0m                      &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.seleccionoElMensajeDe(java.lang.String)&amp#27;[0m
+11:03:12.360 [main] INFO  -- |-- And hago clic en "Marcar como leído"
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mhago clic en &amp#27;[0m&amp#27;[32m&amp#27;[1m"Marcar como leído"&amp#27;[0m                      &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.hagoClicEn(java.lang.String)&amp#27;[0m
+11:03:12.432 [main] INFO  -- |-- Then el mensaje debería marcarse como leído
+  &amp#27;[32mThen &amp#27;[0m&amp#27;[32mel mensaje debería marcarse como leído&amp#27;[0m               &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.elMensajeDeberiaMarcarse_ComoLeido()&amp#27;[0m
+11:03:12.438 [main] INFO  -- |-- And debería aparecer en la lista de mensajes leídos
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mdebería aparecer en la lista de mensajes leídos&amp#27;[0m       &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.deberiaAparecerEnLaListaDeMensajesLeidos()&amp#27;[0m
+11:03:12.444 [main] INFO  -- |-- And no debería enviarse ningún email automáticamente
+  &amp#27;[32mAnd &amp#27;[0m&amp#27;[32mno debería enviarse ningún email automáticamente&amp#27;[0m      &amp#27;[90m# com.zerosmoke.stepdefinitions.AdminSteps.noDeberiaEnviarseNingunEmailAutomaticamente()&amp#27;[0m
+11:03:12.448 [main] INFO  -- 
+  _____   ___   ___   _____     ___     _     ___   ___   ___   ___  
+ |_   _| | __| / __| |_   _|   | _ \   /_\   / __| / __| | __| |   \ 
+   | |   | _|  \__ \   | |     |  _/  / _ \  \__ \ \__ \ | _|  | |) |
+   |_|   |___| |___/   |_|     |_|   /_/ \_\ |___/ |___/ |___| |___/ 
+
+Marcar mensaje como leído sin responder
+----------------------------------------------------------------------
+]]></system-out>
+    <system-err><![CDATA[jun 25, 2025 11:02:59 A. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+WARNING: Unable to find an exact match for CDP version 137, returning the closest version; found: 133; Please update to a Selenium version that supports CDP version 137
+]]></system-err>
+  </testcase>
+</testsuite>

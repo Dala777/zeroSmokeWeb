@@ -5,6 +5,10 @@ import styled from "styled-components"
 import { AppColors } from "../styles/colors"
 import { useChatbot } from "./ChatbotContext"
 
+interface ChatbotButtonProps {
+  text?: string
+}
+
 const FloatingButton = styled.button`
   position: fixed;
   bottom: 20px;
@@ -30,10 +34,6 @@ const FloatingButton = styled.button`
   }
 `
 
-interface ChatbotButtonProps {
-  text?: string
-}
-
 const ChatbotButton: React.FC<ChatbotButtonProps> = ({ text = "💬" }) => {
   const { toggleChat, isOpen } = useChatbot()
 
@@ -45,4 +45,3 @@ const ChatbotButton: React.FC<ChatbotButtonProps> = ({ text = "💬" }) => {
 }
 
 export default ChatbotButton
-

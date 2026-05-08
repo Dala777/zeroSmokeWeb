@@ -1,5 +1,6 @@
-import type { Request, Response } from "express";
-import { Message } from "../models/Message";
+import type { Request, Response } from "express"
+import { Message } from "../models/Message"
+import { emailService } from "../services/email.service"
 
 // Obtener todos los mensajes
 export const getAllMessages = async (req: Request, res: Response): Promise<void> => {
@@ -30,9 +31,31 @@ export const getMessageById = async (req: Request, res: Response): Promise<void>
 // Crear un nuevo mensaje
 export const createMessage = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newMessage = new Message(req.body);
-    const savedMessage = await newMessage.save();
-    res.status(201).json(savedMessage);
+    console.log("Recibiendo mensaje:", req.body)
+
+    // Validar datos requeridos
+    const { name, email, subject, message } = req.body
+
+    if (!name || !email || !subject || !message) {
+      res.status(400).json({ message: "Todos los campos son requeridos" })
+      return
+    }
+
+    // Crear nuevo mensaje
+    const newMessage = new Message({
+      name,
+      email,
+      subject,
+      message,
+      status: "new",
+      createdAt: new Date(),
+    })
+
+    // Guardar en la base de datos
+    const savedMessage = await newMessage.save()
+    console.log("Mensaje guardado:", savedMessage)
+
+    res.status(201).json(savedMessage)
   } catch (error) {
     console.error("Error al crear mensaje:", error);
     res.status(500).json({ message: "Error en el servidor" });
@@ -71,4 +94,73 @@ export const deleteMessage = async (req: Request, res: Response): Promise<void> 
     console.error("Error al eliminar mensaje:", error);
     res.status(500).json({ message: "Error en el servidor" });
   }
-};
+}
+
+// Responder a un mensaje
+export const replyToMessage = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params
+    const { replyText } = req.body
+
+    if (!replyText || replyText.trim() === "") {
+      res.status(400).json({ message: "El texto de la respuesta es requerido" })
+      return
+    }
+
+    // Buscar el mensaje
+    const message = await Message.findById(id)
+    if (!message) {
+      res.status(404).json({ message: "Mensaje no encontrado" })
+      return
+    }
+
+    console.log(`Intentando responder al mensaje ${id} enviado a ${message.email}`)
+
+    try {
+      // Enviar correo electrónico
+      const emailResult = await emailService.sendMessageReply(message.email, message.subject, replyText)
+      console.log("Resultado del envío de correo:", emailResult)
+
+      // Actualizar el estado del mensaje a "answered"
+      const updatedMessage = await Message.findByIdAndUpdate(
+        id,
+        {
+          status: "answered",
+          updatedAt: new Date(),
+        },
+        { new: true },
+      )
+
+      // Si estamos en desarrollo y hay una URL de vista previa, la incluimos en la respuesta
+      if (emailResult.previewUrl) {
+        res.status(200).json({
+          message: "Respuesta enviada con éxito",
+          data: updatedMessage,
+          previewUrl: emailResult.previewUrl,
+        })
+      } else {
+        res.status(200).json({
+          message: "Respuesta enviada con éxito",
+          data: updatedMessage,
+        })
+      }
+    } catch (emailError: any) {
+      console.error("Error al enviar el correo:", emailError)
+
+      // Aún actualizamos el estado del mensaje, pero notificamos del error
+      await Message.findByIdAndUpdate(id, {
+        status: "answered", // Marcamos como respondido aunque el email falló
+        updatedAt: new Date(),
+      })
+
+      res.status(200).json({
+        message: "El mensaje se marcó como respondido, pero hubo un error al enviar el correo electrónico",
+        error: emailError.message,
+        data: message,
+      })
+    }
+  } catch (error: any) {
+    console.error("Error al responder mensaje:", error)
+    res.status(500).json({ message: "Error al enviar la respuesta", error: error.message })
+  }
+}

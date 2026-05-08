@@ -1,5 +1,6 @@
 "use client"
 
+
 import type React from "react"
 import { useState } from "react"
 import styled from "styled-components"
@@ -10,12 +11,14 @@ import Card from "../../components/ui/Card"
 import Input from "../../components/ui/Input"
 import type { Article } from "../../types"
 
+
 // Componentes estilizados
 const PageContainer = styled.div`
   padding: 1.5rem;
   background-color: ${AppColors.background};
   border-radius: 8px;
 `
+
 
 const PageHeader = styled.div`
   display: flex;
@@ -24,10 +27,12 @@ const PageHeader = styled.div`
   margin-bottom: 2rem;
 `
 
+
 const PageTitle = styled.h2`
   font-size: 1.5rem;
   color: ${AppColors.primary};
 `
+
 
 const SearchContainer = styled.div`
   display: flex;
@@ -36,12 +41,14 @@ const SearchContainer = styled.div`
   margin-bottom: 1.5rem;
 `
 
+
 const FilterContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
 `
+
 
 const SelectFilter = styled.select`
   padding: 0.75rem 1rem;
@@ -51,21 +58,25 @@ const SelectFilter = styled.select`
   color: ${AppColors.text};
   font-size: 1rem;
 
+
   &:focus {
     outline: none;
     border-color: ${AppColors.primary};
   }
 `
 
+
 const ArticleCard = styled(Card)`
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
 
+
   @media (min-width: 768px) {
     flex-direction: row;
   }
 `
+
 
 const ArticleImage = styled.div`
   width: 100%;
@@ -75,6 +86,7 @@ const ArticleImage = styled.div`
   overflow: hidden;
   margin-bottom: 1rem;
 
+
   @media (min-width: 768px) {
     width: 200px;
     height: 150px;
@@ -83,6 +95,7 @@ const ArticleImage = styled.div`
     flex-shrink: 0;
   }
 
+
   img {
     width: 100%;
     height: 100%;
@@ -90,9 +103,11 @@ const ArticleImage = styled.div`
   }
 `
 
+
 const ArticleContent = styled.div`
   flex: 1;
 `
+
 
 const ArticleHeader = styled.div`
   display: flex;
@@ -101,11 +116,13 @@ const ArticleHeader = styled.div`
   margin-bottom: 0.5rem;
 `
 
+
 const ArticleTitle = styled.h3`
   font-size: 1.25rem;
   color: ${AppColors.textSecondary};
   margin-bottom: 0.5rem;
 `
+
 
 const ArticleStatus = styled.span<{ status: "published" | "draft" }>`
   font-size: 0.75rem;
@@ -114,6 +131,7 @@ const ArticleStatus = styled.span<{ status: "published" | "draft" }>`
   background-color: ${(props) => (props.status === "published" ? "rgba(76, 175, 80, 0.2)" : "rgba(255, 183, 77, 0.2)")};
   color: ${(props) => (props.status === "published" ? AppColors.success : AppColors.warning)};
 `
+
 
 const ArticleMeta = styled.div`
   display: flex;
@@ -124,6 +142,7 @@ const ArticleMeta = styled.div`
   opacity: 0.7;
 `
 
+
 const ArticleExcerpt = styled.p`
   color: ${AppColors.text};
   margin-bottom: 1rem;
@@ -133,10 +152,12 @@ const ArticleExcerpt = styled.p`
   overflow: hidden;
 `
 
+
 const ArticleActions = styled.div`
   display: flex;
   gap: 0.5rem;
 `
+
 
 const ActionButton = styled.button`
   background-color: rgba(255, 255, 255, 0.1);
@@ -148,11 +169,13 @@ const ActionButton = styled.button`
   cursor: pointer;
   transition: background-color 0.3s ease;
 
+
   &:hover {
     background-color: ${AppColors.primary};
     color: white;
   }
 `
+
 
 const ViewLink = styled.a`
   background-color: rgba(255, 255, 255, 0.1);
@@ -166,11 +189,13 @@ const ViewLink = styled.a`
   text-decoration: none;
   display: inline-block;
 
+
   &:hover {
     background-color: ${AppColors.primary};
     color: white;
   }
 `
+
 
 const Pagination = styled.div`
   display: flex;
@@ -178,6 +203,7 @@ const Pagination = styled.div`
   gap: 0.5rem;
   margin-top: 2rem;
 `
+
 
 const PageButton = styled.button<{ isActive?: boolean }>`
   width: 40px;
@@ -192,15 +218,18 @@ const PageButton = styled.button<{ isActive?: boolean }>`
   cursor: pointer;
   transition: background-color 0.3s ease;
 
+
   &:hover:not([disabled]) {
     background-color: ${(props) => (props.isActive ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
   }
+
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
 `
+
 
 // Mock data para pruebas
 const mockArticles: Article[] = [
@@ -242,13 +271,16 @@ const mockArticles: Article[] = [
   },
 ]
 
+
 const ArticlesList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
   const [articles, setArticles] = useState<Article[]>(mockArticles)
 
+
   const navigate = useNavigate()
+
 
   // Función para filtrar artículos
   const filteredArticles = articles.filter((article) => {
@@ -257,16 +289,20 @@ const ArticlesList: React.FC = () => {
       article.excerpt?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       false
 
+
     // Corregido: Usar comparación explícita para statusFilter
     const matchesStatus = statusFilter === "all" || article.status === statusFilter
 
+
     return matchesSearch && matchesStatus
   })
+
 
   // Función para cambiar el estado de un artículo
   const handleStatusChange = (id: number, newStatus: "published" | "draft") => {
     setArticles(articles.map((article) => (article.id === id ? { ...article, status: newStatus } : article)))
   }
+
 
   // Función para eliminar un artículo
   const handleDelete = (id: number) => {
@@ -274,6 +310,7 @@ const ArticlesList: React.FC = () => {
       setArticles(articles.filter((article) => article.id !== id))
     }
   }
+
 
   return (
     <PageContainer>
@@ -284,6 +321,7 @@ const ArticlesList: React.FC = () => {
         </Button>
       </PageHeader>
 
+
       <SearchContainer>
         <Input
           placeholder="Buscar artículos..."
@@ -292,6 +330,7 @@ const ArticlesList: React.FC = () => {
           fullWidth
         />
       </SearchContainer>
+
 
       <FilterContainer>
         <label htmlFor="status-filter">
@@ -312,16 +351,19 @@ const ArticlesList: React.FC = () => {
           Seleccione un estado para filtrar los artículos
         </span>
 
+
         <Button variant="outline" size="small">
           Filtrar
         </Button>
       </FilterContainer>
+
 
       {filteredArticles.map((article) => (
         <ArticleCard key={article.id}>
           <ArticleImage>
             <img src={article.image || "/placeholder.svg"} alt={article.title} />
           </ArticleImage>
+
 
           <ArticleContent>
             <ArticleHeader>
@@ -331,12 +373,15 @@ const ArticlesList: React.FC = () => {
               </ArticleStatus>
             </ArticleHeader>
 
+
             <ArticleMeta>
               <span>Autor: {article.author}</span>
               <span>Fecha: {article.createdAt.toLocaleDateString()}</span>
             </ArticleMeta>
 
+
             <ArticleExcerpt>{article.excerpt}</ArticleExcerpt>
+
 
             <ArticleActions>
               <ActionButton onClick={() => navigate(`/admin/articles/edit/${article.id}`)}>Editar</ActionButton>
@@ -354,6 +399,7 @@ const ArticlesList: React.FC = () => {
         </ArticleCard>
       ))}
 
+
       <Pagination>
         <PageButton disabled={currentPage === 1} onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}>
           &lt;
@@ -369,5 +415,5 @@ const ArticlesList: React.FC = () => {
   )
 }
 
-export default ArticlesList
 
+export default ArticlesList

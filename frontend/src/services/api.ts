@@ -77,15 +77,59 @@ export const faqAPI = {
 
 // API para mensajes
 export const messageAPI = {
-  getAll: () => axios.get(`${API_URL}/messages`),
+  getAll: () => {
+    console.log("Fetching all messages from:", `${API_URL}/messages`)
+    return axios.get(`${API_URL}/messages`)
+  },
 
-  getById: (id: string) => axios.get(`${API_URL}/messages/${id}`),
+  getById: (id: string) => {
+    console.log("Fetching message details from:", `${API_URL}/messages/${id}`)
+    return axios.get(`${API_URL}/messages/${id}`)
+  },
 
-  create: (data: any) => axios.post(`${API_URL}/messages`, data),
+  create: (data: any) => {
+    console.log("Creating message:", data)
+    return axios.post(`${API_URL}/messages`, data)
+  },
 
-  update: (id: string, data: any) => axios.put(`${API_URL}/messages/${id}`, data),
+  update: (id: string, data: any) => {
+    console.log("Updating message:", id, data)
+    return axios.put(`${API_URL}/messages/${id}`, data)
+  },
 
-  delete: (id: string) => axios.delete(`${API_URL}/messages/${id}`),
+  delete: (id: string) => {
+    console.log("Deleting message:", id)
+    return axios.delete(`${API_URL}/messages/${id}`)
+  },
+
+  // Función para responder a mensajes
+  reply: (id: string, replyText: string) => {
+    console.log("Replying to message:", id, replyText)
+    return axios.post(`${API_URL}/messages/${id}/reply`, { replyText })
+  },
+}
+
+// API para progreso y tests
+export const progressAPI = {
+  saveInitialTest: (data: {
+    cigarettesPerDay: number
+    packagePrice: number
+    dependencyLevel: string
+    fagerstromScore?: number
+    motivations?: string[]
+  }) => axios.post(`${API_URL}/progress/initial-test`, data),
+
+  getUserProgress: () => axios.get(`${API_URL}/progress/user-progress`),
+  updateUserProgress: (data: any) => axios.put(`${API_URL}/progress/user-progress`, data),
+}
+
+export default {
+  setAuthToken,
+  authAPI,
+  articleAPI,
+  faqAPI,
+  messageAPI,
+  progressAPI,
 }
 
 export default {

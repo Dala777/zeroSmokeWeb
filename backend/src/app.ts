@@ -1,39 +1,46 @@
-import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import helmet from 'helmet';
-import { connectDB } from './config/database';
+import express from "express"
+import cors from "cors"
+import dotenv from "dotenv"
+import { connectDB } from "./config/database"
+import authRoutes from "./routes/auth.routes"
+import planRoutes from "./routes/plan.routes"
+import progressRoutes from "./routes/progress.routes"
+import chatRoutes from "./routes/chat.routes" // Nueva importación
 
-// Importar rutas
-import articleRoutes from './routes/article.routes';
-import faqRoutes from './routes/faq.routes';
-import authRoutes from './routes/auth.routes';
-import userRoutes from './routes/user.routes';
-import messageRoutes from './routes/message.routes';
+dotenv.config()
 
-// Inicializar la aplicación
-const app = express();
-
-// Conectar a la base de datos
-connectDB();
+const app = express()
+const PORT = process.env.PORT || 5000
 
 // Middleware
-app.use(cors());
-app.use(helmet());
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors())
+app.use(express.json())
+
+// Conectar a la base de datos
+connectDB()
 
 // Rutas
-app.use('/api/articles', articleRoutes);
-app.use('/api/faqs', faqRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/messages', messageRoutes);
+app.use("/api/auth", authRoutes)
+app.use("/api/plans", planRoutes)
+console.log('Registrando rutas de progreso')
+app.use("/api/progress", progressRoutes) // Nueva ruta
+app.use("/api/chat", chatRoutes)
 
 // Ruta de prueba
-app.get('/', (req, res) => {
-  res.send('API de ZeroSmoke funcionando correctamente');
-});
+app.get("/", (req, res) => {
+  res.json({ message: "ZeroSmoke API funcionando correctamente" })
+})
 
-export default app;
+// Manejo de errores 404
+app.use("*", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Ruta ${req.originalUrl} no encontrada`,
+  })
+})
+
+app.listen(PORT, () => {
+  console.log(`Servidor ejecutándose en puerto ${PORT}`)
+})
+
+export default app
