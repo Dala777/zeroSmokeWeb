@@ -17,6 +17,17 @@ const getLegacyValue = (entry: any, keys: string[]): any => {
   return undefined
 }
 
+const toNonEmptyText = (value: unknown): string => {
+  return typeof value === "string" ? value.trim() : ""
+}
+
+const buildLegacyActivityDescription = (mainTitle: string, secondaryTitle: string, justification: string): string => {
+  if (justification) return justification
+  if (secondaryTitle) return `Actividad secundaria sugerida: ${secondaryTitle}`
+  if (mainTitle) return `Completa esta actividad del plan diario: ${mainTitle}`
+  return "Completa esta actividad de tu plan diario."
+}
+
 const LEGACY_PLAN_FIELDS = {
   day: ["D\u00eda", "Dia", "day"],
   mainActivity: ["Actividad Principal", "Actividades"],
@@ -24,14 +35,21 @@ const LEGACY_PLAN_FIELDS = {
   justification: ["Justificaci\u00f3n", "Respaldo cient\u00edfico", "Fundamento"],
 }
 
-// cargar configuración de planes una sola vez
+const readJsonFileWithoutBom = (filePath: string): any => {
+  let text = fs.readFileSync(filePath, "utf8")
+  if (text.charCodeAt(0) === 0xfeff) {
+    text = text.slice(1)
+  }
+  return JSON.parse(text)
+}
+
+// cargar configuracion de planes una sola vez
 let planConfig: any = null
 try {
   const configPath = path.join(__dirname, "../config/planes_zerosmoke.json")
-  console.log('Cargando configuración de planes desde', configPath)
-  const text = fs.readFileSync(configPath, "utf-8")
-  planConfig = JSON.parse(text)
-  console.log('Configuración de planes cargada, planes disponibles:', planConfig?.planes_zerosmoke?.length)
+  console.log("Cargando configuracion de planes desde", configPath)
+  planConfig = readJsonFileWithoutBom(configPath)
+  console.log("Configuracion de planes cargada, planes disponibles:", planConfig?.planes_zerosmoke?.length)
 } catch (err) {
   console.error("Error loading plan config:", err)
 }
@@ -63,16 +81,16 @@ const getConfigActivities = (dayNumber: number, dependencyLevel: string): Array<
     return null
   }
 
-  const mainTitle = getLegacyValue(dayObj, LEGACY_PLAN_FIELDS.mainActivity) || ''
+  const mainTitle = toNonEmptyText(getLegacyValue(dayObj, LEGACY_PLAN_FIELDS.mainActivity))
   // la clave secundaria puede variar en el json entre con o sin "(opcional)"
-  const secondaryTitle = getLegacyValue(dayObj, LEGACY_PLAN_FIELDS.secondaryActivity) || ''
-  const justification = getLegacyValue(dayObj, LEGACY_PLAN_FIELDS.justification) || ''
+  const secondaryTitle = toNonEmptyText(getLegacyValue(dayObj, LEGACY_PLAN_FIELDS.secondaryActivity))
+  const justification = toNonEmptyText(getLegacyValue(dayObj, LEGACY_PLAN_FIELDS.justification))
 
   const acts: Array<any> = []
   if (mainTitle) {
     const activity: any = {
       title: mainTitle,
-      description: '',
+      description: buildLegacyActivityDescription(mainTitle, secondaryTitle, justification),
       type: 'exercise',
       durationMinutes: 10,
       justification,
@@ -824,13 +842,19 @@ const createDailyPlan = async (userId: string, date: Date): Promise<any> => {
   if (configActs && configActs.length > 0) {
     console.log(`Usando configuración para día ${dayNumber}, dependencia ${dependencyLevel}`)
     activities = configActs.map(act => {
+      const title = toNonEmptyText(act.title) || `Actividad del dia ${dayNumber}`
+      const description =
+        toNonEmptyText(act.description) ||
+        toNonEmptyText(act.justification) ||
+        `Completa esta actividad del plan diario: ${title}`
+
       const activity: any = {
         id: uuidv4(),
-        title: act.title || '',
-        description: act.description || '',
+        title,
+        description,
         type: act.type || 'education',
         durationMinutes: act.durationMinutes || 10,
-        justification: act.justification || '',
+        justification: toNonEmptyText(act.justification),
         isCompleted: false,
       }
       // si la configuración incluye un objeto secondary, incrustarlo
