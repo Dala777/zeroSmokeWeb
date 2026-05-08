@@ -3,6 +3,7 @@ import UserProgress from "../models/UserProgress"
 import DailyPlan from "../models/DailyPlan"
 import SmokingRecord from "../models/SmokingRecord"
 import { Plan } from "../models/Plan"
+import { UserPlan } from "../models/UserPlan"
 import { ensureUserPlanForProgress, normalizePlanLevels } from "../services/userPlan.service"
 import { v4 as uuidv4 } from "uuid"
 import fs from "fs"
@@ -26,6 +27,38 @@ const buildLegacyActivityDescription = (mainTitle: string, secondaryTitle: strin
   if (secondaryTitle) return `Actividad secundaria sugerida: ${secondaryTitle}`
   if (mainTitle) return `Completa esta actividad del plan diario: ${mainTitle}`
   return "Completa esta actividad de tu plan diario."
+}
+
+const calculateDayFromStartDate = (startDate: Date, targetDate: Date): number => {
+  const start = new Date(startDate)
+  const target = new Date(targetDate)
+  start.setHours(0, 0, 0, 0)
+  target.setHours(0, 0, 0, 0)
+  return Math.floor((target.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
+}
+
+const getLegacyDailyPlanDay = async (userId: string, targetDate: Date, userProgress?: any): Promise<number> => {
+  const userPlan = await UserPlan.findOne({ userId, isCompleted: false }).populate("planId")
+  if (userPlan) {
+    const rawDay = calculateDayFromStartDate(new Date(userPlan.startDate), targetDate)
+    const duration = Number((userPlan.planId as any)?.duration || 0)
+    if (duration > 0) {
+      return Math.min(Math.max(rawDay, 1), duration)
+    }
+    return Math.max(rawDay, 1)
+  }
+
+  const progress = userProgress || await UserProgress.findOne({ userId })
+  return progress ? progress.daysWithoutSmoking + 1 : 1
+}
+
+const formatDailyPlanResponse = (dailyPlan: any): any => {
+  const plain = typeof dailyPlan.toObject === "function" ? dailyPlan.toObject() : dailyPlan
+  return {
+    ...plain,
+    id: plain.id || plain._id?.toString?.() || plain._id,
+    userId: plain.userId?.toString?.() || plain.userId,
+  }
 }
 
 const LEGACY_PLAN_FIELDS = {
@@ -475,23 +508,24 @@ export const getDailyPlan = async (req: AuthRequest, res: Response): Promise<voi
         $lt: new Date(queryDate.getTime() + 24 * 60 * 60 * 1000),
       },
     })
+    const userProgress = await UserProgress.findOne({ userId })
+    const expectedDayNumber = await getLegacyDailyPlanDay(userId, queryDate, userProgress)
 
     // Si ya existía, comprobar si coincide con la configuración actual
     if (dailyPlan) {
       try {
-        const userProgress = await UserProgress.findOne({ userId })
         const dependency = userProgress ? userProgress.dependencyLevel : 'Moderado'
-        const configActs = getConfigActivities(dailyPlan.dayNumber, dependency)
+        const configActs = getConfigActivities(expectedDayNumber, dependency)
         if (configActs && configActs.length > 0) {
           const firstConfig = configActs[0].title || ''
           // si el título principal almacenado difiere del configurado, regeneramos
-          if (!dailyPlan.activities.some((act: any) => act.title === firstConfig)) {
+          if (dailyPlan.dayNumber !== expectedDayNumber || !dailyPlan.activities.some((act: any) => act.title === firstConfig)) {
             console.log(
-              `Plan diario existente (día ${dailyPlan.dayNumber}) no coincide con config, regenerando`
+              `Plan diario existente (día ${dailyPlan.dayNumber}) no coincide con config día ${expectedDayNumber}, regenerando`
             )
             // eliminar el plan antiguo para evitar duplicados
             await DailyPlan.deleteOne({ _id: dailyPlan._id })
-            dailyPlan = await createDailyPlan(userId, queryDate)
+            dailyPlan = await createDailyPlan(userId, queryDate, expectedDayNumber)
           }
         }
       } catch (e) {
@@ -501,13 +535,13 @@ export const getDailyPlan = async (req: AuthRequest, res: Response): Promise<voi
 
     // Si no existe, crear uno nuevo
     if (!dailyPlan) {
-      dailyPlan = await createDailyPlan(userId, queryDate)
+      dailyPlan = await createDailyPlan(userId, queryDate, expectedDayNumber)
     }
 
     res.status(200).json({
       success: true,
       message: "Plan diario obtenido correctamente",
-      data: dailyPlan,
+      data: formatDailyPlanResponse(dailyPlan),
     })
   } catch (err) {
     const error = err as Error
@@ -574,7 +608,7 @@ export const completeActivity = async (req: AuthRequest, res: Response): Promise
     res.status(200).json({
       success: true,
       message: "Actividad marcada como completada",
-      data: dailyPlan,
+      data: formatDailyPlanResponse(dailyPlan),
     })
   } catch (err) {
     const error = err as Error
@@ -830,10 +864,10 @@ const createInitialDailyPlan = async (userId: string): Promise<any> => {
 
 // Función para crear un plan diario para una fecha específica
 // ahora tiene en cuenta el nivel de dependencia almacenado en el progreso del usuario
-const createDailyPlan = async (userId: string, date: Date): Promise<any> => {
+const createDailyPlan = async (userId: string, date: Date, dayNumberOverride?: number): Promise<any> => {
   // Obtener el progreso del usuario para saber en qué día va
   const userProgress = await UserProgress.findOne({ userId })
-  const dayNumber = userProgress ? userProgress.daysWithoutSmoking + 1 : 1
+  const dayNumber = dayNumberOverride || await getLegacyDailyPlanDay(userId, date, userProgress)
   const dependencyLevel = userProgress ? userProgress.dependencyLevel : 'Moderado'
 
   // intentar obtener del JSON de configuración
