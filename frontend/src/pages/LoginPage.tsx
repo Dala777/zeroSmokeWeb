@@ -180,7 +180,7 @@ const Logo = styled.div`
   span {
     color: ${AppColors.textSecondary};
   }
-`
+`;
 
 const Form = styled.form`
   display: flex;
@@ -230,34 +230,46 @@ const ForgotPassword = styled(Link)`
 `
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const { login } = useAuth()
-  const navigate = useNavigate()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setIsLoading(true)
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    // Validación básica
+    if (!email || !password) {
+      setError("Por favor, completa todos los campos.");
+      setIsLoading(false);
+      return;
+    }
 
     try {
-      const success = await login(email, password)
+      const success = await login(email, password);
       if (success) {
         navigate("/")
       } else {
-        setError("Credenciales incorrectas. Por favor, inténtalo de nuevo.")
+        setError("Credenciales incorrectas. Por favor, inténtalo de nuevo.");
       }
     } catch (err) {
-      setError("Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.")
+      setError("Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <PageContainer>
+      <LeftSection>
+        <h1>¡Bienvenido de vuelta!</h1>
+        <p>Para mantenerte conectado con nosotros, por favor inicia sesión con tu información personal.</p>
+        <button onClick={() => navigate("/login")}>Iniciar Sesión</button>
+      </LeftSection>
       <LoginCard>
         <Logo>
           Zero<span>Smoke</span>

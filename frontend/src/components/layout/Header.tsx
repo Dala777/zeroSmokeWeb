@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import type React from "react"
 import { useState, useEffect } from "react"
@@ -64,7 +64,7 @@ const Logo = styled(Link)`
   span {
     color: ${AppColors.text};
   }
-`
+`;
 
 const LogoIcon = styled.div`
   margin-right: 0.5rem;
@@ -94,7 +94,7 @@ const Nav = styled.nav<{ isOpen: boolean }>`
     box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
     z-index: 1000;
   }
-`
+`;
 
 const NavList = styled.ul`
   display: flex;
@@ -106,7 +106,7 @@ const NavList = styled.ul`
     flex-direction: column;
     gap: 2rem;
   }
-`
+`;
 
 const NavItem = styled.li`
   margin-left: 2.5rem;
@@ -164,7 +164,7 @@ const MobileButtonsContainer = styled.div`
     flex-direction: column;
     gap: 1rem;
   }
-`
+`;
 
 const MobileMenuButton = styled.button`
   display: none;
@@ -186,7 +186,7 @@ const MobileMenuButton = styled.button`
     align-items: center;
     justify-content: center;
   }
-`
+`;
 
 const CloseButton = styled.button`
   position: absolute;
@@ -211,7 +211,7 @@ const CloseButton = styled.button`
   @media (min-width: 769px) {
     display: none;
   }
-`
+`;
 
 const Overlay = styled.div<{ isOpen: boolean }>`
   display: ${({ isOpen }) => (isOpen ? "block" : "none")};

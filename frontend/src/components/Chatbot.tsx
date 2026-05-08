@@ -145,10 +145,7 @@ const ChatWindow = styled.div<{ isOpen: boolean }>`
   }
 `
 
-const ChatHeader = styled.div`
-  background-color: ${AppColors.primary};
-  color: white;
-  padding: 1rem;
+const ChatbotHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -157,7 +154,7 @@ const ChatHeader = styled.div`
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 `
 
-const ChatTitle = styled.h3`
+const ChatbotTitle = styled.h3`
   margin: 0;
   font-size: 1.125rem;
   font-weight: 600;
@@ -175,7 +172,7 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   color: white;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   cursor: pointer;
   width: 30px;
   height: 30px;
@@ -190,9 +187,9 @@ const CloseButton = styled.button`
   }
 `
 
-const ChatMessages = styled.div`
+const ChatbotBody = styled.div`
   flex: 1;
-  padding: 1rem;
+  padding: 15px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -314,10 +311,19 @@ const SuggestedQuestions = styled.div`
 const SuggestedQuestion = styled.button`
   background-color: #f0f2f5;
   color: ${AppColors.text};
+
+  &:focus {
+    outline: none;
+    border-color: ${AppColors.primary};
+  }
+`
+
+const SendButton = styled.button`
+  padding: 10px 15px;
+  background-color: ${AppColors.primary};
+  color: white;
   border: none;
-  border-radius: 16px;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -365,7 +371,7 @@ const WelcomeAnimation = styled.div`
 `
 
 const Chatbot: React.FC = () => {
-  const { isOpen, messages, toggleChat, addMessage } = useChatbot()
+  const { isOpen, messages, openChat, closeChat, toggleChat, addMessage } = useChatbot()
   const [inputValue, setInputValue] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)

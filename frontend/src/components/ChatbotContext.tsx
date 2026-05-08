@@ -1,10 +1,11 @@
 "use client"
 
 import type React from "react"
-import { createContext, useState, useContext, type ReactNode } from "react"
+import { createContext, useContext, useState, type ReactNode } from "react"
 
 // Define the structure of a chat message
 interface ChatMessage {
+  id: string
   text: string
   isUser: boolean
   timestamp?: Date // Añadimos timestamp como opcional
@@ -13,23 +14,14 @@ interface ChatMessage {
 // Define the context value structure
 interface ChatbotContextType {
   isOpen: boolean
-  messages: ChatMessage[]
+  messages: ChatMessage[] // Añadido messages
   openChat: () => void
   closeChat: () => void
   toggleChat: () => void
-  addMessage: (message: ChatMessage) => void
-  clearMessages: () => void
+  addMessage: (text: string, sender: "user" | "bot") => void // Añadido addMessage
 }
 
 const ChatbotContext = createContext<ChatbotContextType | undefined>(undefined)
-
-export const useChatbot = () => {
-  const context = useContext(ChatbotContext)
-  if (!context) {
-    throw new Error("useChatbot must be used within a ChatbotProvider")
-  }
-  return context
-}
 
 interface ChatbotProviderProps {
   children: ReactNode
@@ -37,18 +29,21 @@ interface ChatbotProviderProps {
 
 export const ChatbotProvider: React.FC<ChatbotProviderProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [messages, setMessages] = useState<ChatMessage[]>([]) // Añadido estado de mensajes
 
   const openChat = () => setIsOpen(true)
   const closeChat = () => setIsOpen(false)
   const toggleChat = () => setIsOpen((prev) => !prev)
 
-  const addMessage = (message: ChatMessage) => {
-    setMessages((prev) => [...prev, message])
-  }
-
-  const clearMessages = () => {
-    setMessages([])
+  // Función para añadir mensajes
+  const addMessage = (text: string, sender: "user" | "bot") => {
+    const newMessage: ChatMessage = {
+      id: Date.now().toString(),
+      text,
+      sender,
+      timestamp: new Date(),
+    }
+    setMessages((prev) => [...prev, newMessage])
   }
 
   return (
@@ -60,7 +55,6 @@ export const ChatbotProvider: React.FC<ChatbotProviderProps> = ({ children }) =>
         closeChat,
         toggleChat,
         addMessage,
-        clearMessages,
       }}
     >
       {children}

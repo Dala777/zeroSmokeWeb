@@ -132,3 +132,11 @@ export default {
   progressAPI,
 }
 
+export default {
+  setAuthToken,
+  authAPI,
+  articleAPI,
+  faqAPI,
+  messageAPI,
+}
+

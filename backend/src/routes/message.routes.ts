@@ -1,4 +1,4 @@
-import express from "express"
+import express from "express";
 import {
   getAllMessages,
   getMessageById,
@@ -9,10 +9,10 @@ import {
 } from "../controllers/message.controller"
 import { authMiddleware, adminMiddleware } from "../middleware/auth.middleware"
 
-const router = express.Router()
+const router = express.Router();
 
 // Rutas públicas
-router.post("/", createMessage)
+router.post("/", createMessage);
 
 // Rutas protegidas (solo admin)
 router.get("/", authMiddleware, adminMiddleware, getAllMessages)
@@ -23,3 +23,4 @@ router.post("/:id/reply", authMiddleware, adminMiddleware, replyToMessage)
 
 export default router
 
+export default router;

@@ -49,11 +49,10 @@ const FooterContent = styled.div`
 const FooterSection = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 `
 
 const FooterTitle = styled.h3`
-  color: ${AppColors.primary};
-  margin-bottom: 1.5rem;
   font-size: 1.25rem;
   font-weight: 600;
   position: relative;
@@ -222,6 +221,8 @@ const NewsletterButton = styled.button`
 `
 
 const Footer: React.FC = () => {
+  const currentYear = new Date().getFullYear()
+
   return (
     <FooterContainer>
       <FooterContent>
@@ -263,10 +264,10 @@ const Footer: React.FC = () => {
 
         <FooterSection>
           <FooterTitle>Recursos</FooterTitle>
-          <FooterLink to="/articulos">Artículos</FooterLink>
-          <FooterLink to="/estadisticas">Estadísticas</FooterLink>
-          <FooterLink to="/testimonios">Testimonios</FooterLink>
-          <FooterLink to="/app">Descargar App</FooterLink>
+          <FooterLink to="/articles">Guías para dejar de fumar</FooterLink>
+          <FooterLink to="/articles">Testimonios de éxito</FooterLink>
+          <FooterLink to="/articles">Consejos de expertos</FooterLink>
+          <FooterLink to="/articles">Investigaciones recientes</FooterLink>
         </FooterSection>
 
         <FooterSection>
@@ -293,7 +294,7 @@ const Footer: React.FC = () => {
         </FooterSection>
       </FooterContent>
 
-      <Copyright>© {new Date().getFullYear()} ZeroSmoke. Todos los derechos reservados.</Copyright>
+      <Copyright>© {currentYear} ZeroSmoke. Todos los derechos reservados.</Copyright>
     </FooterContainer>
   )
 }

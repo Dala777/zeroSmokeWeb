@@ -567,4 +567,34 @@ const HomePage: React.FC = () => {
   )
 }
 
+// Add loading components
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`
+
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: ${AppColors.background};
+`
+
+const LoadingSpinner = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 5px solid ${AppColors.secondary}30;
+  border-top: 5px solid ${AppColors.primary};
+  border-radius: 50%;
+  animation: ${spin} 1s linear infinite;
+  margin-bottom: 20px;
+`
+
+const LoadingText = styled.p`
+  color: ${AppColors.textSecondary};
+  font-size: 1.2rem;
+`
+
 export default HomePage
