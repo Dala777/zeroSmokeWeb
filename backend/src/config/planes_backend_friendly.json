@@ -1,0 +1,1390 @@
+{
+  "plans": [
+    {
+      "level": "low",
+      "durationDays": 45,
+      "description": "Este plan está orientado a usuarios con bajo nivel de dependencia, que requieren sobre todo estructura, motivación y reducción leve de ansiedad.",
+      "activities": [
+        {
+          "day": 1,
+          "title": "Días 1–7: Establecimiento de Rutina y Conciencia",
+          "description": "Caminar 15 minutos al aire libre",
+          "secondary": "Escribir 3 razones para dejar de fumar",
+          "justification": "Establecer motivación intrínseca y actividad física leve (AHA, 2022)"
+        },
+        {
+          "day": 2,
+          "title": "Días 1–7: Establecimiento de Rutina y Conciencia",
+          "description": "Ejercicio de respiración profunda (4-7-8)",
+          "secondary": "Ver frase motivacional",
+          "justification": "Técnicas respiratorias reducen ansiedad leve (Harvard Health, 2021)"
+        },
+        {
+          "day": 3,
+          "title": "Días 1–7: Establecimiento de Rutina y Conciencia",
+          "description": "Escuchar audio de visualización guiada",
+          "secondary": "Registrar cómo te sentiste hoy",
+          "justification": "Refuerzo emocional y mindfulness"
+        },
+        {
+          "day": 4,
+          "title": "Días 1–7: Establecimiento de Rutina y Conciencia",
+          "description": "Lectura breve: “Qué pasa en tu cuerpo 24h después de no fumar”",
+          "secondary": "Caminar 10 minutos",
+          "justification": "Conciencia del cambio fisiológico (CDC, 2021)"
+        },
+        {
+          "day": 5,
+          "title": "Días 1–7: Establecimiento de Rutina y Conciencia",
+          "description": "Yoga suave (video guiado 10 min)",
+          "secondary": "Frase de motivación en la app",
+          "justification": "Yoga = menor ansiedad + más control (Journal of Addiction Medicine, 2018)"
+        },
+        {
+          "day": 6,
+          "title": "Días 1–7: Establecimiento de Rutina y Conciencia",
+          "description": "Escribir un “diario de razones” (¿Qué te motivó más esta semana?)",
+          "secondary": "Respiración guiada",
+          "justification": "Refuerzo positivo y reflexión"
+        },
+        {
+          "day": 7,
+          "title": "Días 1–7: Establecimiento de Rutina y Conciencia",
+          "description": "Visualización del progreso (línea de tiempo en app)",
+          "secondary": "Autoevaluación emocional (emoji slider)",
+          "justification": "Refuerzo visual del cambio"
+        },
+        {
+          "day": 8,
+          "title": "Días 8–14: Fortalecimiento del Hábito y Regulación Emocional",
+          "description": "Caminar 20 minutos",
+          "secondary": "Escribir 3 beneficios de no fumar",
+          "justification": "Actividad cardiovascular leve = menor craving"
+        },
+        {
+          "day": 9,
+          "title": "Días 8–14: Fortalecimiento del Hábito y Regulación Emocional",
+          "description": "Técnica de respiración diafragmática",
+          "secondary": "Leer testimonio de exfumador",
+          "justification": "Inspiración y regulación emocional"
+        },
+        {
+          "day": 10,
+          "title": "Días 8–14: Fortalecimiento del Hábito y Regulación Emocional",
+          "description": "Escuchar audio: “Tu cuerpo se limpia”",
+          "secondary": "Visualizar pulmón animado",
+          "justification": "Educación + motivación"
+        },
+        {
+          "day": 11,
+          "title": "Días 8–14: Fortalecimiento del Hábito y Regulación Emocional",
+          "description": "Hacer estiramientos guiados 10 min",
+          "secondary": "Diario emocional breve",
+          "justification": "Estímulo físico suave"
+        },
+        {
+          "day": 12,
+          "title": "Días 8–14: Fortalecimiento del Hábito y Regulación Emocional",
+          "description": "Video corto motivador (1 min)",
+          "secondary": "Frase personalizada en notificación",
+          "justification": "Feedback positivo constante"
+        },
+        {
+          "day": 13,
+          "title": "Días 8–14: Fortalecimiento del Hábito y Regulación Emocional",
+          "description": "Escribir una carta a tu “yo futuro” sin fumar",
+          "secondary": "Respiración consciente (3 min)",
+          "justification": "Proyección y autosugestión"
+        },
+        {
+          "day": 14,
+          "title": "Días 8–14: Fortalecimiento del Hábito y Regulación Emocional",
+          "description": "Recap de la semana: ¿Qué te funcionó?",
+          "secondary": "Actividad libre de gratitud",
+          "justification": "Consolidación emocional"
+        },
+        {
+          "day": 15,
+          "title": "Días 15–21: Estímulo Físico y Prevención de Recaída",
+          "description": "Caminata rápida 25 minutos",
+          "secondary": "Foto del lugar favorito sin fumar",
+          "justification": "Refuerzo positivo"
+        },
+        {
+          "day": 16,
+          "title": "Días 15–21: Estímulo Físico y Prevención de Recaída",
+          "description": "Yoga suave (nuevo video)",
+          "secondary": "Diario: ¿Qué evitarías hoy?",
+          "justification": "Conciencia de detonantes"
+        },
+        {
+          "day": 17,
+          "title": "Días 15–21: Estímulo Físico y Prevención de Recaída",
+          "description": "Respiración cuadrada (4-4-4-4)",
+          "secondary": "Audio de afirmaciones positivas",
+          "justification": "Mejora de enfoque y calma"
+        },
+        {
+          "day": 18,
+          "title": "Días 15–21: Estímulo Físico y Prevención de Recaída",
+          "description": "Estiramientos + diario emocional",
+          "secondary": "Visualizar logros en app",
+          "justification": "Refuerzo visual y emocional"
+        },
+        {
+          "day": 19,
+          "title": "Días 15–21: Estímulo Físico y Prevención de Recaída",
+          "description": "Autoevaluación emocional semanal",
+          "secondary": "Caminar con música motivadora",
+          "justification": "Refuerzo y monitoreo"
+        },
+        {
+          "day": 20,
+          "title": "Días 15–21: Estímulo Físico y Prevención de Recaída",
+          "description": "Video sobre “cómo cambia tu piel” al dejar de fumar",
+          "secondary": "Ver mensaje sorpresa positivo",
+          "justification": "Recompensa + estética"
+        },
+        {
+          "day": 21,
+          "title": "Días 15–21: Estímulo Físico y Prevención de Recaída",
+          "description": "Meditación guiada (5 min)",
+          "secondary": "Actividad de gratitud escrita",
+          "justification": "Mindfulness y control emocional"
+        },
+        {
+          "day": 22,
+          "title": "Días 22–28: Consolidación de logros y conexión mente-cuerpo",
+          "description": "Caminata consciente (sin música, centrarse en sonidos y respiración)",
+          "secondary": "Registrar 3 cosas que notaste distintas sin fumar",
+          "justification": "Mindfulness en movimiento (Kabat-Zinn, 2003)"
+        },
+        {
+          "day": 23,
+          "title": "Días 22–28: Consolidación de logros y conexión mente-cuerpo",
+          "description": "Técnica de relajación muscular progresiva (audio guiado)",
+          "secondary": "Frase inspiradora personalizada",
+          "justification": "Técnica eficaz contra ansiedad leve (Mayo Clinic)"
+        },
+        {
+          "day": 24,
+          "title": "Días 22–28: Consolidación de logros y conexión mente-cuerpo",
+          "description": "Video: “Tu sistema inmunológico mejora”",
+          "secondary": "Respiración + agradecimiento",
+          "justification": "Educación fisiológica como motivación"
+        },
+        {
+          "day": 25,
+          "title": "Días 22–28: Consolidación de logros y conexión mente-cuerpo",
+          "description": "Crear una playlist de “momentos sin cigarro”",
+          "secondary": "Escucharla en una caminata",
+          "justification": "Refuerzo conductual positivo (Condicionamiento operante)"
+        },
+        {
+          "day": 26,
+          "title": "Días 22–28: Consolidación de logros y conexión mente-cuerpo",
+          "description": "Estiramientos + 10 min de lectura sobre bienestar",
+          "secondary": "Registrar pensamientos positivos",
+          "justification": "Asociar salud física con mental"
+        },
+        {
+          "day": 27,
+          "title": "Días 22–28: Consolidación de logros y conexión mente-cuerpo",
+          "description": "“Reto del día”: reemplaza 1 impulso de fumar con beber agua con limón",
+          "secondary": "Escribe cómo te sentiste",
+          "justification": "Sustitución conductual y control de impulsos (CDC)"
+        },
+        {
+          "day": 28,
+          "title": "Días 22–28: Consolidación de logros y conexión mente-cuerpo",
+          "description": "Autoevaluación emocional + visualización de logros acumulados",
+          "secondary": "Audio: “Tú lo estás logrando”",
+          "justification": "Anclaje emocional + visualización"
+        },
+        {
+          "day": 29,
+          "title": "Días 29–35: Reforzar identidad libre de tabaco y plan de contingencia",
+          "description": "Escribe cómo imaginas tu vida 6 meses sin fumar",
+          "secondary": "Respiración 4-7-8",
+          "justification": "Proyección positiva, visión de futuro"
+        },
+        {
+          "day": 30,
+          "title": "Días 29–35: Reforzar identidad libre de tabaco y plan de contingencia",
+          "description": "Mini-video “Lo que ya lograste en tu cuerpo” (estilo TikTok)",
+          "secondary": "Diario: “Antes pensaba que fumar me ayudaba a…”",
+          "justification": "Desmitificación + autoevaluación"
+        },
+        {
+          "day": 31,
+          "title": "Días 29–35: Reforzar identidad libre de tabaco y plan de contingencia",
+          "description": "Yoga + meditación guiada (10 min)",
+          "secondary": "Reflexión: “¿Qué harás si aparece una recaída?”",
+          "justification": "Estrategias cognitivas (prevención de recaídas)"
+        },
+        {
+          "day": 32,
+          "title": "Días 29–35: Reforzar identidad libre de tabaco y plan de contingencia",
+          "description": "Hacer una lista de hábitos saludables nuevos que surgieron",
+          "secondary": "Compartir uno con alguien (si desea)",
+          "justification": "Refuerzo social voluntario"
+        },
+        {
+          "day": 33,
+          "title": "Días 29–35: Reforzar identidad libre de tabaco y plan de contingencia",
+          "description": "Reto físico: subir escaleras 3 veces al día",
+          "secondary": "Registrar sensación al hacerlo",
+          "justification": "Capacidad pulmonar mejora (NICE, 2020)"
+        },
+        {
+          "day": 34,
+          "title": "Días 29–35: Reforzar identidad libre de tabaco y plan de contingencia",
+          "description": "Escribir: “5 cosas buenas que noté desde que dejé el cigarro”",
+          "secondary": "Respiración controlada",
+          "justification": "Gratitud y enfoque en beneficios"
+        },
+        {
+          "day": 35,
+          "title": "Días 29–35: Reforzar identidad libre de tabaco y plan de contingencia",
+          "description": "Visualización de todo el progreso (calendario animado)",
+          "secondary": "Audio de cierre de etapa: “Mirá todo lo que hiciste”",
+          "justification": "Cierre simbólico parcial de proceso"
+        },
+        {
+          "day": 36,
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "description": "Respiración guiada + paseo largo (30 minutos)",
+          "secondary": "Frase de reafirmación: “Soy una persona libre de tabaco”",
+          "justification": "Empoderamiento (terapia conductual)"
+        },
+        {
+          "day": 37,
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "description": "Técnica STOP (Stop, Take a breath, Observe, Proceed)",
+          "secondary": "Diario emocional (emoji slider)",
+          "justification": "Estrategia cognitiva para impulsos"
+        },
+        {
+          "day": 38,
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "description": "Escribir: “¿Qué haría diferente si tuviera una recaída?”",
+          "secondary": "Escuchar audio motivador",
+          "justification": "Prevención activa de recaídas"
+        },
+        {
+          "day": 39,
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "description": "Reto: pasar todo el día sin pensar en cigarrillos (si ocurre, anotarlo)",
+          "secondary": "Reflexión nocturna: ¿qué lo disparó?",
+          "justification": "Autoconciencia de disparadores"
+        },
+        {
+          "day": 40,
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "description": "Yoga suave o caminata con estiramientos",
+          "secondary": "Audio: “Tu cuerpo hoy está más sano que hace 40 días”",
+          "justification": "Reforzamiento corporal"
+        },
+        {
+          "day": 41,
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "description": "Lista de logros personales desde que inició el plan",
+          "secondary": "Compartir uno en el sistema de logros (opcional)",
+          "justification": "Autoestima, motivación extrínseca"
+        },
+        {
+          "day": 42,
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "description": "Ejercicio físico + visualización de salud mejorada (pulmón animado)",
+          "secondary": "Diario emocional final (breve)",
+          "justification": "Integración cuerpo-emoción"
+        },
+        {
+          "day": 43,
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "description": "Reto social: invita a alguien a caminar sin celular ni cigarro",
+          "secondary": "Registrar qué hablaron o sintieron",
+          "justification": "Refuerzo social y conexión real"
+        },
+        {
+          "day": 44,
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "description": "Meditación guiada final: “Soy dueño de mis decisiones”",
+          "secondary": "Frase personalizada",
+          "justification": "Empoderamiento emocional"
+        },
+        {
+          "day": 45,
+          "title": "Días 36–45: Mantenimiento, independencia y proyección",
+          "description": "Autoevaluación final + mensaje de logro visual + botón de “reiniciar”",
+          "secondary": "Bonus: escribe una carta a alguien que quiere dejar de fumar",
+          "justification": "Cierre simbólico, transición a independencia"
+        }
+      ]
+    },
+    {
+      "level": "moderate",
+      "durationDays": 60,
+      "description": "Este plan es más profundo y gradual, adecuado para quienes presentan una dependencia media a la nicotina.",
+      "activities": [
+        {
+          "day": 1,
+          "title": "Días 1–7: Preparación consciente y sensibilización",
+          "description": "Escribe 5 razones personales para dejar de fumar.",
+          "secondary": "Realiza respiraciones profundas por 3 minutos.",
+          "justification": "CDC y NIMH: escribir motivos personales mejora adherencia; respiración disminuye cravings."
+        },
+        {
+          "day": 2,
+          "title": "Días 1–7: Preparación consciente y sensibilización",
+          "description": "Mira un video educativo breve sobre los efectos del tabaco.",
+          "secondary": "Haz una caminata de 15 minutos.",
+          "justification": "OMS: educación visual impacta decisiones; ejercicio leve reduce ansiedad."
+        },
+        {
+          "day": 3,
+          "title": "Días 1–7: Preparación consciente y sensibilización",
+          "description": "Escribe 3 situaciones en las que más fumas.",
+          "secondary": "Planifica una alternativa para cada una.",
+          "justification": "Terapia Cognitivo Conductual (CBT): anticipar conductas previene recaídas."
+        },
+        {
+          "day": 4,
+          "title": "Días 1–7: Preparación consciente y sensibilización",
+          "description": "Prueba la técnica de respiración 4-7-8 antes de dormir.",
+          "secondary": "Haz un escaneo corporal de 5 minutos.",
+          "justification": "Validado por Harvard Medical School: disminuye activación simpática."
+        },
+        {
+          "day": 5,
+          "title": "Días 1–7: Preparación consciente y sensibilización",
+          "description": "Registra cada vez que sientas ganas de fumar: hora, lugar, emoción.",
+          "secondary": "Frase de motivación en la app",
+          "justification": "Técnicas de autorregulación conductual."
+        },
+        {
+          "day": 6,
+          "title": "Días 1–7: Preparación consciente y sensibilización",
+          "description": "Llama a un amigo o familiar y cuéntale sobre tu proceso.",
+          "secondary": "Camina 20 minutos",
+          "justification": "Apoyo social mejora la tasa de éxito (OMS, 2021)."
+        },
+        {
+          "day": 7,
+          "title": "Días 1–7: Preparación consciente y sensibilización",
+          "description": "Haz una meditación guiada de 7 minutos.",
+          "secondary": "Reflexiona sobre cómo te sentiste durante la semana.",
+          "justification": "Mindfulness reduce cravings (JAMA Internal Medicine, 2015)."
+        },
+        {
+          "day": 8,
+          "title": "Días 8–14: Autoconciencia y primeros desafíos",
+          "description": "Evalúa tus emociones del día con un diario emocional.",
+          "secondary": "Practica respiración con pausa (inhala 4s, retén 2s, exhala 6s).",
+          "justification": "Técnicas de regulación emocional."
+        },
+        {
+          "day": 9,
+          "title": "Días 8–14: Autoconciencia y primeros desafíos",
+          "description": "Realiza una caminata de 25 minutos.",
+          "secondary": "Mientras caminas, enumera tus logros del proceso.",
+          "justification": "Ejercicio moderado mejora estado de ánimo (Mayo Clinic)."
+        },
+        {
+          "day": 10,
+          "title": "Días 8–14: Autoconciencia y primeros desafíos",
+          "description": "Haz una lista de tus detonantes personales y cómo evitarlos.",
+          "secondary": "Prueba un ejercicio físico alternativo (yoga suave, bicicleta).",
+          "justification": "Identificación de disparadores = prevención de recaídas (NIH)."
+        },
+        {
+          "day": 11,
+          "title": "Días 8–14: Autoconciencia y primeros desafíos",
+          "description": "Repite la técnica de 4-7-8 antes de dormir.",
+          "secondary": "Revisa tu diario emocional.",
+          "justification": "Consolidación de técnica antiestrés."
+        },
+        {
+          "day": 12,
+          "title": "Días 8–14: Autoconciencia y primeros desafíos",
+          "description": "Visualiza tu vida sin cigarrillo (5 min).",
+          "secondary": "Escribe los beneficios que esperas obtener.",
+          "justification": "Visualización positiva mejora motivación (Psicología Positiva)."
+        },
+        {
+          "day": 13,
+          "title": "Días 8–14: Autoconciencia y primeros desafíos",
+          "description": "Minijuego en la app como distracción ante ansiedad.",
+          "secondary": "Llama a tu red de apoyo.",
+          "justification": "Gamificación aumenta compromiso (APA, 2020)."
+        },
+        {
+          "day": 14,
+          "title": "Días 8–14: Autoconciencia y primeros desafíos",
+          "description": "Resume tus aprendizajes de la semana.",
+          "secondary": "Realiza respiración profunda antes de dormir.",
+          "justification": "Consolidación y refuerzo positivo."
+        },
+        {
+          "day": 15,
+          "title": "Días 15–21: Sostenimiento emocional y nuevos hábitos",
+          "description": "Mira un video educativo sobre regeneración pulmonar.",
+          "secondary": "Haz una caminata rápida (30 min).",
+          "justification": "NIH: el conocimiento fisiológico refuerza la motivación."
+        },
+        {
+          "day": 16,
+          "title": "Días 15–21: Sostenimiento emocional y nuevos hábitos",
+          "description": "Técnica STOP (Stop, Take a breath, Observe, Proceed) ante ganas de fumar.",
+          "secondary": "Escríbela.",
+          "justification": "Técnica de ACT (Acceptance & Commitment Therapy)."
+        },
+        {
+          "day": 17,
+          "title": "Días 15–21: Sostenimiento emocional y nuevos hábitos",
+          "description": "Test de ansiedad (ligero)",
+          "secondary": "Sesión de respiración diafragmática (6 min).",
+          "justification": "Evaluación de comorbilidad emocional."
+        },
+        {
+          "day": 18,
+          "title": "Días 15–21: Sostenimiento emocional y nuevos hábitos",
+          "description": "Actividad física moderada (bicicleta o trote suave, 30 min).",
+          "secondary": "Registra tu nivel de energía.",
+          "justification": "CDC: ejercicio = liberación de dopamina natural."
+        },
+        {
+          "day": 19,
+          "title": "Días 15–21: Sostenimiento emocional y nuevos hábitos",
+          "description": "Escucha una historia real de un exfumador.",
+          "secondary": "Escribe qué aprendiste.",
+          "justification": "Testimonios inspiran identificación positiva."
+        },
+        {
+          "day": 20,
+          "title": "Días 15–21: Sostenimiento emocional y nuevos hábitos",
+          "description": "Revisa tus registros de craving: ¿disminuyeron? ¿por qué? Reflexión escrita",
+          "secondary": "Llama a tu red de apoyo.",
+          "justification": "Autoobservación guiada = mejora autorregulación."
+        },
+        {
+          "day": 21,
+          "title": "Días 15–21: Sostenimiento emocional y nuevos hábitos",
+          "description": "Descanso activo: música relajante",
+          "secondary": "Meditación corta (5 min).",
+          "justification": "OMS: pausas conscientes previenen burnout."
+        },
+        {
+          "day": 22,
+          "title": "Días 22–28: Reafirmación de logros y conciencia corporal",
+          "description": "Haz una caminata tipo “atención plena”: enfócate en sonidos, colores, sensaciones.",
+          "secondary": "Revisa tu diario emocional.",
+          "justification": "Mindful walking mejora el control de impulsos."
+        },
+        {
+          "day": 23,
+          "title": "Días 22–28: Reafirmación de logros y conciencia corporal",
+          "description": "Escoge una frase motivadora y colócala en tu espacio visible.",
+          "secondary": "Respiración 4-7-8.",
+          "justification": "Refuerzo visual y mental positivo."
+        },
+        {
+          "day": 24,
+          "title": "Días 22–28: Reafirmación de logros y conciencia corporal",
+          "description": "Repite ejercicio de visualización del futuro.",
+          "secondary": "Evalúa cambios físicos (olor, respiración).",
+          "justification": "Reforzamiento de logros."
+        },
+        {
+          "day": 25,
+          "title": "Días 22–28: Reafirmación de logros y conciencia corporal",
+          "description": "Prueba una nueva actividad física (baile, estiramiento dinámico, paseo en bici).",
+          "secondary": "Revisa tu diario emocional.",
+          "justification": "Nuevas experiencias crean asociaciones positivas."
+        },
+        {
+          "day": 26,
+          "title": "Días 22–28: Reafirmación de logros y conciencia corporal",
+          "description": "Test de ansiedad.",
+          "secondary": "Escribe cómo se ha transformado tu estado emocional.",
+          "justification": "Autoevaluación de salud mental."
+        },
+        {
+          "day": 27,
+          "title": "Días 22–28: Reafirmación de logros y conciencia corporal",
+          "description": "Haz una acción de autocuidado (baño caliente, película positiva, etc.).",
+          "secondary": "Realiza respiración profunda antes de dormir.",
+          "justification": "Técnicas de regulación emocional."
+        },
+        {
+          "day": 28,
+          "title": "Días 22–28: Reafirmación de logros y conciencia corporal",
+          "description": "Revisión semanal + video educativo",
+          "secondary": "Visualización de metas de mediano plazo.",
+          "justification": "Consolidación + anticipación de éxito = clave en abandono sostenido."
+        },
+        {
+          "day": 29,
+          "title": "Días 29–35: Consolidación y manejo del craving",
+          "description": "Caminata de 30 min con atención plena.",
+          "secondary": "Practica respiración 4-7-8 antes de dormir.",
+          "justification": "Mindful walking y respiración profunda reducen cravings. (JAMA, 2015)"
+        },
+        {
+          "day": 30,
+          "title": "Días 29–35: Consolidación y manejo del craving",
+          "description": "Registra cada craving con hora, situación y emoción.",
+          "secondary": "Haz una meditación guiada de 10 minutos.",
+          "justification": "Autoconciencia emocional previene recaídas. (CBT)"
+        },
+        {
+          "day": 31,
+          "title": "Días 29–35: Consolidación y manejo del craving",
+          "description": "Ejercicio físico moderado (30 min).",
+          "secondary": "Evalúa cómo cambia tu estado de ánimo post-ejercicio.",
+          "justification": "Ejercicio aumenta dopamina y reduce ansiedad. (CDC)"
+        },
+        {
+          "day": 32,
+          "title": "Días 29–35: Consolidación y manejo del craving",
+          "description": "Prueba un nuevo minijuego en la app como distracción.",
+          "secondary": "Llama a alguien de tu red de apoyo.",
+          "justification": "Gamificación y soporte social refuerzan el compromiso. (APA, 2020)"
+        },
+        {
+          "day": 33,
+          "title": "Días 29–35: Consolidación y manejo del craving",
+          "description": "Escribe una carta a tu “yo” del pasado explicando por qué tomaste esta decisión.",
+          "secondary": "Realiza respiración profunda antes de dormir.",
+          "justification": "Técnicas de reestructuración narrativa. (Psicología Positiva)"
+        },
+        {
+          "day": 34,
+          "title": "Días 29–35: Consolidación y manejo del craving",
+          "description": "Respiración diafragmática (10 min).",
+          "secondary": "Registra tus niveles de ansiedad.",
+          "justification": "Técnica validada para reducción de estrés. (NIH)"
+        },
+        {
+          "day": 35,
+          "title": "Días 29–35: Consolidación y manejo del craving",
+          "description": "Reflexiona sobre las herramientas que más te ayudaron. Escribe tu Top 3.",
+          "secondary": "Realiza respiración profunda antes de dormir.",
+          "justification": "Identificación de recursos efectivos mejora el autocontrol."
+        },
+        {
+          "day": 36,
+          "title": "Días 36–42: Prevención de recaídas personalizada",
+          "description": "Diseña un plan de emergencia personal para momentos de recaída.",
+          "secondary": "Practica respiración con pausa (inhala 4s, retén 2s, exhala 6s).",
+          "justification": "Prevención de recaídas – Modelo de Marlatt y Gordon."
+        },
+        {
+          "day": 37,
+          "title": "Días 36–42: Prevención de recaídas personalizada",
+          "description": "Realiza una caminata larga (45 min) escuchando música relajante.",
+          "secondary": "Revisa tu diario emocional.",
+          "justification": "Combina actividad física + placer sensorial = reducción de craving."
+        },
+        {
+          "day": 38,
+          "title": "Días 36–42: Prevención de recaídas personalizada",
+          "description": "Evalúa qué emociones han disminuido desde el día 1.",
+          "secondary": "Haz respiración 4-7-8.",
+          "justification": "Revisión de progreso emocional mejora autoeficacia."
+        },
+        {
+          "day": 39,
+          "title": "Días 36–42: Prevención de recaídas personalizada",
+          "description": "Test emocional corto (app).",
+          "secondary": "Escribe 3 emociones positivas que sientas hoy.",
+          "justification": "Técnicas de journaling y autorreflexión."
+        },
+        {
+          "day": 40,
+          "title": "Días 36–42: Prevención de recaídas personalizada",
+          "description": "Realiza un nuevo ejercicio físico: prueba subir escaleras, trotar suave o yoga.",
+          "secondary": "Revisa tu diario emocional.",
+          "justification": "Cambio de rutina física mantiene motivación. (Mayo Clinic)"
+        },
+        {
+          "day": 41,
+          "title": "Días 36–42: Prevención de recaídas personalizada",
+          "description": "Repite tu carta del día 33, pero dirigida a tu “yo” futuro.",
+          "secondary": "Llama a tu red de apoyo.",
+          "justification": "Visualización + construcción de nueva identidad."
+        },
+        {
+          "day": 42,
+          "title": "Días 36–42: Prevención de recaídas personalizada",
+          "description": "Haz una pausa consciente: 10 minutos de silencio, respiración y observación del entorno.",
+          "secondary": "Realiza respiración profunda antes de dormir.",
+          "justification": "Mindfulness validado para reducir impulsividad."
+        },
+        {
+          "day": 43,
+          "title": "Días 43–49: Construcción de identidad sin tabaco",
+          "description": "Elige una imagen que represente tu proceso.",
+          "secondary": "Ponla como fondo de pantalla o imprímela.",
+          "justification": "Refuerzo visual positivo."
+        },
+        {
+          "day": 44,
+          "title": "Días 43–49: Construcción de identidad sin tabaco",
+          "description": "Realiza una meditación guiada sobre gratitud (10 min).",
+          "secondary": "Repite la técnica de 4-7-8 antes de dormir.",
+          "justification": "Gratitud = aumento de bienestar subjetivo. (UC Berkeley, GGSC)"
+        },
+        {
+          "day": 45,
+          "title": "Días 43–49: Construcción de identidad sin tabaco",
+          "description": "Camina durante 30 min, mientras repites una frase motivadora personal.",
+          "secondary": "Prueba un ejercicio físico alternativo (yoga suave, bicicleta).",
+          "justification": "Afirmaciones positivas en movimiento refuerzan intención."
+        },
+        {
+          "day": 46,
+          "title": "Días 43–49: Construcción de identidad sin tabaco",
+          "description": "Test de ansiedad y craving.",
+          "secondary": "Registra tus resultados.",
+          "justification": "Medición constante mejora la autogestión."
+        },
+        {
+          "day": 47,
+          "title": "Días 43–49: Construcción de identidad sin tabaco",
+          "description": "Haz una lista de cosas que puedes hacer cuando tengas un impulso.",
+          "secondary": "Guárdala en tu app o agenda.",
+          "justification": "Técnicas de reemplazo conductual."
+        },
+        {
+          "day": 48,
+          "title": "Días 43–49: Construcción de identidad sin tabaco",
+          "description": "Actividad creativa: dibuja, escribe, arma algo con tus manos.",
+          "secondary": "Minijuego en la app como distracción ante ansiedad.",
+          "justification": "Creatividad = distracción cognitiva efectiva. (Psicología del Comportamiento)"
+        },
+        {
+          "day": 49,
+          "title": "Días 43–49: Construcción de identidad sin tabaco",
+          "description": "Contacta a alguien que te haya apoyado y agradécele.",
+          "secondary": "Realiza respiración profunda antes de dormir.",
+          "justification": "Apoyo social y refuerzo positivo mutuo."
+        },
+        {
+          "day": 50,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Visualización del futuro: imagina cómo estarás en 6 meses sin fumar. Escríbelo.",
+          "secondary": "Evalúa tus emociones del día con un diario emocional.",
+          "justification": "Proyección positiva = refuerzo motivacional."
+        },
+        {
+          "day": 51,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Camina 30 min escuchando tu música favorita.",
+          "secondary": "Evalúa tu nivel de energía.",
+          "justification": "Actividad placentera asociada a logro físico."
+        },
+        {
+          "day": 52,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Haz una autoevaluación del proceso completo: ¿qué aprendiste? ¿qué cambiarías?",
+          "secondary": "Prueba un ejercicio físico alternativo (yoga suave, bicicleta).",
+          "justification": "Reflexión estructurada consolida aprendizajes."
+        },
+        {
+          "day": 53,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Meditación guiada con visualización del cuerpo sano.",
+          "secondary": "Revisa tu diario emocional.",
+          "justification": "Refuerzo somático positivo."
+        },
+        {
+          "day": 54,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Revisión de logros en la app: cigarrillos evitados, dinero ahorrado, etc.",
+          "secondary": "Camina 30 min escuchando tu música favorita.",
+          "justification": "Recompensas visibles mantienen el progreso. (Técnicas de gamificación)"
+        },
+        {
+          "day": 55,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Comparte en el sistema o con alguien tu historia personal de estos 55 días.",
+          "secondary": "Llama a tu red de apoyo.",
+          "justification": "Compartir refuerza el sentido de propósito."
+        },
+        {
+          "day": 56,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Última caminata tipo “mindful walking”. Respira profundamente al final.",
+          "secondary": "Resume tus aprendizajes de la semana.",
+          "justification": "Ritual de cierre consciente."
+        },
+        {
+          "day": 57,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Escribe 3 frases que usarás para evitar una recaída futura.",
+          "secondary": "Realiza respiración profunda antes de dormir.",
+          "justification": "Autoafirmaciones futuras como técnica de resiliencia."
+        },
+        {
+          "day": 58,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Crea un mensaje motivacional para otros usuarios nuevos.",
+          "secondary": "Realiza respiración profunda antes de dormir.",
+          "justification": "Generosidad y empatía fortalecen la identidad sin tabaco."
+        },
+        {
+          "day": 59,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Día de autocuidado total: haz cosas que te hagan bien física y emocionalmente.",
+          "secondary": "Evalúa tu nivel de energía.",
+          "justification": "Bienestar integral y prevención del burnout."
+        },
+        {
+          "day": 60,
+          "title": "Días 50–60: Cierre, proyección y autonomía",
+          "description": "Evaluación final: test emocional, de craving y ansiedad.",
+          "secondary": "Mensaje de felicitación con medalla simbólica. Guarda una copia de tu progreso.",
+          "justification": "Cierre formal + recompensa simbólica = mayor mantenimiento."
+        }
+      ]
+    },
+    {
+      "level": "high",
+      "durationDays": 90,
+      "description": "Establecer rutinas sólidas, combatir el síndrome de abstinencia y brindar múltiples frentes de contención emocional, física y cognitiva.",
+      "activities": [
+        {
+          "day": 1,
+          "title": "Días 1–7",
+          "description": "Establecer red de apoyo (contactar a 1 persona)",
+          "secondary": "Caminata de 10 min + Respiración 4-7-8",
+          "justification": "CDC y NICE (UK): Red de apoyo mejora la adherencia y reduce recaídas."
+        },
+        {
+          "day": 2,
+          "title": "Días 1–7",
+          "description": "Diario emocional (¿Cómo te sientes hoy?)",
+          "secondary": "Yoga principiante 10 min",
+          "justification": "Yoga: reduce cortisol y mejora control de impulsos (Harvard Health)."
+        },
+        {
+          "day": 3,
+          "title": "Días 1–7",
+          "description": "Ver video motivacional sobre exfumadores",
+          "secondary": "Caminar 15 min + Agua cada hora",
+          "justification": "Hidratación ayuda a eliminar nicotina (Mayo Clinic)."
+        },
+        {
+          "day": 4,
+          "title": "Días 1–7",
+          "description": "Técnica de respiración cuadrada (4-4-4-4)",
+          "secondary": "Escribir en diario: “3 razones para seguir”",
+          "justification": "Mindfulness y journaling reducen cravings (American Psychological Association)."
+        },
+        {
+          "day": 5,
+          "title": "Días 1–7",
+          "description": "Estiramiento",
+          "secondary": "Juego antiestrés (minijuego) + Frase motivadora",
+          "justification": "Gamificación y movimiento leve reducen ansiedad (Journal of Medical Internet Research)."
+        },
+        {
+          "day": 6,
+          "title": "Días 1–7",
+          "description": "Práctica de visualización: “Tu vida sin cigarro”",
+          "secondary": "Audio guía de 5 min + Caminar 20 min",
+          "justification": "Visualización cognitiva: técnica validada en CBT (terapia cognitivo-conductual)."
+        },
+        {
+          "day": 7,
+          "title": "Días 1–7",
+          "description": "Evaluación rápida de ansiedad",
+          "secondary": "Técnica de tierra (Grounding 5-4-3-2-1) + Agua con limón",
+          "justification": "Técnicas de grounding: eficaces en crisis (NIH)."
+        },
+        {
+          "day": 8,
+          "title": "Días 8–14",
+          "description": "Respiración 4-7-8 + Diario emocional (¿Qué te cuesta más?)",
+          "secondary": "Caminar 20 minutos",
+          "justification": "Reforzar autoconciencia mejora adherencia (Psychology Today)."
+        },
+        {
+          "day": 9,
+          "title": "Días 8–14",
+          "description": "Video corto (Pulmones al día 9 sin fumar)",
+          "secondary": "Yoga suave + Frase motivadora",
+          "justification": "Visuales del progreso físico fomentan motivación (American Lung Association)."
+        },
+        {
+          "day": 10,
+          "title": "Días 8–14",
+          "description": "Minijuego antiestrés",
+          "secondary": "Lista de logros + Estiramiento",
+          "justification": "Gamificación mantiene la adherencia (JMIR Serious Games)."
+        },
+        {
+          "day": 11,
+          "title": "Días 8–14",
+          "description": "Técnica de relajación guiada (audio)",
+          "secondary": "Caminar 15 min + Diario: ¿Qué evitarías ahora?",
+          "justification": "Mindfulness guiado: validado para cravings (JAMA Psychiatry)."
+        },
+        {
+          "day": 12,
+          "title": "Días 8–14",
+          "description": "Llamada o mensaje a red de apoyo",
+          "secondary": "Respiración + Juego cognitivo (memoria)",
+          "justification": "Apoyo social y distracción cognitiva: útiles contra cravings (NIDA).e"
+        },
+        {
+          "day": 13,
+          "title": "Días 8–14",
+          "description": "Video motivacional sobre neuroplasticidad + Caminar",
+          "secondary": "Diario emocional",
+          "justification": "Conocer la neuroplasticidad empodera al usuario (Harvard Neuroscience Lab)."
+        },
+        {
+          "day": 14,
+          "title": "Días 8–14",
+          "description": "Evaluación ligera de ansiedad + Técnica STOP",
+          "secondary": "Yoga principiante 15 minutos",
+          "justification": "Técnica STOP: intervención breve de mindfulness (NHS UK)."
+        },
+        {
+          "day": 15,
+          "title": "Días 15–21",
+          "description": "Caminata de 30 minutos",
+          "secondary": "Visualización de salud mejorada",
+          "justification": "Actividad cardiovascular leve = menor craving"
+        },
+        {
+          "day": 16,
+          "title": "Días 15–21",
+          "description": "Visualización guiada: “Mi vida libre del cigarro”",
+          "secondary": "Caminata consciente + Diario emocional",
+          "justification": "Mindfulness y visualización: refuerzan metas conductuales (American Mindfulness Research Association)."
+        },
+        {
+          "day": 17,
+          "title": "Días 15–21",
+          "description": "Respiración cuadrada (4-4-4-4)",
+          "secondary": "Video: beneficios cardiovasculares tras 2 semanas + Frase motivadora",
+          "justification": "American Heart Association: 2 semanas sin fumar mejora función cardiaca."
+        },
+        {
+          "day": 18,
+          "title": "Días 15–21",
+          "description": "Juego cognitivo (memoria visual)",
+          "secondary": "Yoga suave + Diario: “Lo que más me costó esta semana”",
+          "justification": "Actividades cognitivas: reducen craving y ansiedad (Cochrane Library)."
+        },
+        {
+          "day": 19,
+          "title": "Días 15–21",
+          "description": "Técnica de relajación guiada",
+          "secondary": "Caminar 20 min + Agua con cítricos",
+          "justification": "Rehidratación y relajación: ayuda en picos de craving (Mayo Clinic)."
+        },
+        {
+          "day": 20,
+          "title": "Días 15–21",
+          "description": "Test autoevaluación de progreso",
+          "secondary": "Lista de logros visibles + Frase de refuerzo",
+          "justification": "Evaluar avances mantiene motivación (Behavioral Science Journal)."
+        },
+        {
+          "day": 21,
+          "title": "Días 15–21",
+          "description": "Contactar a red de apoyo (mensaje corto)",
+          "secondary": "Técnica STOP + Estiramiento consciente",
+          "justification": "Apoyo interpersonal + mindfulness breve = menor probabilidad de recaída (CDC)."
+        },
+        {
+          "day": 22,
+          "title": "Días 22–28",
+          "description": "Respiración 4-7-8 + Diario: “3 formas en que mejoró mi vida”",
+          "secondary": "Yoga 20 min",
+          "justification": "Gratitud + ejercicio físico: mejora bienestar subjetivo (APA)."
+        },
+        {
+          "day": 23,
+          "title": "Días 22–28",
+          "description": "Técnica de anclaje emocional (recordar momento feliz)",
+          "secondary": "Caminata 25 min + Registro de estado de ánimo",
+          "justification": "Técnicas de anclaje mejoran regulación emocional en adicciones (Journal of Psych. Research)."
+        },
+        {
+          "day": 24,
+          "title": "Días 22–28",
+          "description": "Respiración profunda + Escuchar testimonio en audio (usuario exfumador)",
+          "secondary": "Diario: “Lo que aprendí hasta ahora”",
+          "justification": "Modelo de pares mejora adherencia y reduce recaídas (SAMHSA)."
+        },
+        {
+          "day": 25,
+          "title": "Días 22–28",
+          "description": "Minijuego cognitivo (atención selectiva)",
+          "secondary": "Yoga (30 min) + Infusión relajante",
+          "justification": "Ejercicio cognitivo + físico = menor craving (NIDA, 2020)."
+        },
+        {
+          "day": 26,
+          "title": "Días 22–28",
+          "description": "Técnica de mindfulness: “body scan” guiado (10 min)",
+          "secondary": "Lista de logros + Recordatorio de beneficios respiratorios",
+          "justification": "Body scan ayuda a identificar tensiones y reduce ansiedad (JAMA Psychiatry)."
+        },
+        {
+          "day": 27,
+          "title": "Días 22–28",
+          "description": "Registro de síntomas + Respiración 4-7-8",
+          "secondary": "Frase motivadora + Movimiento libre (bailar, estirarse)",
+          "justification": "Actividad libre mejora estado de ánimo y controla craving (Harvard Health)."
+        },
+        {
+          "day": 28,
+          "title": "Días 22–28",
+          "description": "“Día sin pantalla 1h”: Paseo sin celular",
+          "secondary": "Diario: “Qué noté al estar más presente” + Yoga o estiramientos",
+          "justification": "Desconexión digital mejora foco y manejo emocional (Digital Health Review)."
+        },
+        {
+          "day": 29,
+          "title": "Días 29–35",
+          "description": "Autoevaluación intermedia + Feedback IA",
+          "secondary": "Logro desbloqueado + Técnica STOP",
+          "justification": "Evaluación de avance + feedback automatizado mejora adherencia (Stanford Digital Interventions)."
+        },
+        {
+          "day": 30,
+          "title": "Días 29–35",
+          "description": "Respiración guiada (coherencia cardíaca)",
+          "secondary": "Video sobre regeneración pulmonar + Diario emocional",
+          "justification": "Respiración coherente: reduce estrés y mejora regulación autónoma (HeartMath Institute)."
+        },
+        {
+          "day": 31,
+          "title": "Días 29–35",
+          "description": "Técnica STOP",
+          "secondary": "Contactar red de apoyo + Yoga suave",
+          "justification": "Soporte social y técnicas breves de autocontrol reducen craving (CDC, 2022)."
+        },
+        {
+          "day": 32,
+          "title": "Días 29–35",
+          "description": "Visualización: “Cómo me veo en 1 año sin fumar”",
+          "secondary": "Caminar 30 min + Registro de emociones",
+          "justification": "Visualización prospectiva refuerza compromiso (Behavioral Psychology Journal)."
+        },
+        {
+          "day": 33,
+          "title": "Días 29–35",
+          "description": "Juego cognitivo: reacción y atención",
+          "secondary": "Técnica 4-7-8 + Frase de refuerzo",
+          "justification": "Ejercicios mentales + respiración reducen ansiedad y refuerzan autocontrol (NIH)."
+        },
+        {
+          "day": 34,
+          "title": "Días 29–35",
+          "description": "Revisión de logros + Diario: “Mis 3 herramientas más útiles”",
+          "secondary": "Movimiento libre (baile, caminata, estiramiento)",
+          "justification": "Revisión introspectiva y autoevaluación mejoran continuidad terapéutica (APA)."
+        },
+        {
+          "day": 35,
+          "title": "Días 29–35",
+          "description": "Técnica de relajación muscular progresiva (10 min)",
+          "secondary": "Agua + Video breve motivacional",
+          "justification": "TRMP es eficaz contra tensión y craving físico (Cochrane Reviews)."
+        },
+        {
+          "day": 36,
+          "title": "Días 36–42",
+          "description": "Día de conciencia plena: Comer, caminar y ducharse con atención",
+          "secondary": "Diario: “Qué noté hoy”",
+          "justification": "Mindfulness en actividades cotidianas reduce recaídas (UC Berkeley Greater Good Science Center)."
+        },
+        {
+          "day": 37,
+          "title": "Días 36–42",
+          "description": "Técnica de escaneo corporal + Caminar al aire libre 25 min",
+          "secondary": "Diario: “Cómo me siento al llegar a la mitad del plan”",
+          "justification": "El body scan mejora la conexión mente-cuerpo y regula emociones (Kabat-Zinn, 2003)."
+        },
+        {
+          "day": 38,
+          "title": "Días 36–42",
+          "description": "Escuchar música relajante (30 min)",
+          "secondary": "Respiración 4-4-4 + Contacto con red de apoyo",
+          "justification": "La música reduce el cortisol y potencia estados positivos (Harvard Health Publishing, 2020)."
+        },
+        {
+          "day": 39,
+          "title": "Días 36–42",
+          "description": "Juego cognitivo (memoria o lógica)",
+          "secondary": "Yoga suave (20 min) + Frase motivadora del día",
+          "justification": "Juegos mentales y yoga mejoran función ejecutiva y reducen craving (Journal of Cognitive Enhancement)."
+        },
+        {
+          "day": 40,
+          "title": "Días 36–42",
+          "description": "Técnica STOP + Diario: “Cuándo siento más ganas de fumar”",
+          "secondary": "Actividad recreativa favorita",
+          "justification": "Identificar y anotar disparadores fortalece autorregulación (Behavioral Therapy for Smoking Cessation)."
+        },
+        {
+          "day": 41,
+          "title": "Días 36–42",
+          "description": "Respiración profunda + Revisión de progreso en app (estadísticas)",
+          "secondary": "Visualización positiva",
+          "justification": "Monitorear el progreso y visualizar logros fortalece la motivación (Self-Determination Theory)."
+        },
+        {
+          "day": 42,
+          "title": "Días 36–42",
+          "description": "Ejercicio físico moderado (bicicleta o caminata rápida 30 min)",
+          "secondary": "Hidratación + Técnica 5 sentidos",
+          "justification": "Actividad física + grounding techniques mejoran control de impulsos y reducen ansiedad (NICE, UK)."
+        },
+        {
+          "day": 43,
+          "title": "Días 43–49",
+          "description": "Escribir carta: “A mí mismo cuando empecé”",
+          "secondary": "Escuchar audio de relajación guiada",
+          "justification": "La escritura terapéutica fortalece la resiliencia y la autoempatía (APA)."
+        },
+        {
+          "day": 44,
+          "title": "Días 43–49",
+          "description": "Respiración cuadrada (4-4-4-4) + Ejercicio físico moderado (30 min)",
+          "secondary": "Diario: “Qué me motiva hoy”",
+          "justification": "Respiración controlada reduce la activación del sistema simpático (Harvard Medical School, 2021)."
+        },
+        {
+          "day": 45,
+          "title": "Días 43–49",
+          "description": "Video educativo sobre el sistema respiratorio + Meditación guiada",
+          "secondary": "Revisión de metas cumplidas",
+          "justification": "Comprender mejoras fisiológicas refuerza la adherencia (CDC, 2020)."
+        },
+        {
+          "day": 46,
+          "title": "Días 43–49",
+          "description": "Técnica del “diálogo interno positivo”",
+          "secondary": "Minijuego de distracción + Hidratación frecuente",
+          "justification": "El diálogo interno positivo reduce la autocrítica y fortalece la perseverancia (Beck Institute)."
+        },
+        {
+          "day": 47,
+          "title": "Días 43–49",
+          "description": "Repetición de actividad recreativa significativa (arte, música, lectura)",
+          "secondary": "Caminata consciente 20 min",
+          "justification": "Actividades significativas elevan dopamina naturalmente, reduciendo cravings (NIH)."
+        },
+        {
+          "day": 48,
+          "title": "Días 43–49",
+          "description": "Técnica de “exposición con seguridad”: pensar en una situación gatillo y aplicar STOP",
+          "secondary": "Red de apoyo",
+          "justification": "Técnicas de exposición controlada permiten manejo efectivo de disparadores (Behavioral Therapy)."
+        },
+        {
+          "day": 49,
+          "title": "Días 43–49",
+          "description": "Yoga suave + Diario: “Lo que he aprendido en 7 semanas”",
+          "secondary": "Visualización positiva",
+          "justification": "El yoga reduce cortisol y mejora autoconciencia (Frontiers in Psychology, 2020)."
+        },
+        {
+          "day": 50,
+          "title": "Días 50–56",
+          "description": "Día de refuerzo emocional: mensaje de otro usuario",
+          "secondary": "Retroalimentación IA + Celebración simbólica (premio en app)",
+          "justification": "Refuerzos sociales y simbólicos incrementan la motivación intrínseca (Deci & Ryan, 2000)."
+        },
+        {
+          "day": 51,
+          "title": "Días 50–56",
+          "description": "Respiración diafragmática + Caminata de gratitud (15 min)",
+          "secondary": "Diario: “Agradezco hoy...”",
+          "justification": "Practicar gratitud reduce ansiedad y fortalece bienestar emocional (Greater Good Science Center, UC Berkeley)."
+        },
+        {
+          "day": 52,
+          "title": "Días 50–56",
+          "description": "Revisión de progreso completo (infografía personalizada en app)",
+          "secondary": "Retroalimentación positiva",
+          "justification": "Ver el progreso gráfico refuerza la percepción de autoeficacia (Bandura, 1997)."
+        },
+        {
+          "day": 53,
+          "title": "Días 50–56",
+          "description": "Técnica STOP + Video breve sobre neuroplasticidad y hábitos",
+          "secondary": "Visualización de la “nueva vida”",
+          "justification": "Comprender el cerebro en cambio potencia el sentido de propósito (Neuroscience of Change)."
+        },
+        {
+          "day": 54,
+          "title": "Días 50–56",
+          "description": "Yoga moderado + Minijuego cognitivo",
+          "secondary": "Mensaje sorpresa desde IA (“Mira cuánto has logrado”)",
+          "justification": "Combinación de recompensa, mindfulness y refuerzo fortalece hábitos (APA, 2022)."
+        },
+        {
+          "day": 55,
+          "title": "Días 50–56",
+          "description": "Prueba de autoevaluación emocional final",
+          "secondary": "Redacción libre: “Carta a mi yo del primer día”",
+          "justification": "La escritura expresiva ayuda a cerrar ciclos y reafirmar logros (Pennebaker, 2018)."
+        },
+        {
+          "day": 56,
+          "title": "Días 50–56",
+          "description": "Video motivacional + Respiración consciente",
+          "secondary": "Celebración pequeña en la vida real (recompensa física simbólica)",
+          "justification": "Premios simbólicos refuerzan positivamente conductas mantenidas (Skinner, refuerzo positivo)."
+        },
+        {
+          "day": 57,
+          "title": "Días 57–63",
+          "description": "Actividad libre placentera (elegida por el usuario)",
+          "secondary": "Registro de emociones + Mensaje motivador de otro usuario",
+          "justification": "La autonomía en la elección mejora la motivación y compromiso (Self-Determination Theory)."
+        },
+        {
+          "day": 58,
+          "title": "Días 57–63",
+          "description": "Meditación final guiada (20 min)",
+          "secondary": "Cierre del diario emocional con reflexión",
+          "justification": "La meditación a largo plazo mejora regulación emocional (Harvard Health Publishing)."
+        },
+        {
+          "day": 59,
+          "title": "Días 57–63",
+          "description": "Encuesta final de experiencia + Mensaje motivacional en video desde equipo ZeroSmoke",
+          "secondary": "Feedback IA sobre progreso",
+          "justification": "El cierre evaluativo potencia el sentido de logro y continuidad (intervenciones conductuales efectivas, JAMA)."
+        },
+        {
+          "day": 60,
+          "title": "Días 57–63",
+          "description": "Activación de “Plan de mantenimiento” + Reconocimiento de logro",
+          "secondary": "Recomendaciones para mantener avances",
+          "justification": "Mantener estructura post-plan reduce recaídas (CDC, 2020; WHO guidelines on tobacco cessation)."
+        },
+        {
+          "day": 61,
+          "title": "Días 57–63",
+          "description": "Caminata consciente 20 min + Diario: “Mi mayor logro hasta ahora”",
+          "secondary": "Técnica STOP reforzada",
+          "justification": "La atención plena en movimiento reduce cravings (Harvard Health, 2021)."
+        },
+        {
+          "day": 62,
+          "title": "Días 57–63",
+          "description": "Ejercicio funcional suave (20 min)",
+          "secondary": "Meditación guiada para reforzar autoconfianza",
+          "justification": "La actividad física sostenida mejora humor y disminuye la probabilidad de recaídas (Mayo Clinic)."
+        },
+        {
+          "day": 63,
+          "title": "Días 57–63",
+          "description": "Video: “Reestructuración cognitiva y pensamientos negativos”",
+          "secondary": "Práctica: reformula un pensamiento automático",
+          "justification": "La TCC (terapia cognitivo-conductual) es efectiva para prevención de recaídas (NIDA)."
+        },
+        {
+          "day": 64,
+          "title": "Días 64–70",
+          "description": "Técnica de relajación progresiva",
+          "secondary": "Registro emocional de gratitud + Notificación motivadora",
+          "justification": "La relajación muscular disminuye tensión física y emocional (American Psychological Association)."
+        },
+        {
+          "day": 65,
+          "title": "Días 64–70",
+          "description": "Lectura breve: “Historias de éxito de otros usuarios”",
+          "secondary": "Reflexión escrita: ¿Qué me inspira de ellos?",
+          "justification": "Modelado social: ver pares exitosos aumenta motivación (Bandura, 1986)."
+        },
+        {
+          "day": 66,
+          "title": "Días 64–70",
+          "description": "Minijuego cognitivo + Respiración cuadrada",
+          "secondary": "Revisión de logros desbloqueados hasta ahora",
+          "justification": "Estimular la mente + recompensa visual refuerzan adherencia (Gamification for Health Apps, JMIR)."
+        },
+        {
+          "day": 67,
+          "title": "Días 64–70",
+          "description": "Test de ansiedad (comparativo con día 15)",
+          "secondary": "Visualización de mejora + “Mi foto de progreso” (opcional)",
+          "justification": "Autoevaluación + evidencia visual mejora percepción de cambio (CDC tobacco cessation toolkit)."
+        },
+        {
+          "day": 68,
+          "title": "Días 64–70",
+          "description": "Caminata de 25 min al ritmo propio",
+          "secondary": "Diario: “¿Qué quiero mantener después de los 90 días?”",
+          "justification": "El ejercicio físico regular sigue siendo un eje protector (WHO, 2020)."
+        },
+        {
+          "day": 69,
+          "title": "Días 64–70",
+          "description": "Respiración abdominal 3 veces al día",
+          "secondary": "Activación de botón de emergencia con ejercicio de distracción",
+          "justification": "Técnicas de regulación emocional mejoran el manejo de cravings (APA)."
+        },
+        {
+          "day": 70,
+          "title": "Días 64–70",
+          "description": "Ejercicio físico tipo circuito suave (30 min)",
+          "secondary": "Música relajante post-ejercicio",
+          "justification": "La combinación de actividad física y música reduce estrés (NIH, 2019)."
+        },
+        {
+          "day": 71,
+          "title": "Días 71–77",
+          "description": "Diario emocional",
+          "secondary": "Redacción de una carta a “mi yo del día 1”",
+          "justification": "La escritura expresiva mejora la autoaceptación y compromiso (Pennebaker, 2013)."
+        },
+        {
+          "day": 72,
+          "title": "Días 71–77",
+          "description": "Revisión de metas planteadas al inicio",
+          "secondary": "Activación de IA para reflexión guiada sobre avance",
+          "justification": "La evaluación del progreso refuerza el cambio de hábitos (CDC)."
+        },
+        {
+          "day": 73,
+          "title": "Días 71–77",
+          "description": "Técnica de mindfulness escáner corporal",
+          "secondary": "Visualización de futuro sin cigarrillos",
+          "justification": "Mindfulness reduce la rumiación y refuerza resiliencia (Mindful.org)."
+        },
+        {
+          "day": 74,
+          "title": "Días 71–77",
+          "description": "Minijuego de atención + Escuchar un testimonio de un exfumador",
+          "secondary": "Registrar una nueva meta personal",
+          "justification": "Reforzamiento lúdico + modelo social = mayor perseverancia (Bandura, Gamification Studies)."
+        },
+        {
+          "day": 75,
+          "title": "Días 71–77",
+          "description": "Caminata larga (30-40 min) al aire libre",
+          "secondary": "Diario: “3 hábitos nuevos que he incorporado”",
+          "justification": "Paseos prolongados reducen cravings y mejoran el estado de ánimo (NICE, 2020)."
+        },
+        {
+          "day": 76,
+          "title": "Días 71–77",
+          "description": "Respiración cuadrada 4-4-4-4 (4 veces al día)",
+          "secondary": "Visualización de logros obtenidos",
+          "justification": "La respiración estructurada mejora control emocional (Harvard Health)."
+        },
+        {
+          "day": 77,
+          "title": "Días 71–77",
+          "description": "Rutina HIIT ligera (si el usuario lo permite) o yoga activo",
+          "secondary": "Revisión de estadísticas personales",
+          "justification": "El ejercicio intenso de corta duración mejora funciones cognitivas y reduce estrés (JAMA, 2022)."
+        },
+        {
+          "day": 78,
+          "title": "Días 78–84",
+          "description": "Escuchar podcast motivacional",
+          "secondary": "Redacción de “Carta a alguien que esté pensando en dejar de fumar”",
+          "justification": "La conexión empática aumenta el sentido de propósito (Psychology Today)."
+        },
+        {
+          "day": 79,
+          "title": "Días 78–84",
+          "description": "Técnica de grounding (5-4-3-2-1)",
+          "secondary": "Visualización positiva (5 min) antes de dormir",
+          "justification": "Las técnicas de grounding son efectivas para reducir ansiedad aguda (Anxiety Centre)."
+        },
+        {
+          "day": 80,
+          "title": "Días 78–84",
+          "description": "Diario emocional + Test de autoevaluación del progreso",
+          "secondary": "Recompensa virtual/gamificada",
+          "justification": "La autoevaluación promueve adherencia conductual (CDC, 2021)."
+        },
+        {
+          "day": 81,
+          "title": "Días 78–84",
+          "description": "Caminata con propósito (hacer algo significativo sin cigarrillo)",
+          "secondary": "Mensaje de refuerzo IA basado en logros",
+          "justification": "Crear asociaciones positivas sin cigarro refuerza hábitos nuevos (NIDA)."
+        },
+        {
+          "day": 82,
+          "title": "Días 78–84",
+          "description": "Caminata consciente (foco en respiración y entorno)",
+          "secondary": "Lista: “10 cosas que valoro más desde que dejé de fumar”",
+          "justification": "La atención plena en movimiento mejora regulación emocional (Mindfulness-Based Relapse Prevention, 2020)."
+        },
+        {
+          "day": 83,
+          "title": "Días 78–84",
+          "description": "Técnica de “STOP” (Stop – Take a breath – Observe – Proceed)",
+          "secondary": "Visualización guiada del “yo sin cigarro”",
+          "justification": "La técnica STOP es útil para frenar impulsos automáticos (UC Berkeley, 2021)."
+        },
+        {
+          "day": 84,
+          "title": "Días 78–84",
+          "description": "Entrenamiento físico libre (actividad favorita)",
+          "secondary": "Registro de sensación corporal posterior",
+          "justification": "Elegir ejercicios placenteros refuerza adherencia y bienestar (NIH, 2022)."
+        },
+        {
+          "day": 85,
+          "title": "Días 85–90",
+          "description": "Lectura breve sobre recuperación pulmonar",
+          "secondary": "Diario: “Cómo ha cambiado mi cuerpo en 85 días”",
+          "justification": "Estudios muestran regeneración pulmonar a partir de los 2-3 meses (European Respiratory Journal)."
+        },
+        {
+          "day": 86,
+          "title": "Días 85–90",
+          "description": "Respiración profunda + test de ansiedad",
+          "secondary": "Retroalimentación automática de IA según resultados",
+          "justification": "Monitorear niveles de ansiedad previene recaídas (Journal of Substance Abuse Treatment)."
+        },
+        {
+          "day": 87,
+          "title": "Días 85–90",
+          "description": "Actividad creativa libre (arte, cocina, música)",
+          "secondary": "Foto/testimonio en comunidad (opcional)",
+          "justification": "La creatividad canaliza emociones y aumenta satisfacción personal (Psychiatric Times, 2020)."
+        },
+        {
+          "day": 88,
+          "title": "Días 85–90",
+          "description": "Día de gratitud: “Escribe 3 cosas por las que estás agradecido hoy”",
+          "secondary": "Yoga suave o estiramientos",
+          "justification": "La gratitud mejora regulación emocional y reduce pensamientos negativos (Greater Good Science Center)."
+        },
+        {
+          "day": 89,
+          "title": "Días 85–90",
+          "description": "Video resumen: “Tu progreso en 3 meses” (estadísticas visuales)",
+          "secondary": "Diario emocional final: “¿Quién soy ahora?”",
+          "justification": "Reflexionar sobre el cambio consolida identidad libre de cigarro (Terapia de Aceptación y Compromiso, 2021)."
+        },
+        {
+          "day": 90,
+          "title": "Días 85–90",
+          "description": "Ceremonia de cierre (mensaje personalizado + insignia/logro final)",
+          "secondary": "Carta a tu “yo del pasado”",
+          "justification": "Las ceremonias simbólicas fortalecen el sentido de logro y motivación a largo plazo (Clinical Psychology Review)."
+        }
+      ]
+    }
+  ]
+}

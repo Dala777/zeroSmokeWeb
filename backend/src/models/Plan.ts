@@ -59,10 +59,15 @@ const PlanSchema: Schema = new Schema(
   },
 )
 
-PlanSchema.path("fagerstromRange").validate(
-  (value: { min: number; max: number }) => value.min <= value.max,
-  "El rango de Fagerstrom es invalido",
-)
+PlanSchema.pre("validate", function (next) {
+  const plan = this as any
+
+  if (plan.fagerstromRange && plan.fagerstromRange.min > plan.fagerstromRange.max) {
+    return next(new Error("El rango de Fagerstrom es invalido"))
+  }
+
+  next()
+})
 
 PlanSchema.virtual("level")
   .get(function (this: any) {

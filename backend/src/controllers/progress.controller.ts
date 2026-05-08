@@ -443,7 +443,7 @@ export const getDailyPlan = async (req: AuthRequest, res: Response): Promise<voi
         if (configActs && configActs.length > 0) {
           const firstConfig = configActs[0].title || ''
           // si el título principal almacenado difiere del configurado, regeneramos
-          if (!dailyPlan.activities.some(act => act.title === firstConfig)) {
+          if (!dailyPlan.activities.some((act: any) => act.title === firstConfig)) {
             console.log(
               `Plan diario existente (día ${dailyPlan.dayNumber}) no coincide con config, regenerando`
             )
@@ -507,7 +507,7 @@ export const completeActivity = async (req: AuthRequest, res: Response): Promise
     }
 
     // Buscar la actividad y marcarla como completada
-    const activity = dailyPlan.activities.find((act) => act.id === activityId)
+    const activity = dailyPlan.activities.find((act: any) => act.id === activityId)
     if (!activity) {
       res.status(404).json({
         success: false,
@@ -519,7 +519,7 @@ export const completeActivity = async (req: AuthRequest, res: Response): Promise
     activity.isCompleted = true
 
     // Verificar si todas las actividades están completadas
-    const allCompleted = dailyPlan.activities.every((act) => act.isCompleted)
+    const allCompleted = dailyPlan.activities.every((act: any) => act.isCompleted)
     if (allCompleted) {
       dailyPlan.isCompleted = true
 
@@ -760,7 +760,7 @@ export const updateSmokingRecord = async (req: AuthRequest, res: Response): Prom
     userProgress.weeklyData[0].dailyCigarettes[dayOfWeek] = count;
     
     // Recalcular total fumado
-    userProgress.weeklyData[0].totalSmoked = userProgress.weeklyData[0].dailyCigarettes.reduce((a, b) => a + b, 0);
+    userProgress.weeklyData[0].totalSmoked = userProgress.weeklyData[0].dailyCigarettes.reduce((a: number, b: number) => a + b, 0);
     
     await userProgress.save();
     

@@ -10,7 +10,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "seed:plans": "ts-node src/config/runSeed.ts"
+    "seed:plans": "ts-node src/config/runSeed.ts",
+    "transform:plans": "ts-node src/config/transformPlans.ts"
   },
   "keywords": [],
   "author": "",

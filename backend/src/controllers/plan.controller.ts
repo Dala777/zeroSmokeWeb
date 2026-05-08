@@ -1,11 +1,90 @@
+import fs from "fs"
+import path from "path"
 import type { Request, Response } from "express"
 import { Plan } from "../models/Plan"
 import { Activity } from "../models/Activity"
 import { UserPlan } from "../models/UserPlan"
 import { User } from "../models/User"
 
+interface AuthRequest extends Request {
+  userId?: string
+}
+
+type BackendPlanLevel = "low" | "moderate" | "high"
+
+interface BackendFriendlyActivity {
+  day: number
+  title: string
+  description: string
+  secondary: string
+  justification: string
+}
+
+interface BackendFriendlyPlan {
+  level: BackendPlanLevel
+  durationDays: number
+  description: string
+  activities: BackendFriendlyActivity[]
+}
+
+interface BackendFriendlyPlansFile {
+  plans: BackendFriendlyPlan[]
+}
+
+const BACKEND_PLANS_CANDIDATE_PATHS = [
+  path.join(__dirname, "../config/planes_backend_friendly.json"),
+  path.join(process.cwd(), "src", "config", "planes_backend_friendly.json"),
+  path.join(process.cwd(), "dist", "config", "planes_backend_friendly.json"),
+]
+
+const LEGACY_TO_BACKEND_LEVEL: Record<string, BackendPlanLevel> = {
+  bajo: "low",
+  moderado: "moderate",
+  alto: "high",
+}
+
+let cachedPlansFile: BackendFriendlyPlansFile | null = null
+
+const getBackendFriendlyPlans = (): BackendFriendlyPlansFile => {
+  if (cachedPlansFile) {
+    return cachedPlansFile
+  }
+
+  const plansPath = BACKEND_PLANS_CANDIDATE_PATHS.find((candidatePath) => fs.existsSync(candidatePath))
+  if (!plansPath) {
+    throw new Error("No se encontró planes_backend_friendly.json")
+  }
+
+  let raw = fs.readFileSync(plansPath, "utf-8")
+  if (raw.charCodeAt(0) === 0xfeff) {
+    raw = raw.slice(1)
+  }
+
+  cachedPlansFile = JSON.parse(raw) as BackendFriendlyPlansFile
+  return cachedPlansFile
+}
+
+const calculateCurrentDay = (startDate: Date, targetDate: Date = new Date()): number => {
+  const start = new Date(startDate)
+  const target = new Date(targetDate)
+
+  start.setHours(0, 0, 0, 0)
+  target.setHours(0, 0, 0, 0)
+
+  const diffMs = target.getTime() - start.getTime()
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+  return diffDays + 1
+}
+
+const clampCurrentDay = (currentDay: number, durationDays: number): number =>
+  Math.min(Math.max(1, Math.floor(currentDay)), durationDays)
+
+const normalizeDayNumber = (value: unknown): number => {
+  const parsedValue = Number(value)
+  return Number.isFinite(parsedValue) ? Math.floor(parsedValue) : NaN
+}
+
 export class PlanController {
-  // Asignar plan basado en test de Fagerström
   async assignPlan(req: Request, res: Response): Promise<void> {
     try {
       const { userId, fagerstromScore } = req.body
@@ -33,7 +112,6 @@ export class PlanController {
         return
       }
 
-      // Verificar si ya tiene un plan activo
       const existingUserPlan = await UserPlan.findOne({
         userId,
         isCompleted: false,
@@ -55,7 +133,6 @@ export class PlanController {
 
       await userPlan.save()
 
-      // Actualizar usuario con el plan actual
       await User.findByIdAndUpdate(userId, {
         currentPlanId: plan._id,
         fagerstromScore,
@@ -74,7 +151,92 @@ export class PlanController {
     }
   }
 
-  // Obtener plan diario del usuario
+  async getMyPlan(req: Request, res: Response): Promise<void> {
+    try {
+      const authReq = req as AuthRequest
+      const authenticatedUserId = authReq.userId
+
+      if (!authenticatedUserId) {
+        res.status(401).json({ message: "Usuario no autenticado" })
+        return
+      }
+
+      const userPlan = await UserPlan.findOne({
+        userId: authenticatedUserId,
+        isCompleted: false,
+      }).populate("planId")
+
+      if (!userPlan) {
+        res.status(404).json({ message: "No tienes un plan activo" })
+        return
+      }
+
+      const planDocument = userPlan.planId as any
+      const backendLevel = planDocument?.dependencyLevel
+        ? LEGACY_TO_BACKEND_LEVEL[planDocument.dependencyLevel]
+        : undefined
+
+      if (!backendLevel) {
+        res.status(500).json({ message: "No se pudo determinar el nivel del plan activo" })
+        return
+      }
+
+      const plansFile = getBackendFriendlyPlans()
+      const plan = plansFile.plans.find((item) => item.level === backendLevel)
+
+      if (!plan) {
+        res.status(404).json({ message: "No se encontró el plan en planes_backend_friendly.json" })
+        return
+      }
+
+      const computedCurrentDay = calculateCurrentDay(new Date(userPlan.startDate), new Date())
+      const currentDay = clampCurrentDay(computedCurrentDay, Number(plan.durationDays))
+      const availableDays = plan.activities.map((activity) => normalizeDayNumber(activity.day)).filter(Number.isFinite)
+
+      let todayActivities = plan.activities.filter(
+        (activity) => Number(activity.day) === Number(currentDay),
+      )
+
+      // Salvaguarda temporal: si el match exacto falla pero el día existe normalizado, volvemos a filtrar por enteros normalizados.
+      if (todayActivities.length === 0) {
+        todayActivities = plan.activities.filter(
+          (activity) => normalizeDayNumber(activity.day) === normalizeDayNumber(currentDay),
+        )
+      }
+
+      console.log("currentDay:", currentDay)
+      console.log("days disponibles:", availableDays)
+      console.log("resultado:", todayActivities)
+
+      if (todayActivities.length === 0 && availableDays.includes(currentDay)) {
+        todayActivities = plan.activities
+          .filter((activity) => normalizeDayNumber(activity.day) === currentDay)
+          .map((activity) => ({
+            ...activity,
+            day: normalizeDayNumber(activity.day),
+          }))
+      }
+
+      if (todayActivities.length === 0) {
+        res.status(404).json({
+          message: "No se encontraron actividades para el día actual del plan",
+          currentDay,
+          totalDays: plan.durationDays,
+          availableDays,
+        })
+        return
+      }
+
+      res.json({
+        currentDay,
+        totalDays: plan.durationDays,
+        todayActivities,
+      })
+    } catch (error: any) {
+      res.status(500).json({ message: error.message })
+    }
+  }
+
   async getDailyPlan(req: Request, res: Response): Promise<void> {
     try {
       const { userId } = req.params
@@ -92,7 +254,6 @@ export class PlanController {
         return
       }
 
-      // Calcular día actual basado en fecha de inicio
       const startDate = new Date(userPlan.startDate)
       const targetDate = date ? new Date(date as string) : new Date()
       const daysDiff = Math.floor((targetDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1
@@ -109,7 +270,6 @@ export class PlanController {
         dayNumber: daysDiff,
       }).sort({ order: 1 })
 
-      // Marcar actividades completadas
       const activitiesWithStatus = activities.map((activity) => {
         const isCompleted = userPlan.completedActivities.some(
           (completed: any) =>
@@ -122,7 +282,7 @@ export class PlanController {
         }
       })
 
-      const completedCount = activitiesWithStatus.filter((a) => a.isCompleted).length
+      const completedCount = activitiesWithStatus.filter((activity) => activity.isCompleted).length
       const completionPercentage = activities.length > 0 ? completedCount / activities.length : 0
 
       res.json({
@@ -138,7 +298,6 @@ export class PlanController {
     }
   }
 
-  // Completar actividad
   async completeActivity(req: Request, res: Response): Promise<void> {
     try {
       const { planId, activityId } = req.params
@@ -164,10 +323,8 @@ export class PlanController {
         return
       }
 
-      // Verificar si ya está completada
       const alreadyCompleted = userPlan.completedActivities.some(
-        (completed: any) =>
-          completed.activityId.toString() === activityId && completed.dayNumber === activity.dayNumber,
+        (completed: any) => completed.activityId.toString() === activityId && completed.dayNumber === activity.dayNumber,
       )
 
       if (alreadyCompleted) {
@@ -198,7 +355,6 @@ export class PlanController {
     }
   }
 
-  // Obtener progreso del plan
   async getPlanProgress(req: Request, res: Response): Promise<void> {
     try {
       const { userId } = req.params
@@ -222,7 +378,6 @@ export class PlanController {
       const completedActivitiesCount = userPlan.completedActivities.length
       const overallProgress = totalActivities > 0 ? (completedActivitiesCount / totalActivities) * 100 : 0
 
-      // Calcular días transcurridos
       const startDate = new Date(userPlan.startDate)
       const today = new Date()
       const daysElapsed = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1
