@@ -3,9 +3,26 @@ import UserProgress from "../models/UserProgress"
 import DailyPlan from "../models/DailyPlan"
 import SmokingRecord from "../models/SmokingRecord"
 import { Plan } from "../models/Plan"
+import { ensureUserPlanForProgress, normalizePlanLevels } from "../services/userPlan.service"
 import { v4 as uuidv4 } from "uuid"
 import fs from "fs"
 import path from "path"
+
+const getLegacyValue = (entry: any, keys: string[]): any => {
+  for (const key of keys) {
+    if (entry && entry[key] !== undefined) {
+      return entry[key]
+    }
+  }
+  return undefined
+}
+
+const LEGACY_PLAN_FIELDS = {
+  day: ["D\u00eda", "Dia", "day"],
+  mainActivity: ["Actividad Principal", "Actividades"],
+  secondaryActivity: ["Actividad Secundaria (opcional)", "Actividad Secundaria"],
+  justification: ["Justificaci\u00f3n", "Respaldo cient\u00edfico", "Fundamento"],
+}
 
 // cargar configuración de planes una sola vez
 let planConfig: any = null
@@ -40,16 +57,16 @@ const getDaysForPlan = (dependencyLevel: string): Array<any> => {
 // obtener actividades según día y nivel (retorna una única actividad principal con posible secundaria)
 const getConfigActivities = (dayNumber: number, dependencyLevel: string): Array<any> | null => {
   const days = getDaysForPlan(dependencyLevel)
-  const dayObj = days.find(d => String(d["Día"]) === String(dayNumber))
+  const dayObj = days.find(d => String(getLegacyValue(d, LEGACY_PLAN_FIELDS.day)) === String(dayNumber))
   if (!dayObj) {
     console.log(`No hay configuración para día ${dayNumber} (dependencia ${dependencyLevel})`) // debug
     return null
   }
 
-  const mainTitle = dayObj["Actividad Principal"] || ''
-  // la clave secundaria puede variar en el json entre con o sin “(opcional)”
-  const secondaryTitle = dayObj["Actividad Secundaria (opcional)"] || dayObj["Actividad Secundaria"] || ''
-  const justification = dayObj["Justificación"] || ''
+  const mainTitle = getLegacyValue(dayObj, LEGACY_PLAN_FIELDS.mainActivity) || ''
+  // la clave secundaria puede variar en el json entre con o sin "(opcional)"
+  const secondaryTitle = getLegacyValue(dayObj, LEGACY_PLAN_FIELDS.secondaryActivity) || ''
+  const justification = getLegacyValue(dayObj, LEGACY_PLAN_FIELDS.justification) || ''
 
   const acts: Array<any> = []
   if (mainTitle) {
@@ -160,10 +177,10 @@ export const saveInitialTest = async (req: AuthRequest, res: Response): Promise<
 
     await userProgress.save()
 
-    // Asignar un plan concreto si existe en la colección Plan
+    // Asignar un plan concreto si existe en la coleccion Plan y sincronizar UserPlan
     try {
       const score = fagerstromScore || 0
-      const lvl = dependencyLevel.toLowerCase()
+      const lvl = normalizePlanLevels(dependencyLevel, score).plan
       // buscar plan que corresponda al nivel y rango de Fagerström
       const planDoc = await Plan.findOne({
         dependencyLevel: lvl,
@@ -175,6 +192,7 @@ export const saveInitialTest = async (req: AuthRequest, res: Response): Promise<
         userProgress.assignedPlan = planDoc._id.toString();
         await userProgress.save()
       }
+      await ensureUserPlanForProgress(userId, userProgress)
     } catch (err) {
       console.warn("No se pudo asignar plan automático:", err)
     }
@@ -305,7 +323,7 @@ export const updateUserProgress = async (req: AuthRequest, res: Response): Promi
     // si cambió el nivel de dependencia, buscamos un nuevo plan correspondiente
     if (dependencyChanged) {
       try {
-        const lvl = (userProgress.dependencyLevel || '').toLowerCase()
+        const lvl = normalizePlanLevels(userProgress.dependencyLevel, userProgress.fagerstromScore || 0).plan
         // también podría filtrarse por score si existe
         const planDoc = await Plan.findOne({ dependencyLevel: lvl, isActive: true })
         if (planDoc) {
@@ -317,6 +335,12 @@ export const updateUserProgress = async (req: AuthRequest, res: Response): Promi
     }
 
     await userProgress.save()
+
+    try {
+      await ensureUserPlanForProgress(userId, userProgress)
+    } catch (err) {
+      console.warn("No se pudo sincronizar UserPlan tras actualizar progreso:", err)
+    }
 
     res.status(200).json({
       success: true,

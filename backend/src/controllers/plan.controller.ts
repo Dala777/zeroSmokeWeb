@@ -5,6 +5,8 @@ import { Plan } from "../models/Plan"
 import { Activity } from "../models/Activity"
 import { UserPlan } from "../models/UserPlan"
 import { User } from "../models/User"
+import UserProgress from "../models/UserProgress"
+import { ensureUserPlanForProgress } from "../services/userPlan.service"
 
 interface AuthRequest extends Request {
   userId?: string
@@ -161,14 +163,22 @@ export class PlanController {
         return
       }
 
-      const userPlan = await UserPlan.findOne({
+      let userPlan = await UserPlan.findOne({
         userId: authenticatedUserId,
         isCompleted: false,
       }).populate("planId")
 
       if (!userPlan) {
-        res.status(404).json({ message: "No tienes un plan activo" })
-        return
+        const userProgress = await UserProgress.findOne({ userId: authenticatedUserId })
+        if (userProgress) {
+          const ensured = await ensureUserPlanForProgress(authenticatedUserId, userProgress)
+          userPlan = ensured ? await ensured.userPlan.populate("planId") : null
+        }
+
+        if (!userPlan) {
+          res.status(404).json({ message: "No tienes un plan activo" })
+          return
+        }
       }
 
       const planDocument = userPlan.planId as any
