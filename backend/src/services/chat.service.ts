@@ -5,6 +5,7 @@ import UserGamification from "../models/UserGamification"
 import UserProgress from "../models/UserProgress"
 import { UserPlan } from "../models/UserPlan"
 import { User } from "../models/User"
+import { calculateRisk } from "./risk.service"
 
 export interface ChatHistoryItem {
   role: "user" | "assistant" | "system"
@@ -62,6 +63,7 @@ const buildContext = async (userId: string): Promise<string> => {
     UserGamification.findOne({ userId }),
     DailyCheckin.find({ userId }).sort({ date: -1 }).limit(5),
   ])
+  const risk = await calculateRisk(userId)
 
   const today = new Date()
   const weekStart = startOfDay(today)
@@ -87,12 +89,6 @@ const buildContext = async (userId: string): Promise<string> => {
   const averageCraving = cravingLevels.length
     ? Math.round((cravingLevels.reduce((total, value) => total + value, 0) / cravingLevels.length) * 10) / 10
     : 0
-  const risk = smokedToday > 0 || averageCraving >= 7
-    ? "alto"
-    : averageCraving >= 4 || smokedLast7Days > 0
-      ? "moderado"
-      : "bajo"
-
   return [
     `Usuario: ${user?.name || "usuario ZeroSmoke"}`,
     `Nivel de dependencia: ${user?.dependencyLevel || progress?.dependencyLevel || "no registrado"}`,
@@ -107,7 +103,8 @@ const buildContext = async (userId: string): Promise<string> => {
     `Emociones recientes: ${recentMoods}`,
     `Sintomas recientes: ${recentSymptoms}`,
     `Craving promedio reciente: ${averageCraving}/10`,
-    `Riesgo contextual basico: ${risk}`,
+    `Riesgo contextual basico: ${risk.level} (${risk.score}/100)`,
+    `Factores de riesgo: ${risk.factors.length ? risk.factors.join(", ") : "sin factores destacados"}`,
   ].join("\n")
 }
 

@@ -93,6 +93,10 @@ const getMondayFirstDayIndex = (date: Date): number => {
 }
 
 const getValidDate = (value?: string | Date): Date => {
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const [year, month, day] = value.split("-").map(Number)
+    return new Date(year, month - 1, day)
+  }
   const date = value ? new Date(value) : new Date()
   return Number.isNaN(date.getTime()) ? new Date() : date
 }
@@ -1017,6 +1021,16 @@ export const saveDailyCheckin = async (req: AuthRequest, res: Response): Promise
     const checkin = existingCheckin
       ? await DailyCheckin.findByIdAndUpdate(existingCheckin._id, payload, { new: true, runValidators: true })
       : await new DailyCheckin(payload).save()
+    console.log("[daily-checkin/save]", {
+      userId,
+      dateKey: payload.dateKey,
+      timezoneOffsetMinutes: checkinDate.getTimezoneOffset(),
+      updatedExisting: Boolean(existingCheckin),
+      checkinId: checkin?._id?.toString?.(),
+      smokedToday: payload.smokedToday,
+      manualRecordsToday,
+      hasAutoCheckinRecord: Boolean(autoCheckinRecord),
+    })
 
     const userProgress = await UserProgress.findOne({ userId })
     const progress = userProgress ? await buildProgressResponse(userId, userProgress) : null
@@ -1024,6 +1038,8 @@ export const saveDailyCheckin = async (req: AuthRequest, res: Response): Promise
     res.status(200).json({
       success: true,
       message: "Check-in diario guardado correctamente",
+      hasCheckin: true,
+      checkin,
       data: { checkin, progress },
     })
   } catch (err) {
@@ -1047,17 +1063,30 @@ export const getTodayDailyCheckin = async (req: AuthRequest, res: Response): Pro
     }
 
     const today = new Date()
+    const todayKey = buildDateKey(today)
     const checkin = await DailyCheckin.findOne({
       userId,
       $or: [
-        { dateKey: buildDateKey(today) },
+        { dateKey: todayKey },
         { date: { $gte: startOfDay(today), $lt: endOfDay(today) } },
       ],
     }).sort({ updatedAt: -1 })
+    console.log("[daily-checkin/today]", {
+      userId,
+      todayKey,
+      timezoneOffsetMinutes: today.getTimezoneOffset(),
+      hasCheckin: Boolean(checkin),
+      checkinId: checkin?._id?.toString?.(),
+      checkinDateKey: checkin?.dateKey,
+    })
     res.status(200).json({
       success: true,
       message: checkin ? "Check-in diario obtenido correctamente" : "No hay check-in para hoy",
+      hasCheckin: Boolean(checkin),
+      checkin,
       data: checkin,
+      dateKey: todayKey,
+      timezoneOffsetMinutes: today.getTimezoneOffset(),
     })
   } catch (err) {
     const error = err as Error
