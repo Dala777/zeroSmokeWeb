@@ -1,7 +1,9 @@
 import type { Request, Response } from "express"
 import UserProgress from "../models/UserProgress"
 import DailyPlan from "../models/DailyPlan"
+import DailyCheckin from "../models/DailyCheckin"
 import SmokingRecord from "../models/SmokingRecord"
+import UserGamification from "../models/UserGamification"
 import { Plan } from "../models/Plan"
 import { UserPlan } from "../models/UserPlan"
 import { ensureUserPlanForProgress, normalizePlanLevels } from "../services/userPlan.service"
@@ -58,6 +60,239 @@ const formatDailyPlanResponse = (dailyPlan: any): any => {
     ...plain,
     id: plain.id || plain._id?.toString?.() || plain._id,
     userId: plain.userId?.toString?.() || plain.userId,
+  }
+}
+
+const getMondayFirstDayIndex = (date: Date): number => {
+  return (date.getDay() + 6) % 7
+}
+
+const getValidDate = (value?: string | Date): Date => {
+  const date = value ? new Date(value) : new Date()
+  return Number.isNaN(date.getTime()) ? new Date() : date
+}
+
+const normalizeDailyCigarettes = (dailyCigarettes?: number[]): number[] => {
+  const normalized = Array.isArray(dailyCigarettes) ? [...dailyCigarettes] : []
+  while (normalized.length < 7) {
+    normalized.push(0)
+  }
+  return normalized.slice(0, 7).map((count) => Number(count) || 0)
+}
+
+const startOfDay = (date: Date): Date => {
+  const value = new Date(date)
+  value.setHours(0, 0, 0, 0)
+  return value
+}
+
+const endOfDay = (date: Date): Date => {
+  const value = startOfDay(date)
+  value.setDate(value.getDate() + 1)
+  return value
+}
+
+const startOfWeek = (date: Date): Date => {
+  const value = startOfDay(date)
+  value.setDate(value.getDate() - getMondayFirstDayIndex(value))
+  return value
+}
+
+const buildDateKey = (date: Date): string => {
+  const value = startOfDay(date)
+  const year = value.getFullYear()
+  const month = `${value.getMonth() + 1}`.padStart(2, "0")
+  const day = `${value.getDate()}`.padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+const countRecordsInRange = async (userId: string, start: Date, end: Date): Promise<number> => {
+  const records = await SmokingRecord.find({
+    userId,
+    timestamp: { $gte: start, $lt: end },
+  })
+  return records.reduce((total: number, record: any) => total + (Number(record.smokedCount) || 1), 0)
+}
+
+const calculateStreaksFromSmokingRecords = async (userId: string, startDate: Date): Promise<{ currentStreak: number; bestStreak: number }> => {
+  const today = startOfDay(new Date())
+  const start = startOfDay(startDate || new Date())
+  const records = await SmokingRecord.find({
+    userId,
+    timestamp: { $gte: start },
+  }).sort({ timestamp: 1 })
+
+  const smokedDateKeys = new Set(records.map((record: any) => buildDateKey(new Date(record.timestamp))))
+  let currentStreak = 0
+  let cursor = new Date(today)
+
+  while (cursor >= start && !smokedDateKeys.has(buildDateKey(cursor))) {
+    currentStreak += 1
+    cursor.setDate(cursor.getDate() - 1)
+  }
+
+  let bestStreak = 0
+  let running = 0
+  const iter = new Date(start)
+  while (iter <= today) {
+    if (smokedDateKeys.has(buildDateKey(iter))) {
+      bestStreak = Math.max(bestStreak, running)
+      running = 0
+    } else {
+      running += 1
+    }
+    iter.setDate(iter.getDate() + 1)
+  }
+  bestStreak = Math.max(bestStreak, running)
+
+  return { currentStreak, bestStreak }
+}
+
+const getActivePlanProgress = async (userId: string): Promise<{ currentDay: number; totalDays: number; planProgress: number }> => {
+  const userPlan = await UserPlan.findOne({ userId, isCompleted: false }).populate("planId")
+  if (!userPlan) return { currentDay: 0, totalDays: 0, planProgress: 0 }
+
+  const totalDays = Number((userPlan.planId as any)?.durationDays || (userPlan.planId as any)?.duration || 0)
+  const computedDay = calculateDayFromStartDate(new Date(userPlan.startDate), new Date())
+  const currentDay = totalDays > 0 ? Math.min(Math.max(computedDay, 1), totalDays) : Math.max(computedDay, 1)
+  if (userPlan.currentDay !== currentDay) {
+    userPlan.currentDay = currentDay
+    await userPlan.save()
+  }
+  return {
+    currentDay,
+    totalDays,
+    planProgress: totalDays > 0 ? Math.min(currentDay / totalDays, 1) : 0,
+  }
+}
+
+const buildWeeklyProgress = async (userId: string, userProgress: any): Promise<any> => {
+  const weekStart = startOfWeek(new Date())
+  const dailyCigarettes: number[] = []
+  for (let index = 0; index < 7; index += 1) {
+    const day = new Date(weekStart)
+    day.setDate(weekStart.getDate() + index)
+    dailyCigarettes.push(await countRecordsInRange(userId, day, endOfDay(day)))
+  }
+
+  const totalSmoked = dailyCigarettes.reduce((total, count) => total + count, 0)
+  const baselineDaily = Math.max(Number(userProgress.cigarettesPerDay) || 0, 0)
+  const baselineExpected = baselineDaily * 7
+  const cigarettesAvoided = Math.max(baselineExpected - totalSmoked, 0)
+  const reductionPercentage = baselineExpected > 0 ? Math.round((cigarettesAvoided / baselineExpected) * 100) : 0
+
+  return {
+    weekStart,
+    dailyCigarettes,
+    weeklyGoal: baselineExpected,
+    baselineExpected,
+    totalSmoked,
+    cigarettesAvoided,
+    reductionPercentage,
+    label: `${cigarettesAvoided} evitados de ${baselineExpected} esperados`,
+  }
+}
+
+const getGamification = async (userId: string): Promise<any> => {
+  return await UserGamification.findOneAndUpdate(
+    { userId },
+    { $setOnInsert: { userId, motivationPoints: 0, completedAchievements: [] } },
+    { upsert: true, new: true },
+  )
+}
+
+const awardGamification = async (
+  userId: string,
+  code: string,
+  title: string,
+  points: number,
+  source: string,
+  description?: string,
+): Promise<void> => {
+  const gamification = await getGamification(userId)
+  const exists = gamification.completedAchievements.some((achievement: any) => achievement.code === code)
+  if (exists) return
+  gamification.completedAchievements.push({
+    code,
+    title,
+    description,
+    completedAt: new Date(),
+    pointsAwarded: points,
+    source,
+  })
+  gamification.motivationPoints += points
+  await gamification.save()
+}
+
+const getCheckinInsights = async (userId: string): Promise<{ emotions: any[]; symptoms: any[] }> => {
+  const since = new Date()
+  since.setDate(since.getDate() - 30)
+  const checkins = await DailyCheckin.find({ userId, date: { $gte: since } }).sort({ date: -1 })
+  const emotionCounts = new Map<string, number>()
+  const symptomCounts = new Map<string, number>()
+
+  checkins.forEach((checkin: any) => {
+    if (checkin.mood) {
+      emotionCounts.set(checkin.mood, (emotionCounts.get(checkin.mood) || 0) + 1)
+    }
+    ;(checkin.symptoms || []).forEach((symptom: string) => {
+      symptomCounts.set(symptom, (symptomCounts.get(symptom) || 0) + 1)
+    })
+  })
+
+  const toSortedStats = (source: Map<string, number>) =>
+    [...source.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([name, count]) => ({ name, count }))
+
+  return {
+    emotions: toSortedStats(emotionCounts),
+    symptoms: toSortedStats(symptomCounts),
+  }
+}
+
+const syncProgressMetrics = async (userId: string, userProgress: any): Promise<any> => {
+  const today = startOfDay(new Date())
+  const cigarettesSmokedToday = await countRecordsInRange(userId, today, endOfDay(today))
+  const streaks = await calculateStreaksFromSmokingRecords(userId, userProgress.startDate)
+  const weekly = await buildWeeklyProgress(userId, userProgress)
+  const plan = await getActivePlanProgress(userId)
+  const gamification = await getGamification(userId)
+  const insights = await getCheckinInsights(userId)
+
+  userProgress.daysWithoutSmoking = streaks.currentStreak
+  userProgress.bestStreak = Math.max(Number(userProgress.bestStreak) || 0, streaks.bestStreak)
+  userProgress.cigarettesAvoided = weekly.cigarettesAvoided
+  userProgress.moneySaved = ((weekly.cigarettesAvoided / 20) * (Number(userProgress.packagePrice) || 0))
+  userProgress.healthProgress = plan.planProgress
+  userProgress.weeklyData = [weekly]
+  await userProgress.save()
+
+  return {
+    cigarettesSmokedToday,
+    bestStreak: userProgress.bestStreak,
+    weekly,
+    plan,
+    gamification,
+    insights,
+  }
+}
+
+const buildProgressResponse = async (userId: string, userProgress: any): Promise<any> => {
+  const metrics = await syncProgressMetrics(userId, userProgress)
+  const plain = typeof userProgress.toObject === "function" ? userProgress.toObject() : userProgress
+  return {
+    ...plain,
+    cigarettesSmokedToday: metrics.cigarettesSmokedToday,
+    bestStreak: metrics.bestStreak,
+    planCurrentDay: metrics.plan.currentDay,
+    planTotalDays: metrics.plan.totalDays,
+    planProgress: metrics.plan.planProgress,
+    motivationPoints: metrics.gamification.motivationPoints,
+    completedGamification: metrics.gamification.completedAchievements,
+    emotionStats: metrics.insights.emotions,
+    symptomStats: metrics.insights.symptoms,
   }
 }
 
@@ -296,7 +531,7 @@ export const getUserProgress = async (req: AuthRequest, res: Response): Promise<
     res.status(200).json({
       success: true,
       message: "Progreso obtenido correctamente",
-      data: userProgress,
+      data: await buildProgressResponse(userId, userProgress),
     })
   } catch (err) {
     const error = err as Error
@@ -396,7 +631,7 @@ export const updateUserProgress = async (req: AuthRequest, res: Response): Promi
     res.status(200).json({
       success: true,
       message: "Progreso actualizado correctamente",
-      data: userProgress,
+      data: await buildProgressResponse(userId, userProgress),
     })
   } catch (err) {
     const error = err as Error
@@ -448,11 +683,12 @@ export const saveSmokingRecord = async (req: AuthRequest, res: Response): Promis
         }];
       }
       
-      // Obtener el día de la semana (0 = Domingo, 1 = Lunes, etc.)
-      const recordDate = new Date(timestamp) || new Date();
-      const dayOfWeek = recordDate.getDay();
+      // Obtener el día de la semana alineado con Flutter (0 = Lunes, 6 = Domingo)
+      const recordDate = getValidDate(timestamp);
+      const dayOfWeek = getMondayFirstDayIndex(recordDate);
       
       // Incrementar el contador del día
+      userProgress.weeklyData[0].dailyCigarettes = normalizeDailyCigarettes(userProgress.weeklyData[0].dailyCigarettes);
       userProgress.weeklyData[0].dailyCigarettes[dayOfWeek]++;
       userProgress.weeklyData[0].totalSmoked++;
       
@@ -592,7 +828,18 @@ export const completeActivity = async (req: AuthRequest, res: Response): Promise
       return
     }
 
+    const wasCompleted = activity.isCompleted
     activity.isCompleted = true
+    if (!wasCompleted) {
+      await awardGamification(
+        userId,
+        `activity_${dailyPlan._id}_${activityId}`,
+        "Actividad completada",
+        10,
+        "daily-plan",
+        activity.title,
+      )
+    }
 
     // Verificar si todas las actividades están completadas
     const allCompleted = dailyPlan.activities.every((act: any) => act.isCompleted)
@@ -605,10 +852,15 @@ export const completeActivity = async (req: AuthRequest, res: Response): Promise
 
     await dailyPlan.save()
 
+    const updatedProgress = await UserProgress.findOne({ userId })
+
     res.status(200).json({
       success: true,
       message: "Actividad marcada como completada",
-      data: formatDailyPlanResponse(dailyPlan),
+      data: {
+        ...formatDailyPlanResponse(dailyPlan),
+        progress: updatedProgress ? await buildProgressResponse(userId, updatedProgress) : null,
+      },
     })
   } catch (err) {
     const error = err as Error
@@ -616,6 +868,92 @@ export const completeActivity = async (req: AuthRequest, res: Response): Promise
     res.status(500).json({
       success: false,
       message: "Error al completar la actividad",
+      error: error.message,
+    })
+  }
+}
+
+// Guardar check-in diario persistente
+export const saveDailyCheckin = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId
+    if (!userId) {
+      res.status(401).json({ success: false, message: "Usuario no autenticado" })
+      return
+    }
+
+    const { mood, cravingLevel, smokedToday, symptoms, physicalSymptoms, note, date, cigarettesSmokedCount } = req.body
+    const checkinDate = getValidDate(date)
+    const payload = {
+      userId,
+      date: checkinDate,
+      dateKey: buildDateKey(checkinDate),
+      mood: toNonEmptyText(mood) || "normal",
+      cravingLevel: Math.min(Math.max(Number(cravingLevel) || 0, 0), 10),
+      smokedToday: Boolean(smokedToday),
+      cigarettesSmokedCount: Boolean(smokedToday) ? Math.max(Number(cigarettesSmokedCount) || 0, 0) : 0,
+      symptoms: Array.isArray(symptoms) ? symptoms : Array.isArray(physicalSymptoms) ? physicalSymptoms : [],
+      note: toNonEmptyText(note),
+    }
+
+    const existingCheckin = await DailyCheckin.findOne({ userId, dateKey: payload.dateKey })
+    if (payload.smokedToday && !existingCheckin?.smokedToday) {
+      await new SmokingRecord({
+        userId,
+        timestamp: checkinDate,
+        emotion: payload.mood,
+        symptoms: payload.symptoms,
+        note: payload.note,
+        smokedCount: Math.max(payload.cigarettesSmokedCount || 1, 1),
+      }).save()
+    }
+
+    const checkin = await DailyCheckin.findOneAndUpdate(
+      { userId, dateKey: payload.dateKey },
+      payload,
+      { upsert: true, new: true, runValidators: true },
+    )
+
+    const userProgress = await UserProgress.findOne({ userId })
+    const progress = userProgress ? await buildProgressResponse(userId, userProgress) : null
+
+    res.status(200).json({
+      success: true,
+      message: "Check-in diario guardado correctamente",
+      data: { checkin, progress },
+    })
+  } catch (err) {
+    const error = err as Error
+    console.error("Error al guardar check-in diario:", error)
+    res.status(500).json({
+      success: false,
+      message: "Error al guardar el check-in diario",
+      error: error.message,
+    })
+  }
+}
+
+// Obtener check-in de hoy
+export const getTodayDailyCheckin = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId
+    if (!userId) {
+      res.status(401).json({ success: false, message: "Usuario no autenticado" })
+      return
+    }
+
+    const checkin = await DailyCheckin.findOne({ userId, dateKey: buildDateKey(new Date()) })
+    res.status(200).json({
+      success: true,
+      message: checkin ? "Check-in diario obtenido correctamente" : "No hay check-in para hoy",
+      data: checkin,
+    })
+  } catch (err) {
+    const error = err as Error
+    console.error("Error al obtener check-in diario:", error)
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener el check-in diario",
       error: error.message,
     })
   }
@@ -644,21 +982,14 @@ export const getWeeklyProgress = async (req: AuthRequest, res: Response): Promis
       return;
     }
     
-    // Si no hay datos semanales, crear datos iniciales
-    if (!userProgress.weeklyData || userProgress.weeklyData.length === 0) {
-      userProgress.weeklyData = [{
-        weekStart: new Date(),
-        dailyCigarettes: [0, 0, 0, 0, 0, 0, 0],
-        weeklyGoal: userProgress.cigarettesPerDay * 7,
-        totalSmoked: 0
-      }];
-      await userProgress.save();
-    }
+    const weekly = await buildWeeklyProgress(userId, userProgress)
+    userProgress.weeklyData = [weekly]
+    await userProgress.save()
     
     res.status(200).json({
       success: true,
       message: "Progreso semanal obtenido correctamente",
-      data: userProgress.weeklyData[0] // Devolvemos la semana actual
+      data: weekly
     });
   } catch (err) {
     const error = err as Error;
@@ -723,16 +1054,21 @@ export const getAchievements = async (req: AuthRequest, res: Response): Promise<
       await userProgress.save();
     }
     
-    // Actualizar logros basados en el progreso actual
+    await syncProgressMetrics(userId, userProgress)
     await updateAchievements(userId);
     
     // Obtener el progreso actualizado
     const updatedProgress = await UserProgress.findOne({ userId });
     
+    const gamification = await getGamification(userId)
+
     res.status(200).json({
       success: true,
       message: "Logros obtenidos correctamente",
-      data: updatedProgress?.achievements || {}
+      data: updatedProgress ? {
+        ...updatedProgress.achievements,
+        motivationPoints: gamification.motivationPoints,
+      } : {}
     });
   } catch (err) {
     const error = err as Error;
@@ -808,8 +1144,8 @@ export const updateSmokingRecord = async (req: AuthRequest, res: Response): Prom
     }
     
     const { date, count } = req.body;
-    const recordDate = date ? new Date(date) : new Date();
-    const dayOfWeek = recordDate.getDay(); // 0 = Domingo, 1 = Lunes, etc.
+    const recordDate = getValidDate(date);
+    const dayOfWeek = getMondayFirstDayIndex(recordDate); // 0 = Lunes, 6 = Domingo
     
     // Obtener progreso del usuario
     const userProgress = await UserProgress.findOne({ userId });
@@ -833,6 +1169,7 @@ export const updateSmokingRecord = async (req: AuthRequest, res: Response): Prom
     }
     
     // Actualizar el contador del día
+    userProgress.weeklyData[0].dailyCigarettes = normalizeDailyCigarettes(userProgress.weeklyData[0].dailyCigarettes);
     userProgress.weeklyData[0].dailyCigarettes[dayOfWeek] = count;
     
     // Recalcular total fumado
@@ -1048,25 +1385,28 @@ const updateAchievements = async (userId: string): Promise<void> => {
   if (!userProgress) return;
   
   const now = new Date();
-  const startDate = userProgress.startDate;
-  const daysDifference = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+  const currentStreak = Number(userProgress.daysWithoutSmoking) || 0;
+  const bestStreak = Number(userProgress.bestStreak) || currentStreak;
   
   // Actualizar logros basados en días sin fumar
-  if (daysDifference >= 1 && !userProgress.achievements.firstDay.completed) {
+  if (bestStreak >= 1 && !userProgress.achievements.firstDay.completed) {
     userProgress.achievements.firstDay.completed = true;
     userProgress.achievements.firstDay.date = now.toISOString();
+    await awardGamification(userId, "first_day", userProgress.achievements.firstDay.title, 50, "achievement");
   }
   
-  if (daysDifference >= 7 && !userProgress.achievements.firstWeek.completed) {
+  if (bestStreak >= 7 && !userProgress.achievements.firstWeek.completed) {
     userProgress.achievements.firstWeek.completed = true;
     userProgress.achievements.firstWeek.date = now.toISOString();
+    await awardGamification(userId, "first_week", userProgress.achievements.firstWeek.title, 100, "achievement");
   }
   
-  if (daysDifference < 30 && !userProgress.achievements.firstMonth.completed) {
-    userProgress.achievements.firstMonth.progress = daysDifference / 30;
-  } else if (daysDifference >= 30 && !userProgress.achievements.firstMonth.completed) {
+  if (bestStreak < 30 && !userProgress.achievements.firstMonth.completed) {
+    userProgress.achievements.firstMonth.progress = Math.min(bestStreak / 30, 1);
+  } else if (bestStreak >= 30 && !userProgress.achievements.firstMonth.completed) {
     userProgress.achievements.firstMonth.completed = true;
     userProgress.achievements.firstMonth.date = now.toISOString();
+    await awardGamification(userId, "first_month", userProgress.achievements.firstMonth.title, 200, "achievement");
   }
   
   // Actualizar logro de dinero ahorrado
@@ -1075,6 +1415,7 @@ const updateAchievements = async (userId: string): Promise<void> => {
   } else if (userProgress.moneySaved >= 200 && !userProgress.achievements.moneySaved.completed) {
     userProgress.achievements.moneySaved.completed = true;
     userProgress.achievements.moneySaved.date = now.toISOString();
+    await awardGamification(userId, "money_saved_200", userProgress.achievements.moneySaved.title, 75, "achievement");
   }
   
   await userProgress.save();
@@ -1086,7 +1427,11 @@ const updateProgressOnPlanCompletion = async (userId: string, dayNumber: number)
   if (!userProgress) return;
 
   // Actualizar días sin fumar si es mayor que el valor actual
-  if (dayNumber > userProgress.daysWithoutSmoking) {
+  await awardGamification(userId, `daily_plan_${dayNumber}`, `Día ${dayNumber} completado`, 25, "daily-plan", "Completaste todas las actividades del día")
+  await syncProgressMetrics(userId, userProgress)
+  await updateAchievements(userId);
+
+  if (false && dayNumber > userProgress.daysWithoutSmoking) {
     userProgress.daysWithoutSmoking = dayNumber;
 
     // Calcular cigarrillos evitados

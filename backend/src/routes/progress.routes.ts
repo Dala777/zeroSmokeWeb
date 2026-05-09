@@ -10,6 +10,8 @@ import {
   getAchievements,
   getProgressSummary,
   updateSmokingRecord,
+  saveDailyCheckin,
+  getTodayDailyCheckin,
 } from "../controllers/progress.controller"
 import { authMiddleware } from "../middleware/auth.middleware"
 
@@ -25,6 +27,8 @@ router.put("/user-progress", updateUserProgress)
 router.post("/smoking-record", saveSmokingRecord)
 router.get("/daily-plan", getDailyPlan)
 router.put("/daily-plan/:planId/activity/:activityId/complete", completeActivity)
+router.post("/daily-checkin", saveDailyCheckin)
+router.get("/daily-checkin/today", getTodayDailyCheckin)
 
 // Nuevas rutas para la pantalla de progreso
 router.get("/weekly-progress", getWeeklyProgress)

@@ -8,6 +8,7 @@ export interface IUserProgress {
   cigarettesAvoided: number
   moneySaved: number
   daysWithoutSmoking: number
+  bestStreak: number
   healthProgress: number
   dependencyLevel: string
   assignedPlan?: string | null
@@ -61,6 +62,7 @@ const UserProgressSchema: Schema = new Schema(
     cigarettesAvoided: { type: Number, default: 0, min: 0 },
     moneySaved: { type: Number, default: 0, min: 0 },
     daysWithoutSmoking: { type: Number, default: 0, min: 0 },
+    bestStreak: { type: Number, default: 0, min: 0 },
     healthProgress: { type: Number, default: 0, min: 0, max: 1 },
     assignedPlan: { type: Schema.Types.ObjectId, ref: "Plan", default: null, index: true },
     dependencyLevel: {
