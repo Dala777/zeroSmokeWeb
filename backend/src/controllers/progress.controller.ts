@@ -8,6 +8,7 @@ import { Plan } from "../models/Plan"
 import { UserPlan } from "../models/UserPlan"
 import { ensureUserPlanForProgress, normalizePlanLevels } from "../services/userPlan.service"
 import { v4 as uuidv4 } from "uuid"
+import { createHash } from "crypto"
 import fs from "fs"
 import path from "path"
 
@@ -210,10 +211,14 @@ const awardGamification = async (
   description?: string,
 ): Promise<void> => {
   const gamification = await getGamification(userId)
-  const exists = gamification.completedAchievements.some((achievement: any) => achievement.code === code)
+  gamification.completedAchievements = gamification.completedAchievements.filter((achievement: any) => {
+    return typeof achievement.code === "string" && achievement.code.length <= 60
+  })
+  const safeCode = code.length > 60 ? compactCode("ach", code) : code
+  const exists = gamification.completedAchievements.some((achievement: any) => achievement.code === safeCode)
   if (exists) return
   gamification.completedAchievements.push({
-    code,
+    code: safeCode,
     title,
     description,
     completedAt: new Date(),
@@ -224,10 +229,17 @@ const awardGamification = async (
   await gamification.save()
 }
 
+const compactCode = (prefix: string, ...parts: Array<string | number | undefined | null>): string => {
+  const raw = parts.filter((part) => part !== undefined && part !== null).join(":")
+  const hash = createHash("sha1").update(raw).digest("hex").slice(0, 16)
+  return `${prefix}_${hash}`
+}
+
 const getCheckinInsights = async (userId: string): Promise<{ emotions: any[]; symptoms: any[] }> => {
   const since = new Date()
   since.setDate(since.getDate() - 30)
   const checkins = await DailyCheckin.find({ userId, date: { $gte: since } }).sort({ date: -1 })
+  const smokingRecords = await SmokingRecord.find({ userId, timestamp: { $gte: since } }).sort({ timestamp: -1 })
   const emotionCounts = new Map<string, number>()
   const symptomCounts = new Map<string, number>()
 
@@ -236,6 +248,25 @@ const getCheckinInsights = async (userId: string): Promise<{ emotions: any[]; sy
       emotionCounts.set(checkin.mood, (emotionCounts.get(checkin.mood) || 0) + 1)
     }
     ;(checkin.symptoms || []).forEach((symptom: string) => {
+      symptomCounts.set(symptom, (symptomCounts.get(symptom) || 0) + 1)
+    })
+  })
+
+  smokingRecords.forEach((record: any) => {
+    const emotions = Array.isArray(record.emotions) && record.emotions.length
+      ? record.emotions
+      : record.emotion
+        ? [record.emotion]
+        : []
+    emotions.forEach((emotion: string) => {
+      emotionCounts.set(emotion, (emotionCounts.get(emotion) || 0) + 1)
+    })
+    const symptoms = Array.isArray(record.physicalSymptoms) && record.physicalSymptoms.length
+      ? record.physicalSymptoms
+      : Array.isArray(record.symptoms)
+        ? record.symptoms
+        : []
+    symptoms.forEach((symptom: string) => {
       symptomCounts.set(symptom, (symptomCounts.get(symptom) || 0) + 1)
     })
   })
@@ -833,7 +864,7 @@ export const completeActivity = async (req: AuthRequest, res: Response): Promise
     if (!wasCompleted) {
       await awardGamification(
         userId,
-        `activity_${dailyPlan._id}_${activityId}`,
+        compactCode("act", dailyPlan._id?.toString(), activityId),
         "Actividad completada",
         10,
         "daily-plan",
