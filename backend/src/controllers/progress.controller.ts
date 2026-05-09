@@ -25,6 +25,30 @@ const toNonEmptyText = (value: unknown): string => {
   return typeof value === "string" ? value.trim() : ""
 }
 
+const normalizeStatKey = (value: unknown): string => {
+  if (typeof value !== "string") return ""
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+}
+
+const formatStatLabel = (key: string): string => {
+  return key
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+}
+
+const addNormalizedStat = (source: Map<string, number>, value: unknown, amount = 1): void => {
+  const key = normalizeStatKey(value)
+  if (!key) return
+  source.set(key, (source.get(key) || 0) + amount)
+}
+
 const buildLegacyActivityDescription = (mainTitle: string, secondaryTitle: string, justification: string): string => {
   if (justification) return justification
   if (secondaryTitle) return `Actividad secundaria sugerida: ${secondaryTitle}`
@@ -111,8 +135,26 @@ const countRecordsInRange = async (userId: string, start: Date, end: Date): Prom
   const records = await SmokingRecord.find({
     userId,
     timestamp: { $gte: start, $lt: end },
+  }).sort({ updatedAt: -1, timestamp: -1 })
+  const checkinRecordsByDay = new Map<string, any>()
+  let manualTotal = 0
+
+  records.forEach((record: any) => {
+    const isCheckinRecord = Array.isArray(record.contextTags) && record.contextTags.includes("daily-checkin")
+    if (!isCheckinRecord) {
+      manualTotal += Number(record.smokedCount) || 1
+      return
+    }
+
+    const key = buildDateKey(new Date(record.timestamp))
+    if (!checkinRecordsByDay.has(key)) {
+      checkinRecordsByDay.set(key, record)
+    }
   })
-  return records.reduce((total: number, record: any) => total + (Number(record.smokedCount) || 1), 0)
+
+  const checkinTotal = [...checkinRecordsByDay.values()]
+    .reduce((total: number, record: any) => total + (Number(record.smokedCount) || 1), 0)
+  return manualTotal + checkinTotal
 }
 
 const calculateStreaksFromSmokingRecords = async (userId: string, startDate: Date): Promise<{ currentStreak: number; bestStreak: number }> => {
@@ -149,9 +191,9 @@ const calculateStreaksFromSmokingRecords = async (userId: string, startDate: Dat
   return { currentStreak, bestStreak }
 }
 
-const getActivePlanProgress = async (userId: string): Promise<{ currentDay: number; totalDays: number; planProgress: number }> => {
+const getActivePlanProgress = async (userId: string): Promise<{ currentDay: number; totalDays: number; planProgress: number; planStartDate: Date | null }> => {
   const userPlan = await UserPlan.findOne({ userId, isCompleted: false }).populate("planId")
-  if (!userPlan) return { currentDay: 0, totalDays: 0, planProgress: 0 }
+  if (!userPlan) return { currentDay: 0, totalDays: 0, planProgress: 0, planStartDate: null }
 
   const totalDays = Number((userPlan.planId as any)?.durationDays || (userPlan.planId as any)?.duration || 0)
   const computedDay = calculateDayFromStartDate(new Date(userPlan.startDate), new Date())
@@ -164,6 +206,7 @@ const getActivePlanProgress = async (userId: string): Promise<{ currentDay: numb
     currentDay,
     totalDays,
     planProgress: totalDays > 0 ? Math.min(currentDay / totalDays, 1) : 0,
+    planStartDate: userPlan.startDate,
   }
 }
 
@@ -238,17 +281,23 @@ const compactCode = (prefix: string, ...parts: Array<string | number | undefined
 const getCheckinInsights = async (userId: string): Promise<{ emotions: any[]; symptoms: any[] }> => {
   const since = new Date()
   since.setDate(since.getDate() - 30)
-  const checkins = await DailyCheckin.find({ userId, date: { $gte: since } }).sort({ date: -1 })
+  const checkins = await DailyCheckin.find({ userId, date: { $gte: since } }).sort({ updatedAt: -1 })
   const smokingRecords = await SmokingRecord.find({ userId, timestamp: { $gte: since } }).sort({ timestamp: -1 })
   const emotionCounts = new Map<string, number>()
   const symptomCounts = new Map<string, number>()
+  const latestCheckinByDay = new Map<string, any>()
 
   checkins.forEach((checkin: any) => {
-    if (checkin.mood) {
-      emotionCounts.set(checkin.mood, (emotionCounts.get(checkin.mood) || 0) + 1)
+    const key = checkin.dateKey || buildDateKey(new Date(checkin.date))
+    if (!latestCheckinByDay.has(key)) {
+      latestCheckinByDay.set(key, checkin)
     }
+  })
+
+  latestCheckinByDay.forEach((checkin: any) => {
+    addNormalizedStat(emotionCounts, checkin.mood)
     ;(checkin.symptoms || []).forEach((symptom: string) => {
-      symptomCounts.set(symptom, (symptomCounts.get(symptom) || 0) + 1)
+      addNormalizedStat(symptomCounts, symptom)
     })
   })
 
@@ -258,24 +307,20 @@ const getCheckinInsights = async (userId: string): Promise<{ emotions: any[]; sy
       : record.emotion
         ? [record.emotion]
         : []
-    emotions.forEach((emotion: string) => {
-      emotionCounts.set(emotion, (emotionCounts.get(emotion) || 0) + 1)
-    })
+    emotions.forEach((emotion: string) => addNormalizedStat(emotionCounts, emotion))
     const symptoms = Array.isArray(record.physicalSymptoms) && record.physicalSymptoms.length
       ? record.physicalSymptoms
       : Array.isArray(record.symptoms)
         ? record.symptoms
         : []
-    symptoms.forEach((symptom: string) => {
-      symptomCounts.set(symptom, (symptomCounts.get(symptom) || 0) + 1)
-    })
+    symptoms.forEach((symptom: string) => addNormalizedStat(symptomCounts, symptom))
   })
 
   const toSortedStats = (source: Map<string, number>) =>
     [...source.entries()]
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
-      .map(([name, count]) => ({ name, count }))
+      .map(([name, count]) => ({ name: formatStatLabel(name), count }))
 
   return {
     emotions: toSortedStats(emotionCounts),
@@ -320,6 +365,7 @@ const buildProgressResponse = async (userId: string, userProgress: any): Promise
     planCurrentDay: metrics.plan.currentDay,
     planTotalDays: metrics.plan.totalDays,
     planProgress: metrics.plan.planProgress,
+    planStartDate: metrics.plan.planStartDate,
     motivationPoints: metrics.gamification.motivationPoints,
     completedGamification: metrics.gamification.completedAchievements,
     emotionStats: metrics.insights.emotions,
@@ -915,6 +961,8 @@ export const saveDailyCheckin = async (req: AuthRequest, res: Response): Promise
 
     const { mood, cravingLevel, smokedToday, symptoms, physicalSymptoms, note, date, cigarettesSmokedCount } = req.body
     const checkinDate = getValidDate(date)
+    const dayStart = startOfDay(checkinDate)
+    const dayEnd = endOfDay(checkinDate)
     const payload = {
       userId,
       date: checkinDate,
@@ -927,23 +975,48 @@ export const saveDailyCheckin = async (req: AuthRequest, res: Response): Promise
       note: toNonEmptyText(note),
     }
 
-    const existingCheckin = await DailyCheckin.findOne({ userId, dateKey: payload.dateKey })
-    if (payload.smokedToday && !existingCheckin?.smokedToday) {
-      await new SmokingRecord({
+    const existingByDateKey = await DailyCheckin.findOne({ userId, dateKey: payload.dateKey })
+    const existingByDay = existingByDateKey
+      ? null
+      : await DailyCheckin.findOne({
+        userId,
+        date: { $gte: dayStart, $lt: dayEnd },
+      }).sort({ updatedAt: -1 })
+    const existingCheckin = existingByDateKey || existingByDay
+    const autoCheckinRecord = await SmokingRecord.findOne({
+      userId,
+      timestamp: { $gte: dayStart, $lt: dayEnd },
+      contextTags: "daily-checkin",
+    })
+    const manualRecordsToday = await SmokingRecord.countDocuments({
+      userId,
+      timestamp: { $gte: dayStart, $lt: dayEnd },
+      contextTags: { $ne: "daily-checkin" },
+    })
+
+    if (payload.smokedToday) {
+      const smokingPayload = {
         userId,
         timestamp: checkinDate,
         emotion: payload.mood,
         symptoms: payload.symptoms,
         note: payload.note,
         smokedCount: Math.max(payload.cigarettesSmokedCount || 1, 1),
-      }).save()
+        contextTags: ["daily-checkin"],
+      }
+      if (autoCheckinRecord) {
+        autoCheckinRecord.set(smokingPayload)
+        await autoCheckinRecord.save()
+      } else if (manualRecordsToday === 0) {
+        await new SmokingRecord(smokingPayload).save()
+      }
+    } else if (autoCheckinRecord) {
+      await autoCheckinRecord.deleteOne()
     }
 
-    const checkin = await DailyCheckin.findOneAndUpdate(
-      { userId, dateKey: payload.dateKey },
-      payload,
-      { upsert: true, new: true, runValidators: true },
-    )
+    const checkin = existingCheckin
+      ? await DailyCheckin.findByIdAndUpdate(existingCheckin._id, payload, { new: true, runValidators: true })
+      : await new DailyCheckin(payload).save()
 
     const userProgress = await UserProgress.findOne({ userId })
     const progress = userProgress ? await buildProgressResponse(userId, userProgress) : null
@@ -973,7 +1046,14 @@ export const getTodayDailyCheckin = async (req: AuthRequest, res: Response): Pro
       return
     }
 
-    const checkin = await DailyCheckin.findOne({ userId, dateKey: buildDateKey(new Date()) })
+    const today = new Date()
+    const checkin = await DailyCheckin.findOne({
+      userId,
+      $or: [
+        { dateKey: buildDateKey(today) },
+        { date: { $gte: startOfDay(today), $lt: endOfDay(today) } },
+      ],
+    }).sort({ updatedAt: -1 })
     res.status(200).json({
       success: true,
       message: checkin ? "Check-in diario obtenido correctamente" : "No hay check-in para hoy",

@@ -5,9 +5,9 @@ const normalizeValues = (values: string[] = []): string[] =>
   [...new Set(values.map((value) => value.trim().toLowerCase()).filter(Boolean))]
 
 const buildDateKey = (value: Date): string => {
-  const year = value.getUTCFullYear()
-  const month = `${value.getUTCMonth() + 1}`.padStart(2, "0")
-  const day = `${value.getUTCDate()}`.padStart(2, "0")
+  const year = value.getFullYear()
+  const month = `${value.getMonth() + 1}`.padStart(2, "0")
+  const day = `${value.getDate()}`.padStart(2, "0")
   return `${year}-${month}-${day}`
 }
 
