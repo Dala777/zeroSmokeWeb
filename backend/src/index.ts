@@ -21,6 +21,10 @@ import riskRoutes from "./routes/risk.routes"
 import notificationRoutes from "./routes/notification.routes"
 import chatHistoryRoutes from "./routes/chatHistory.routes"
 
+// Importar Firebase y scheduler
+import { initFirebaseAdmin } from "./services/notificationPush.service"
+import { startScheduler } from "./jobs/notificationScheduler"
+
 // Cargar variables de entorno
 dotenv.config()
 
@@ -81,4 +85,7 @@ if (process.env.NODE_ENV === "production") {
 // Iniciar servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`)
+
+  initFirebaseAdmin()
+  startScheduler()
 })
