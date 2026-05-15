@@ -1,9 +1,12 @@
 import type { Request, Response } from 'express'
 import { chatService } from '../services/chat.service'
+import ChatMessage from '../models/ChatMessage'
 
 interface AuthRequest extends Request {
   userId?: string
 }
+
+const MAX_HISTORY = 20
 
 export const postChat = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -22,6 +25,20 @@ export const postChat = async (req: Request, res: Response): Promise<void> => {
 
     const userHistory = Array.isArray(history) ? history : []
     const result = await chatService.sendMessage(userId, message.trim(), userHistory)
+
+    await ChatMessage.create({ userId, role: 'user', content: message.trim() })
+    await ChatMessage.create({ userId, role: 'assistant', content: result.reply })
+
+    const totalMessages = await ChatMessage.countDocuments({ userId })
+    if (totalMessages > MAX_HISTORY * 2) {
+      const oldest = await ChatMessage.find({ userId })
+        .sort({ createdAt: 1 })
+        .limit(totalMessages - MAX_HISTORY * 2)
+      const ids = oldest.map((m) => m._id)
+      await ChatMessage.deleteMany({ _id: { $in: ids } })
+    }
+
+    console.log("[chat] Message saved", { userId })
 
     res.status(200).json({
       success: true,

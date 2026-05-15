@@ -7,6 +7,7 @@ import UserGamification from "../models/UserGamification"
 import { Plan } from "../models/Plan"
 import { UserPlan } from "../models/UserPlan"
 import { ensureUserPlanForProgress, normalizePlanLevels } from "../services/userPlan.service"
+import { saveRiskSnapshot } from "../services/risk.service"
 import { v4 as uuidv4 } from "uuid"
 import { createHash } from "crypto"
 import fs from "fs"
@@ -750,6 +751,8 @@ export const saveSmokingRecord = async (req: AuthRequest, res: Response): Promis
 
     await smokingRecord.save()
 
+    saveRiskSnapshot(userId).catch((err) => console.warn("[risk] snapshot after smoking record failed:", err))
+
     // Actualizar datos semanales
     const userProgress = await UserProgress.findOne({ userId })
     
@@ -911,6 +914,9 @@ export const completeActivity = async (req: AuthRequest, res: Response): Promise
 
     const wasCompleted = activity.isCompleted
     activity.isCompleted = true
+
+    saveRiskSnapshot(userId).catch((err) => console.warn("[risk] snapshot after activity failed:", err))
+
     if (!wasCompleted) {
       await awardGamification(
         userId,
@@ -1034,6 +1040,8 @@ export const saveDailyCheckin = async (req: AuthRequest, res: Response): Promise
 
     const userProgress = await UserProgress.findOne({ userId })
     const progress = userProgress ? await buildProgressResponse(userId, userProgress) : null
+
+    saveRiskSnapshot(userId).catch((err) => console.warn("[risk] snapshot after checkin failed:", err))
 
     res.status(200).json({
       success: true,

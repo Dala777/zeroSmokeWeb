@@ -10,9 +10,16 @@ import userRoutes from "./routes/user.routes"
 import articleRoutes from "./routes/article.routes"
 import faqRoutes from "./routes/faq.routes"
 import messageRoutes from "./routes/message.routes"
-import progressRoutes from "./routes/progress.routes" // Nueva importación
+import progressRoutes from "./routes/progress.routes"
 import planRoutes from "./routes/plan.routes"
 import chatRoutes from "./routes/chat.routes"
+import emotionalJournalRoutes from "./routes/emotionalJournal.routes"
+import supportNetworkRoutes from "./routes/supportNetwork.routes"
+import rewardsRoutes from "./routes/rewards.routes"
+import achievementsRoutes from "./routes/achievements.routes"
+import riskRoutes from "./routes/risk.routes"
+import notificationRoutes from "./routes/notification.routes"
+import chatHistoryRoutes from "./routes/chatHistory.routes"
 
 // Cargar variables de entorno
 dotenv.config()
@@ -49,6 +56,13 @@ app.use("/api/messages", messageRoutes)
 app.use("/api/progress", progressRoutes) // Cambiar a /api/progress
 app.use("/api/plans", planRoutes) // Nueva ruta para planes
 app.use("/api/chat", chatRoutes)
+app.use("/api/emotional-journal", emotionalJournalRoutes)
+app.use("/api/support-network", supportNetworkRoutes)
+app.use("/api/rewards", rewardsRoutes)
+app.use("/api/achievements", achievementsRoutes)
+app.use("/api/risk", riskRoutes)
+app.use("/api/notifications", notificationRoutes)
+app.use("/api/chat", chatHistoryRoutes)
 
 // Ruta de prueba
 app.get("/api", (req, res) => {

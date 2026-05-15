@@ -1,5 +1,6 @@
 import DailyCheckin from "../models/DailyCheckin"
 import DailyPlan from "../models/DailyPlan"
+import RiskSnapshot from "../models/RiskSnapshot"
 import SmokingRecord from "../models/SmokingRecord"
 import UserProgress from "../models/UserProgress"
 
@@ -73,4 +74,51 @@ export const calculateRisk = async (userId: string): Promise<RiskResult> => {
   const boundedScore = Math.min(score, 100)
   const level = boundedScore >= 65 ? "alto" : boundedScore >= 30 ? "moderado" : "bajo"
   return { level, score: boundedScore, factors }
+}
+
+export const saveRiskSnapshot = async (userId: string): Promise<void> => {
+  try {
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = `${today.getMonth() + 1}`.padStart(2, "0")
+    const day = `${today.getDate()}`.padStart(2, "0")
+    const dateKey = `${year}-${month}-${day}`
+
+    const [checkin, progress, smokingRecords, dailyPlan] = await Promise.all([
+      DailyCheckin.findOne({
+        userId,
+        date: { $gte: startOfDay(today), $lt: endOfDay(today) },
+      }).sort({ updatedAt: -1 }),
+      UserProgress.findOne({ userId }),
+      SmokingRecord.find({ userId, timestamp: { $gte: startOfDay(today), $lt: endOfDay(today) } }),
+      DailyPlan.findOne({ userId, date: { $gte: startOfDay(today), $lt: endOfDay(today) } }),
+    ])
+
+    const risk = await calculateRisk(userId)
+    const planActivities = Array.isArray((dailyPlan as any)?.activities)
+      ? (dailyPlan as any).activities
+      : []
+    const completedCount = planActivities.filter((a: any) => a.isCompleted).length
+
+    await RiskSnapshot.findOneAndUpdate(
+      { userId, dateKey },
+      {
+        userId,
+        dateKey,
+        riskLevel: risk.level,
+        riskScore: risk.score,
+        factors: risk.factors,
+        cravingLevel: Number(checkin?.cravingLevel) || 0,
+        mood: checkin?.mood || "",
+        smokedToday: smokingRecords.length > 0 || checkin?.smokedToday === true,
+        currentStreak: Number(progress?.daysWithoutSmoking) || 0,
+        completedActivities: completedCount,
+      },
+      { upsert: true, new: true },
+    )
+
+    console.log("[risk] Snapshot saved", { userId, dateKey, riskLevel: risk.level, riskScore: risk.score })
+  } catch (err) {
+    console.error("[risk] Error saving snapshot:", err)
+  }
 }
