@@ -20,7 +20,8 @@ export interface ChatResult {
 
 const GROQ_API_URL = process.env.GROQ_API_URL || "https://api.groq.com/openai/v1/chat/completions"
 const GROQ_API_KEY = process.env.GROQ_API_KEY
-const GROQ_MODEL = process.env.GROQ_MODEL || "llama3-70b-8192"
+const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile"
+const GROQ_FALLBACK_MODEL = "llama-3.3-70b-versatile"
 
 const startOfDay = (date: Date): Date => {
   const value = new Date(date)
@@ -125,6 +126,8 @@ export const chatService = {
       return { reply: fallbackReply(message), model: GROQ_MODEL, fallback: true }
     }
 
+    let messages: { role: string; content: string }[] = []
+
     try {
       const context = await buildContext(userId)
       const systemPrompt = [
@@ -138,7 +141,7 @@ export const chatService = {
         context,
       ].join("\n")
 
-      const messages = [
+      messages = [
         { role: "system", content: systemPrompt },
         ...history.slice(-8).map((item) => ({
           role: item.role === "user" ? "user" : "assistant",
@@ -147,32 +150,72 @@ export const chatService = {
         { role: "user", content: message },
       ]
 
-      const response = await axios.post(
-        GROQ_API_URL,
-        {
-          model: GROQ_MODEL,
-          messages,
-          temperature: 0.7,
-          max_tokens: 420,
+      const payload = {
+        model: GROQ_MODEL,
+        messages,
+        temperature: 0.7,
+        max_tokens: 420,
+      }
+
+      console.log("[Groq] Modelo usado:", GROQ_MODEL)
+      console.log("[Groq] Payload (sin api key):", JSON.stringify({ ...payload, messages: payload.messages.length }))
+
+      const response = await axios.post(GROQ_API_URL, payload, {
+        headers: {
+          Authorization: `Bearer ${GROQ_API_KEY}`,
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${GROQ_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          timeout: 20000,
-        },
-      )
+        timeout: 20000,
+      })
+
+      console.log("[Groq] response.status:", response.status)
+      console.log("[Groq] response.data:", JSON.stringify(response.data))
 
       const reply = response.data?.choices?.[0]?.message?.content?.trim()
-      return {
-        reply: reply || fallbackReply(message),
-        model: GROQ_MODEL,
-        fallback: !reply,
+      if (reply) {
+        return { reply, model: GROQ_MODEL, fallback: false }
       }
-    } catch (error) {
-      console.error("Error llamando a Groq:", error instanceof Error ? error.message : error)
-      return { reply: fallbackReply(message), model: GROQ_MODEL, fallback: true }
+
+      throw new Error("Respuesta vacía de Groq")
+    } catch (error: any) {
+      console.error("[Groq] Error status:", error?.response?.status)
+      console.error("[Groq] Error data:", JSON.stringify(error?.response?.data))
+      console.error("[Groq] Error message:", error instanceof Error ? error.message : error)
+
+      // Solo reintentar si el error fue de axios (no de buildContext)
+      if (error?.config?.data && messages.length > 0) {
+        let triedModel = GROQ_MODEL
+        try {
+          triedModel = JSON.parse(error.config.data).model
+        } catch {
+          triedModel = GROQ_MODEL
+        }
+        if (triedModel !== GROQ_FALLBACK_MODEL) {
+          console.log(`[Groq] Reintentando con fallback: ${GROQ_FALLBACK_MODEL}`)
+          try {
+            const fallbackRes = await axios.post(GROQ_API_URL, {
+              model: GROQ_FALLBACK_MODEL,
+              messages,
+              temperature: 0.7,
+              max_tokens: 420,
+            }, {
+              headers: {
+                Authorization: `Bearer ${GROQ_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              timeout: 20000,
+            })
+            const fallbackReply = fallbackRes.data?.choices?.[0]?.message?.content?.trim()
+            if (fallbackReply) {
+              return { reply: fallbackReply, model: GROQ_FALLBACK_MODEL, fallback: false }
+            }
+          } catch (fallbackError: any) {
+            console.error("[Groq] Fallback tambien fallo:", fallbackError?.response?.data || fallbackError.message)
+          }
+        }
+      }
+
+      return { reply: fallbackReply(message), model: error?.config?.data ? GROQ_FALLBACK_MODEL : GROQ_MODEL, fallback: true }
     }
   },
 }
