@@ -4,7 +4,7 @@ export interface INotificationLog extends Document {
   userId: mongoose.Types.ObjectId
   title: string
   body: string
-  type: "achievement" | "reward" | "streak" | "risk_alert" | "checkin" | "motivation" | "smart"
+  type: "achievement" | "reward" | "streak" | "risk_alert" | "checkin" | "motivation" | "smart" | "craving" | "health" | "savings" | "progress"
   sentAt: Date
   readAt?: Date
   metadata?: Record<string, unknown>
@@ -17,7 +17,7 @@ const NotificationLogSchema = new Schema<INotificationLog>(
     body: { type: String, required: true },
     type: {
       type: String,
-      enum: ["achievement", "reward", "streak", "risk_alert", "checkin", "motivation", "smart"],
+      enum: ["achievement", "reward", "streak", "risk_alert", "checkin", "motivation", "smart", "craving", "health", "savings", "progress"],
       required: true,
     },
     sentAt: { type: Date, default: Date.now },
