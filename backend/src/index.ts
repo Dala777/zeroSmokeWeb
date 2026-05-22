@@ -20,6 +20,7 @@ import achievementsRoutes from "./routes/achievements.routes"
 import riskRoutes from "./routes/risk.routes"
 import notificationRoutes from "./routes/notification.routes"
 import chatHistoryRoutes from "./routes/chatHistory.routes"
+import adminStatsRoutes from "./routes/adminStats.routes"
 
 // Importar Firebase y scheduler
 import { initFirebaseAdmin } from "./services/notificationPush.service"
@@ -67,6 +68,7 @@ app.use("/api/achievements", achievementsRoutes)
 app.use("/api/risk", riskRoutes)
 app.use("/api/notifications", notificationRoutes)
 app.use("/api/chat", chatHistoryRoutes)
+app.use("/api/admin/stats", adminStatsRoutes)
 
 // Ruta de prueba
 app.get("/api", (req, res) => {
