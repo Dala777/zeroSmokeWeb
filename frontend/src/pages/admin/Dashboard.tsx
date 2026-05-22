@@ -4,7 +4,9 @@ import styled from "styled-components"
 import {
   Activity,
   AlertTriangle,
+  BarChart3,
   Bell,
+  Download,
   LineChart as LineChartIcon,
   RefreshCw,
   TrendingUp,
@@ -35,6 +37,7 @@ import adminStatsService, {
   NotificationStats,
   OverviewStats,
   RelapseStats,
+  ResearchStats,
   SymptomStats,
   UserStats,
 } from "../../services/adminStatsService"
@@ -103,6 +106,24 @@ const RefreshButton = styled.button`
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+`
+
+const DownloadLinkButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: ${AppColors.cardBackground};
+  color: ${AppColors.textSecondary};
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    border-color: ${AppColors.primary};
+    color: ${AppColors.accent};
   }
 `
 
@@ -273,6 +294,39 @@ const MiniStatValue = styled.span`
   font-weight: 600;
 `
 
+const ResearchHeader = styled.div`
+  margin-top: 32px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  h2 {
+    color: ${AppColors.text};
+    font-size: 22px;
+    margin: 0;
+  }
+
+  svg {
+    color: ${AppColors.accent};
+  }
+`
+
+const AdherenceBar = styled.div<{ $width: number }>`
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, ${AppColors.primary}, ${AppColors.accent});
+  width: ${(p) => Math.min(p.$width, 100)}%;
+  transition: width 0.5s ease;
+`
+
+const AdherenceTrack = styled.div`
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.06);
+  margin-top: 4px;
+`
+
 const tooltipStyle = {
   border: "none",
   borderRadius: "8px",
@@ -317,6 +371,7 @@ const Dashboard: React.FC = () => {
   const [highRiskUsers, setHighRiskUsers] = useState<HighRiskUser[]>([])
   const [symptomsStats, setSymptomsStats] = useState<SymptomStats | null>(null)
   const [relapseStats, setRelapseStats] = useState<RelapseStats | null>(null)
+  const [researchStats, setResearchStats] = useState<ResearchStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState("")
@@ -332,7 +387,7 @@ const Dashboard: React.FC = () => {
       }
       setError("")
 
-      const [overviewData, usersData, checkinsData, cravingsData, notificationsData, highRiskData, symptomsData, relapsesData] =
+      const [overviewData, usersData, checkinsData, cravingsData, notificationsData, highRiskData, symptomsData, relapsesData, researchData] =
         await Promise.all([
           adminStatsService.getOverview(),
           adminStatsService.getUsersStats(filters),
@@ -342,6 +397,7 @@ const Dashboard: React.FC = () => {
           adminStatsService.getHighRiskUsers(),
           adminStatsService.getSymptomsStats(filters),
           adminStatsService.getRelapseStats(filters),
+          adminStatsService.getResearchStats(filters),
         ])
 
       setOverview(overviewData)
@@ -352,6 +408,7 @@ const Dashboard: React.FC = () => {
       setHighRiskUsers(highRiskData)
       setSymptomsStats(symptomsData)
       setRelapseStats(relapsesData)
+      setResearchStats(researchData)
     } catch (err: any) {
       const message =
         err?.response?.data?.message ||
@@ -419,6 +476,10 @@ const Dashboard: React.FC = () => {
           <RefreshCw size={16} />
           {refreshing ? "Actualizando" : "Actualizar"}
         </RefreshButton>
+        <DownloadLinkButton onClick={() => adminStatsService.downloadCheckinsCSV()}>
+          <Download size={16} />
+          Exportar CSV
+        </DownloadLinkButton>
       </Toolbar>
 
       <StatsGrid>
@@ -724,6 +785,161 @@ const Dashboard: React.FC = () => {
             <EmptyState style={{ height: 120 }}>
               No hay actividad registrada en el rango seleccionado.
             </EmptyState>
+          )}
+        </SectionCard>
+      </Grid2>
+
+      <ResearchHeader>
+        <BarChart3 size={24} />
+        <h2>Investigación y Comportamiento</h2>
+      </ResearchHeader>
+
+      <Grid2>
+        <SectionCard>
+          <SectionTitle>Adherencia a Planes</SectionTitle>
+          {researchStats && researchStats.planAdherence.length > 0 ? (
+            <DataTable>
+              <thead>
+                <tr>
+                  <th>Estado</th>
+                  <th>Usuarios</th>
+                  <th>Completado</th>
+                  <th>Día promedio</th>
+                </tr>
+              </thead>
+              <tbody>
+                {researchStats.planAdherence.map((p) => (
+                  <tr key={p.status}>
+                    <td style={{ textTransform: "capitalize" }}>{p.status}</td>
+                    <td>{p.count}</td>
+                    <td>
+                      <div>{p.averageCompletion.toFixed(1)}%</div>
+                      <AdherenceTrack>
+                        <AdherenceBar $width={p.averageCompletion} />
+                      </AdherenceTrack>
+                    </td>
+                    <td>{p.averageCurrentDay}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          ) : (
+            <EmptyState style={{ height: 100 }}>Sin datos de adherencia.</EmptyState>
+          )}
+        </SectionCard>
+
+        <SectionCard>
+          <SectionTitle>Usuarios más activos</SectionTitle>
+          {researchStats && researchStats.mostActiveUsers.length > 0 ? (
+            <DataTable>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Usuario</th>
+                  <th>Check-ins</th>
+                  <th>Último</th>
+                </tr>
+              </thead>
+              <tbody>
+                {researchStats.mostActiveUsers.map((u, i) => (
+                  <tr key={u.id}>
+                    <td>{i + 1}</td>
+                    <td style={{ maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {u.name}
+                    </td>
+                    <td>{u.checkins}</td>
+                    <td style={{ fontSize: "0.8rem" }}>
+                      {u.lastCheckin ? new Date(u.lastCheckin).toLocaleDateString("es-ES") : "--"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          ) : (
+            <EmptyState style={{ height: 100 }}>Sin datos de actividad.</EmptyState>
+          )}
+        </SectionCard>
+      </Grid2>
+
+      <Grid2>
+        <SectionCard>
+          <SectionTitle>Tendencia semanal</SectionTitle>
+          {researchStats && researchStats.weeklyTrend.length > 0 ? (
+            <DataTable>
+              <thead>
+                <tr>
+                  <th>Semana</th>
+                  <th>Craving prom.</th>
+                  <th>Check-ins</th>
+                  <th>Recaídas</th>
+                </tr>
+              </thead>
+              <tbody>
+                {researchStats.weeklyTrend.slice(-8).map((w) => (
+                  <tr key={w.period}>
+                    <td style={{ fontSize: "0.8rem" }}>{w.period}</td>
+                    <td>
+                      <CravingIndicator $level={w.avgCraving}>{w.avgCraving.toFixed(1)}</CravingIndicator>
+                    </td>
+                    <td>{w.checkins}</td>
+                    <td>
+                      <span style={{ color: w.relapses > 0 ? AppColors.error : AppColors.text }}>{w.relapses}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          ) : (
+            <EmptyState style={{ height: 100 }}>Sin tendencia disponible.</EmptyState>
+          )}
+        </SectionCard>
+
+        <SectionCard>
+          <SectionTitle>Indicadores de investigación</SectionTitle>
+          {checkinsStats && relapseStats && researchStats ? (
+            <div>
+              <MiniStat>
+                <MiniStatLabel>Craving promedio (total)</MiniStatLabel>
+                <MiniStatValue>{checkinsStats.summary.averageCraving.toFixed(2)} / 10</MiniStatValue>
+              </MiniStat>
+              <MiniStat>
+                <MiniStatLabel>Porcentaje de recaídas</MiniStatLabel>
+                <MiniStatValue>
+                  {checkinsStats.summary.totalCheckins > 0
+                    ? `${((relapseStats.summary.totalRelapses / checkinsStats.summary.totalCheckins) * 100).toFixed(1)}%`
+                    : "0%"}
+                </MiniStatValue>
+              </MiniStat>
+              <MiniStat>
+                <MiniStatLabel>Usuarios con plan activo</MiniStatLabel>
+                <MiniStatValue>
+                  {researchStats.planAdherence.find((p) => p.status === "active")?.count || 0}
+                </MiniStatValue>
+              </MiniStat>
+              <MiniStat>
+                <MiniStatLabel>Planes completados</MiniStatLabel>
+                <MiniStatValue>
+                  {researchStats.planAdherence.find((p) => p.status === "completed")?.count || 0}
+                </MiniStatValue>
+              </MiniStat>
+              <MiniStat>
+                <MiniStatLabel>Completado promedio</MiniStatLabel>
+                <MiniStatValue>
+                  {researchStats.planAdherence.length > 0
+                    ? `${(
+                        researchStats.planAdherence.reduce((s, p) => s + p.averageCompletion, 0) /
+                        researchStats.planAdherence.length
+                      ).toFixed(1)}%`
+                    : "0%"}
+                </MiniStatValue>
+              </MiniStat>
+              <MiniStat>
+                <MiniStatLabel>Usuarios con craving alto (≥7)</MiniStatLabel>
+                <MiniStatValue>{cravingsStats?.summary.highCravingEvents || 0}</MiniStatValue>
+              </MiniStat>
+            </div>
+          ) : (
+            <EmptyState style={{ height: 100 }}>Sin indicadores disponibles.</EmptyState>
           )}
         </SectionCard>
       </Grid2>

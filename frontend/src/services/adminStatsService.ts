@@ -110,14 +110,8 @@ interface ApiResponse<T> {
   message?: string
 }
 
-const getAuthToken = (): string | null => localStorage.getItem("token")
-
 const request = async <T>(path: string, params?: AnalyticsFilters): Promise<T> => {
-  const token = getAuthToken()
-  const response = await axios.get<ApiResponse<T>>(`${ADMIN_STATS_URL}${path}`, {
-    params,
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-  })
+  const response = await axios.get<ApiResponse<T>>(`${ADMIN_STATS_URL}${path}`, { params })
 
   if (!response.data?.success) {
     throw new Error(response.data?.message || "No se pudieron cargar las metricas")
@@ -172,6 +166,28 @@ export interface SymptomStats {
   }>
 }
 
+export interface ResearchStats {
+  mostActiveUsers: Array<{
+    id: string
+    name: string
+    email: string
+    checkins: number
+    lastCheckin: string
+  }>
+  planAdherence: Array<{
+    status: string
+    count: number
+    averageCompletion: number
+    averageCurrentDay: number
+  }>
+  weeklyTrend: Array<{
+    period: string
+    avgCraving: number
+    checkins: number
+    relapses: number
+  }>
+}
+
 export interface RelapseStats {
   summary: {
     totalRelapses: number
@@ -195,6 +211,20 @@ export const adminStatsService = {
   getHighRiskUsers: () => request<HighRiskUser[]>("/high-risk-users"),
   getSymptomsStats: (filters: AnalyticsFilters) => request<SymptomStats>("/symptoms", filters),
   getRelapseStats: (filters: AnalyticsFilters) => request<RelapseStats>("/relapses", filters),
+  getResearchStats: (filters: AnalyticsFilters) => request<ResearchStats>("/research", filters),
+  downloadCheckinsCSV: async () => {
+    const response = await axios.get(`${ADMIN_STATS_URL}/export/checkins`, {
+      responseType: "blob",
+    })
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement("a")
+    link.href = url
+    link.setAttribute("download", `checkins-export-${new Date().toISOString().split("T")[0]}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.URL.revokeObjectURL(url)
+  },
 }
 
 export default adminStatsService

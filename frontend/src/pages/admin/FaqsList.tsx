@@ -1,21 +1,28 @@
-"use client"
-
-
 import type React from "react"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { AppColors } from "../../styles/colors"
 import Button from "../../components/ui/Button"
 import Card from "../../components/ui/Card"
 import Input from "../../components/ui/Input"
+import LoadingState from "../../components/admin/LoadingState"
+import ErrorState from "../../components/admin/ErrorState"
+import { faqAPI } from "../../services/api"
 
+interface AdminFAQ {
+  _id: string
+  question: string
+  answer: string
+  category: string
+  createdAt: string
+  updatedAt?: string
+}
 
 const PageContainer = styled.div`
   padding: 1.5rem;
   background-color: ${AppColors.background};
   border-radius: 8px;
 `
-
 
 const PageHeader = styled.div`
   display: flex;
@@ -24,12 +31,10 @@ const PageHeader = styled.div`
   margin-bottom: 2rem;
 `
 
-
 const PageTitle = styled.h2`
   font-size: 1.5rem;
   color: ${AppColors.primary};
 `
-
 
 const SearchContainer = styled.div`
   display: flex;
@@ -38,7 +43,6 @@ const SearchContainer = styled.div`
   margin-bottom: 1.5rem;
 `
 
-
 const CategoryFilter = styled.div`
   display: flex;
   gap: 0.5rem;
@@ -46,34 +50,30 @@ const CategoryFilter = styled.div`
   margin-bottom: 1.5rem;
 `
 
-
 const CategoryPill = styled.button<{ active: boolean }>`
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
-  color: ${(props) => (props.active ? "white" : AppColors.text)};
+  background-color: ${(p) => (p.active ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
+  color: ${(p) => (p.active ? "white" : AppColors.text)};
   border: none;
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.3s ease;
- 
+
   &:hover {
-    background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
+    background-color: ${(p) => (p.active ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
   }
 `
 
-
-// Crear un componente wrapper para manejar el onClick
 const ClickableCard = styled(Card)`
   margin-bottom: 1rem;
   cursor: pointer;
   transition: transform 0.3s ease;
- 
+
   &:hover {
     transform: translateY(-2px);
   }
 `
-
 
 const FaqHeader = styled.div`
   display: flex;
@@ -82,13 +82,11 @@ const FaqHeader = styled.div`
   margin-bottom: 0.5rem;
 `
 
-
 const FaqQuestion = styled.h3`
   font-size: 1.125rem;
   color: ${AppColors.textSecondary};
   margin-bottom: 0.5rem;
 `
-
 
 const FaqCategory = styled.span`
   font-size: 0.75rem;
@@ -97,7 +95,6 @@ const FaqCategory = styled.span`
   background-color: rgba(76, 175, 80, 0.1);
   color: ${AppColors.primary};
 `
-
 
 const FaqAnswer = styled.p`
   color: ${AppColors.text};
@@ -108,12 +105,10 @@ const FaqAnswer = styled.p`
   overflow: hidden;
 `
 
-
 const FaqActions = styled.div`
   display: flex;
   gap: 0.5rem;
 `
-
 
 const ActionButton = styled.button`
   background-color: rgba(255, 255, 255, 0.1);
@@ -124,13 +119,12 @@ const ActionButton = styled.button`
   font-size: 0.875rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
- 
+
   &:hover {
     background-color: ${AppColors.primary};
     color: white;
   }
 `
-
 
 const TextArea = styled.textarea`
   width: 100%;
@@ -143,18 +137,17 @@ const TextArea = styled.textarea`
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;
- 
+
   &:focus {
     outline: none;
     border-color: ${AppColors.primary};
     box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
   }
- 
+
   &::placeholder {
     color: rgba(255, 255, 255, 0.4);
   }
 `
-
 
 const Modal = styled.div`
   position: fixed;
@@ -169,14 +162,12 @@ const Modal = styled.div`
   z-index: 1000;
 `
 
-
 const ModalContent = styled(Card)`
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
 `
-
 
 const ModalHeader = styled.div`
   display: flex;
@@ -185,12 +176,10 @@ const ModalHeader = styled.div`
   margin-bottom: 1.5rem;
 `
 
-
 const ModalTitle = styled.h2`
   font-size: 1.25rem;
   color: ${AppColors.primary};
 `
-
 
 const CloseButton = styled.button`
   background: none;
@@ -200,7 +189,6 @@ const CloseButton = styled.button`
   cursor: pointer;
 `
 
-
 const FormLabel = styled.label`
   display: block;
   margin-bottom: 0.5rem;
@@ -209,14 +197,12 @@ const FormLabel = styled.label`
   color: ${AppColors.textSecondary};
 `
 
-
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1.5rem;
 `
-
 
 const SelectFilter = styled.select`
   width: 100%;
@@ -226,146 +212,151 @@ const SelectFilter = styled.select`
   background-color: rgba(255, 255, 255, 0.05);
   color: ${AppColors.text};
   font-size: 1rem;
- 
+
   &:focus {
     outline: none;
     border-color: ${AppColors.primary};
   }
 `
 
-
 const FormGroup = styled.div`
   margin-bottom: 1.5rem;
 `
 
-
-// Mock data
-const mockFaqs = [
-  {
-    id: 1,
-    question: "¿Cuáles son los beneficios inmediatos de dejar de fumar?",
-    answer:
-      "Los beneficios inmediatos incluyen una mejora en la circulación sanguínea, normalización de la presión arterial y la frecuencia cardíaca, y un aumento en los niveles de oxígeno en la sangre. Además, el sentido del gusto y el olfato comienzan a mejorar en pocos días.",
-    category: "Beneficios",
-  },
-  {
-    id: 2,
-    question: "¿Cómo puedo manejar los antojos de nicotina?",
-    answer:
-      "Para manejar los antojos, puedes intentar técnicas como respiración profunda, beber agua, mantener las manos ocupadas con actividades, masticar chicle sin azúcar, y evitar situaciones que asocias con fumar. También puedes considerar terapias de reemplazo de nicotina como parches o chicles.",
-    category: "Consejos",
-  },
-  {
-    id: 3,
-    question: "¿Cuánto tiempo duran los síntomas de abstinencia?",
-    answer:
-      "Los síntomas físicos de abstinencia suelen alcanzar su punto máximo en los primeros 3-5 días y disminuyen gradualmente durante 2-4 semanas. Sin embargo, los antojos psicológicos pueden persistir durante meses, aunque con menor frecuencia e intensidad con el tiempo.",
-    category: "Abstinencia",
-  },
-  {
-    id: 4,
-    question: "¿Es efectiva la terapia de reemplazo de nicotina?",
-    answer:
-      "Sí, la terapia de reemplazo de nicotina (TRN) ha demostrado ser efectiva para ayudar a las personas a dejar de fumar. Proporciona nicotina en forma controlada sin las toxinas dañinas del humo del tabaco, ayudando a reducir los síntomas de abstinencia mientras se rompe el hábito.",
-    category: "Tratamientos",
-  },
-]
-
-
-const categories = ["Todas", "Beneficios", "Consejos", "Abstinencia", "Tratamientos"]
-
-
 const FaqsList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("Todas")
-  const [faqs, setFaqs] = useState(mockFaqs)
+  const [faqs, setFaqs] = useState<AdminFAQ[]>([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentFaq, setCurrentFaq] = useState<{
-    id: number | null
+    _id: string | null
     question: string
     answer: string
     category: string
   }>({
-    id: null,
+    _id: null,
     question: "",
     answer: "",
     category: "Beneficios",
   })
 
+  const categories = ["Todas", "Beneficios", "Consejos", "Abstinencia", "Tratamientos", "Salud", "General"]
+
+  const fetchFaqs = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError("")
+      const res = await faqAPI.getAll()
+      setFaqs(res.data)
+    } catch {
+      setError("Error al cargar las preguntas frecuentes")
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchFaqs()
+  }, [fetchFaqs])
 
   const filteredFaqs = faqs.filter((faq) => {
     const matchesSearch =
       faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
       faq.answer.toLowerCase().includes(searchTerm.toLowerCase())
-
-
     const matchesCategory = selectedCategory === "Todas" || faq.category === selectedCategory
-
-
     return matchesSearch && matchesCategory
   })
 
-
-  const handleOpenModal = (faq?: (typeof mockFaqs)[0]) => {
+  const handleOpenModal = (faq?: AdminFAQ) => {
     if (faq) {
       setCurrentFaq({
-        id: faq.id,
+        _id: faq._id,
         question: faq.question,
         answer: faq.answer,
         category: faq.category,
       })
     } else {
-      setCurrentFaq({
-        id: null,
-        question: "",
-        answer: "",
-        category: "Beneficios",
-      })
+      setCurrentFaq({ _id: null, question: "", answer: "", category: "Beneficios" })
     }
     setIsModalOpen(true)
   }
 
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
-
+  const handleCloseModal = () => setIsModalOpen(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    setCurrentFaq({ ...currentFaq, [name]: value })
+    setCurrentFaq((prev) => ({ ...prev, [name]: value }))
   }
 
-
-  const handleSave = () => {
-    if (currentFaq.id) {
-      // Update existing FAQ
-      setFaqs(faqs.map((faq) => (faq.id === currentFaq.id ? { ...currentFaq, id: faq.id } : faq)))
-    } else {
-      // Add new FAQ
-      const newId = Math.max(...faqs.map((faq) => faq.id)) + 1
-      setFaqs([...faqs, { ...currentFaq, id: newId }])
+  const handleSave = async () => {
+    try {
+      setSaving(true)
+      if (currentFaq._id) {
+        const res = await faqAPI.update(currentFaq._id, {
+          question: currentFaq.question,
+          answer: currentFaq.answer,
+          category: currentFaq.category,
+        })
+        setFaqs((prev) => prev.map((f) => (f._id === currentFaq._id ? res.data : f)))
+      } else {
+        const res = await faqAPI.create({
+          question: currentFaq.question,
+          answer: currentFaq.answer,
+          category: currentFaq.category,
+        })
+        setFaqs((prev) => [...prev, res.data])
+      }
+      handleCloseModal()
+    } catch {
+      alert("Error al guardar la pregunta")
+    } finally {
+      setSaving(false)
     }
-
-
-    handleCloseModal()
   }
 
-
-  const handleDelete = (id: number) => {
-    if (window.confirm("¿Estás seguro de que quieres eliminar esta pregunta?")) {
-      setFaqs(faqs.filter((faq) => faq.id !== id))
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("¿Estás seguro de que quieres eliminar esta pregunta?")) return
+    try {
+      await faqAPI.delete(id)
+      setFaqs((prev) => prev.filter((f) => f._id !== id))
+    } catch {
+      alert("Error al eliminar la pregunta")
     }
   }
 
+  if (loading) return <LoadingState message="Cargando preguntas frecuentes..." />
+
+  if (error && faqs.length === 0) {
+    return (
+      <PageContainer>
+        <ErrorState message={error} />
+        <div style={{ marginTop: 16, textAlign: "center" }}>
+          <Button onClick={fetchFaqs}>Reintentar</Button>
+        </div>
+      </PageContainer>
+    )
+  }
 
   return (
     <PageContainer>
       <PageHeader>
-        <PageTitle>Gestión de Preguntas Frecuentes</PageTitle>
-        <Button onClick={() => handleOpenModal()}>+ Nueva Pregunta</Button>
+        <PageTitle>Gestión de Preguntas Frecuentes ({faqs.length})</PageTitle>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Button variant="outline" onClick={fetchFaqs}>
+            Actualizar
+          </Button>
+          <Button onClick={() => handleOpenModal()}>+ Nueva Pregunta</Button>
+        </div>
       </PageHeader>
 
+      {error && (
+        <div style={{ marginBottom: 16 }}>
+          <ErrorState message={error} />
+        </div>
+      )}
 
       <SearchContainer>
         <Input
@@ -375,7 +366,6 @@ const FaqsList: React.FC = () => {
           fullWidth
         />
       </SearchContainer>
-
 
       <CategoryFilter>
         {categories.map((category) => (
@@ -389,51 +379,40 @@ const FaqsList: React.FC = () => {
         ))}
       </CategoryFilter>
 
+      {filteredFaqs.length === 0 && (
+        <div style={{ textAlign: "center", padding: 32, opacity: 0.6, color: AppColors.textSecondary }}>
+          {searchTerm || selectedCategory !== "Todas"
+            ? "No se encontraron preguntas con los filtros actuales."
+            : "No hay preguntas frecuentes registradas."}
+        </div>
+      )}
 
       {filteredFaqs.map((faq) => (
-        <div key={faq.id} onClick={() => handleOpenModal(faq)}>
+        <div key={faq._id} onClick={() => handleOpenModal(faq)}>
           <ClickableCard>
             <FaqHeader>
               <FaqQuestion>{faq.question}</FaqQuestion>
               <FaqCategory>{faq.category}</FaqCategory>
             </FaqHeader>
 
-
             <FaqAnswer>{faq.answer}</FaqAnswer>
 
-
             <FaqActions onClick={(e) => e.stopPropagation()}>
-              <ActionButton
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleOpenModal(faq)
-                }}
-              >
-                Editar
-              </ActionButton>
-              <ActionButton
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleDelete(faq.id)
-                }}
-              >
-                Eliminar
-              </ActionButton>
+              <ActionButton onClick={() => handleOpenModal(faq)}>Editar</ActionButton>
+              <ActionButton onClick={() => handleDelete(faq._id)}>Eliminar</ActionButton>
             </FaqActions>
           </ClickableCard>
         </div>
       ))}
-
 
       {isModalOpen && (
         <Modal onClick={handleCloseModal}>
           <div onClick={(e) => e.stopPropagation()}>
             <ModalContent>
               <ModalHeader>
-                <ModalTitle>{currentFaq.id ? "Editar Pregunta" : "Nueva Pregunta"}</ModalTitle>
+                <ModalTitle>{currentFaq._id ? "Editar Pregunta" : "Nueva Pregunta"}</ModalTitle>
                 <CloseButton onClick={handleCloseModal}>×</CloseButton>
               </ModalHeader>
-
 
               <FormGroup>
                 <Input
@@ -446,12 +425,10 @@ const FaqsList: React.FC = () => {
                 />
               </FormGroup>
 
-
               <FormGroup>
                 <FormLabel>Respuesta</FormLabel>
                 <TextArea name="answer" value={currentFaq.answer} onChange={handleChange} required />
               </FormGroup>
-
 
               <FormGroup>
                 <FormLabel>Categoría</FormLabel>
@@ -471,12 +448,13 @@ const FaqsList: React.FC = () => {
                 </SelectFilter>
               </FormGroup>
 
-
               <ButtonContainer>
                 <Button variant="outline" onClick={handleCloseModal}>
                   Cancelar
                 </Button>
-                <Button onClick={handleSave}>{currentFaq.id ? "Actualizar" : "Crear"}</Button>
+                <Button onClick={handleSave} disabled={saving}>
+                  {saving ? "Guardando..." : currentFaq._id ? "Actualizar" : "Crear"}
+                </Button>
               </ButtonContainer>
             </ModalContent>
           </div>
@@ -485,6 +463,5 @@ const FaqsList: React.FC = () => {
     </PageContainer>
   )
 }
-
 
 export default FaqsList

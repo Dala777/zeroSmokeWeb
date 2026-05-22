@@ -6,8 +6,10 @@ import {
   getNotificationStats,
   getOverviewStats,
   getRelapseStats,
+  getResearchStats,
   getSymptomsStats,
   getUserStats,
+  exportCheckinsCSV,
 } from "../controllers/adminStats.controller"
 import { authMiddleware, adminMiddleware } from "../middleware/auth.middleware"
 
@@ -24,5 +26,7 @@ router.get("/notifications", getNotificationStats)
 router.get("/high-risk-users", getHighRiskUsers)
 router.get("/symptoms", getSymptomsStats)
 router.get("/relapses", getRelapseStats)
+router.get("/research", getResearchStats)
+router.get("/export/checkins", exportCheckinsCSV)
 
 export default router

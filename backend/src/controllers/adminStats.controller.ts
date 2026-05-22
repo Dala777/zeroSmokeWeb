@@ -131,7 +131,16 @@ const mergeCravingSeries = (
     .sort((a, b) => a.period.localeCompare(b.period))
 }
 
-export const getOverviewStats = async (_req: Request, res: Response): Promise<void> => {
+const sendGrafanaSeries = (res: Response, series: PeriodMetric[], valueKey: string) => {
+  res.status(200).json(
+    series.map((s) => ({
+      time: s.period,
+      value: s[valueKey] || 0,
+    })),
+  )
+}
+
+export const getOverviewStats = async (req: Request, res: Response): Promise<void> => {
   try {
     const todayStart = startOfDay(new Date())
     const tomorrowStart = endOfDay(todayStart)
@@ -164,17 +173,24 @@ export const getOverviewStats = async (_req: Request, res: Response): Promise<vo
       ]),
     ])
 
+    const payload = {
+      totalUsers,
+      activeUsers,
+      todayCheckins,
+      averageCraving: roundNumber(cravingResult[0]?.averageCraving || 0),
+      relapsesToday,
+      notificationsSent,
+      highRiskUsers: highRiskUsersResult[0]?.users.length || 0,
+    }
+
+    if (req.query.format === "grafana") {
+      res.status(200).json(payload)
+      return
+    }
+
     res.status(200).json({
       success: true,
-      data: {
-        totalUsers,
-        activeUsers,
-        todayCheckins,
-        averageCraving: roundNumber(cravingResult[0]?.averageCraving || 0),
-        relapsesToday,
-        notificationsSent,
-        highRiskUsers: highRiskUsersResult[0]?.users.length || 0,
-      },
+      data: payload,
       meta: {
         dateKey: todayKey,
         from: todayStart.toISOString(),
@@ -237,6 +253,11 @@ export const getUserStats = async (req: Request, res: Response): Promise<void> =
       registeredUsers: registrationsByPeriod.get(period) || 0,
       activeUsers: activeByPeriod.get(period) || 0,
     }))
+
+    if (req.query.format === "grafana") {
+      sendGrafanaSeries(res, series, "registeredUsers")
+      return
+    }
 
     res.status(200).json({
       success: true,
@@ -306,6 +327,19 @@ export const getCheckinStats = async (req: Request, res: Response): Promise<void
     ])
 
     const summaryRow = summary[0]
+    const series = normalizeSeries(seriesRows, (row) => ({
+      period: row._id,
+      checkins: row.checkins,
+      uniqueUsers: row.uniqueUsers.length,
+      relapses: row.relapses,
+      cigarettesSmoked: row.cigarettesSmoked,
+      averageCraving: roundNumber(row.averageCraving || 0),
+    }))
+
+    if (req.query.format === "grafana") {
+      sendGrafanaSeries(res, series, "checkins")
+      return
+    }
 
     res.status(200).json({
       success: true,
@@ -317,14 +351,7 @@ export const getCheckinStats = async (req: Request, res: Response): Promise<void
           cigarettesSmoked: summaryRow?.cigarettesSmoked || 0,
           averageCraving: roundNumber(summaryRow?.averageCraving || 0),
         },
-        series: normalizeSeries(seriesRows, (row) => ({
-          period: row._id,
-          checkins: row.checkins,
-          uniqueUsers: row.uniqueUsers.length,
-          relapses: row.relapses,
-          cigarettesSmoked: row.cigarettesSmoked,
-          averageCraving: roundNumber(row.averageCraving || 0),
-        })),
+        series,
         topSymptoms: symptomRows.map((row) => ({ symptom: row._id, count: row.count })),
       },
       meta: rangePayload(range),
@@ -393,6 +420,13 @@ export const getCravingStats = async (req: Request, res: Response): Promise<void
           totalEvents
         : 0
 
+    const cravingSeries = mergeCravingSeries(checkinRows, smokingRows)
+
+    if (req.query.format === "grafana") {
+      sendGrafanaSeries(res, cravingSeries, "averageCraving")
+      return
+    }
+
     res.status(200).json({
       success: true,
       data: {
@@ -405,7 +439,7 @@ export const getCravingStats = async (req: Request, res: Response): Promise<void
             smokingRecords: smokingEvents,
           },
         },
-        series: mergeCravingSeries(checkinRows, smokingRows),
+        series: cravingSeries,
       },
       meta: rangePayload(range),
     })
@@ -693,6 +727,17 @@ export const getRelapseStats = async (req: Request, res: Response): Promise<void
     ])
 
     const summaryRow = summary[0]
+    const series = normalizeSeries(relapseSeries, (row) => ({
+      period: row._id,
+      relapses: row.relapses,
+      cigarettesSmoked: row.cigarettesSmoked,
+      uniqueUsers: row.uniqueUsers.length,
+    }))
+
+    if (req.query.format === "grafana") {
+      sendGrafanaSeries(res, series, "relapses")
+      return
+    }
 
     res.status(200).json({
       success: true,
@@ -702,12 +747,7 @@ export const getRelapseStats = async (req: Request, res: Response): Promise<void
           totalCigarettes: summaryRow?.totalCigarettes || 0,
           affectedUsers: summaryRow?.totalUsers.length || 0,
         },
-        series: normalizeSeries(relapseSeries, (row) => ({
-          period: row._id,
-          relapses: row.relapses,
-          cigarettesSmoked: row.cigarettesSmoked,
-          uniqueUsers: row.uniqueUsers.length,
-        })),
+        series,
       },
       meta: rangePayload(range),
     })
@@ -715,4 +755,146 @@ export const getRelapseStats = async (req: Request, res: Response): Promise<void
     console.error("[admin-stats] Error getting relapse stats:", error)
     res.status(500).json({ success: false, message: "Error al obtener estadisticas de recaidas" })
   }
+}
+
+export const getResearchStats = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const range = parseDateRange(req)
+    const match = { date: { $gte: range.from, $lte: range.to } }
+
+    const [mostActiveUsers, planAdherence, weeklyTrend] = await Promise.all([
+      DailyCheckin.aggregate<{ _id: string; checkins: number; lastCheckin: Date; name: string; email: string }>([
+        { $match: match },
+        { $group: { _id: "$userId", checkins: { $sum: 1 }, lastCheckin: { $max: "$date" } } },
+        { $sort: { checkins: -1 } },
+        { $limit: 10 },
+        {
+          $lookup: {
+            from: "users",
+            localField: "_id",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        { $unwind: "$user" },
+        {
+          $project: {
+            _id: 1,
+            name: "$user.name",
+            email: "$user.email",
+            checkins: 1,
+            lastCheckin: 1,
+          },
+        },
+      ]),
+      UserPlan.aggregate<{ _id: string; count: number; avgCompletion: number; avgCurrentDay: number }>([
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+            avgCompletion: { $avg: "$completionPercentage" },
+            avgCurrentDay: { $avg: "$currentDay" },
+          },
+        },
+      ]),
+      DailyCheckin.aggregate<{ _id: string; avgCraving: number; checkins: number; relapses: number }>([
+        { $match: match },
+        {
+          $group: {
+            _id: periodExpression("date", "week"),
+            avgCraving: { $avg: "$cravingLevel" },
+            checkins: { $sum: 1 },
+            relapses: { $sum: { $cond: ["$smokedToday", 1, 0] } },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]),
+    ])
+
+    res.status(200).json({
+      success: true,
+      data: {
+        mostActiveUsers: mostActiveUsers.map((u) => ({
+          id: u._id,
+          name: u.name,
+          email: u.email,
+          checkins: u.checkins,
+          lastCheckin: u.lastCheckin,
+        })),
+        planAdherence: planAdherence.map((p) => ({
+          status: p._id,
+          count: p.count,
+          averageCompletion: roundNumber(p.avgCompletion || 0),
+          averageCurrentDay: Math.round(p.avgCurrentDay || 0),
+        })),
+        weeklyTrend: normalizeSeries(weeklyTrend, (row) => ({
+          period: row._id,
+          avgCraving: roundNumber(row.avgCraving || 0),
+          checkins: row.checkins,
+          relapses: row.relapses,
+        })),
+      },
+      meta: rangePayload(range),
+    })
+  } catch (error) {
+    console.error("[admin-stats] Error getting research stats:", error)
+    res.status(500).json({ success: false, message: "Error al obtener estadisticas de investigacion" })
+  }
+}
+
+export const exportCheckinsCSV = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const range = parseDateRange(req)
+
+    const checkins = await DailyCheckin.find({
+      date: { $gte: range.from, $lte: range.to },
+    })
+      .populate("userId", "name email")
+      .sort({ date: -1 })
+      .lean()
+
+    const header = "fecha,craving,fumado,sintomas,cigarrillos,usuario,email\n"
+    const rows = checkins
+      .map((c: any) => {
+        const date = c.date ? new Date(c.date).toISOString().split("T")[0] : ""
+        const craving = c.cravingLevel ?? ""
+        const smoked = c.smokedToday ? "si" : "no"
+        const symptoms = (c.symptoms || []).join(";")
+        const cigarettes = c.cigarettesSmokedCount ?? 0
+        const userName = c.userId?.name || ""
+        const userEmail = c.userId?.email || ""
+        return `"${date}",${craving},"${smoked}","${symptoms}",${cigarettes},"${userName}","${userEmail}"`
+      })
+      .join("\n")
+
+    const csv = header + rows
+
+    res.setHeader("Content-Type", "text/csv; charset=utf-8")
+    res.setHeader("Content-Disposition", `attachment; filename=checkins-export-${buildDateKey(new Date())}.csv`)
+    res.status(200).send(csv)
+  } catch (error) {
+    console.error("[admin-stats] Error exporting CSV:", error)
+    res.status(500).json({ success: false, message: "Error al exportar CSV" })
+  }
+}
+
+const grafanaResponse = (series: PeriodMetric[], valueKey: string) => {
+  return series.map((s) => ({
+    time: s.period,
+    value: s[valueKey] || 0,
+  }))
+}
+
+export const withGrafanaFormat = (
+  req: Request,
+  res: Response,
+  data: Record<string, unknown>,
+  grafanaSeries?: PeriodMetric[],
+  grafanaValueKey?: string,
+): boolean => {
+  if (req.query.format === "grafana" && grafanaSeries && grafanaValueKey) {
+    res.status(200).json(grafanaResponse(grafanaSeries, grafanaValueKey))
+    return true
+  }
+  return false
 }
