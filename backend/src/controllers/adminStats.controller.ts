@@ -490,3 +490,229 @@ export const getNotificationStats = async (req: Request, res: Response): Promise
     res.status(500).json({ success: false, message: "Error al obtener estadisticas de notificaciones" })
   }
 }
+
+export const getHighRiskUsers = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const users = await RiskSnapshot.aggregate([
+      { $sort: { dateKey: -1, createdAt: -1 } },
+      {
+        $group: {
+          _id: "$userId",
+          riskScore: { $first: "$riskScore" },
+          riskLevel: { $first: "$riskLevel" },
+          factors: { $first: "$factors" },
+          cravingLevel: { $first: "$cravingLevel" },
+          mood: { $first: "$mood" },
+          smokedToday: { $first: "$smokedToday" },
+          currentStreak: { $first: "$currentStreak" },
+          lastSnapshot: { $first: "$dateKey" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $lookup: {
+          from: "dailycheckins",
+          let: { userId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$userId", "$$userId"] } } },
+            { $sort: { date: -1 } },
+            { $limit: 1 },
+          ],
+          as: "lastCheckin",
+        },
+      },
+      { $unwind: { path: "$lastCheckin", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "dailycheckins",
+          let: { userId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$userId", "$$userId"] }, smokedToday: true } },
+            { $sort: { date: -1 } },
+            { $limit: 5 },
+            { $project: { date: 1, cigarettesSmokedCount: 1 } },
+          ],
+          as: "recentRelapses",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: "$user.name",
+          email: "$user.email",
+          userId: "$user._id",
+          role: "$user.role",
+          status: "$user.status",
+          riskScore: 1,
+          riskLevel: 1,
+          factors: 1,
+          cravingLevel: 1,
+          mood: 1,
+          smokedToday: 1,
+          currentStreak: 1,
+          lastSnapshot: 1,
+          lastCheckin: {
+            date: "$lastCheckin.date",
+            cravingLevel: "$lastCheckin.cravingLevel",
+            mood: "$lastCheckin.mood",
+            symptoms: "$lastCheckin.symptoms",
+            smokedToday: "$lastCheckin.smokedToday",
+          },
+          recentRelapses: 1,
+        },
+      },
+      { $sort: { riskScore: -1 } },
+      { $limit: 50 },
+    ])
+
+    res.status(200).json({
+      success: true,
+      data: users,
+    })
+  } catch (error) {
+    console.error("[admin-stats] Error getting high risk users:", error)
+    res.status(500).json({ success: false, message: "Error al obtener usuarios de alto riesgo" })
+  }
+}
+
+export const getSymptomsStats = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const range = parseDateRange(req)
+    const match = { date: { $gte: range.from, $lte: range.to }, symptoms: { $exists: true, $ne: [] } }
+
+    const [symptomBreakdown, symptomSeries] = await Promise.all([
+      DailyCheckin.aggregate<{ _id: string; count: number; uniqueUsers: string[] }>([
+        { $match: match },
+        { $unwind: "$symptoms" },
+        {
+          $group: {
+            _id: "$symptoms",
+            count: { $sum: 1 },
+            uniqueUsers: { $addToSet: "$userId" },
+          },
+        },
+        { $sort: { count: -1 } },
+        { $limit: 20 },
+      ]),
+      DailyCheckin.aggregate<{ _id: string; symptoms: Array<{ name: string; count: number }> }>([
+        { $match: match },
+        { $unwind: "$symptoms" },
+        {
+          $group: {
+            _id: { period: periodExpression("date", range.granularity), symptom: "$symptoms" },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $group: {
+            _id: "$_id.period",
+            symptoms: { $push: { name: "$_id.symptom", count: "$count" } },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]),
+    ])
+
+    const totalAffected = await DailyCheckin.distinct("userId", match)
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalSymptoms: symptomBreakdown.reduce((sum, s) => sum + s.count, 0),
+        uniqueSymptoms: symptomBreakdown.length,
+        affectedUsers: totalAffected.length,
+        breakdown: symptomBreakdown.map((s) => ({
+          symptom: s._id,
+          count: s.count,
+          uniqueUsers: s.uniqueUsers.length,
+        })),
+        series: symptomSeries.map((s) => ({
+          period: s._id,
+          symptoms: s.symptoms.sort((a, b) => b.count - a.count).slice(0, 5),
+        })),
+      },
+      meta: rangePayload(range),
+    })
+  } catch (error) {
+    console.error("[admin-stats] Error getting symptoms stats:", error)
+    res.status(500).json({ success: false, message: "Error al obtener estadisticas de sintomas" })
+  }
+}
+
+export const getRelapseStats = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const range = parseDateRange(req)
+
+    const [relapseSeries, summary] = await Promise.all([
+      DailyCheckin.aggregate<{ _id: string; relapses: number; cigarettesSmoked: number; uniqueUsers: string[] }>([
+        {
+          $match: {
+            date: { $gte: range.from, $lte: range.to },
+            smokedToday: true,
+          },
+        },
+        {
+          $group: {
+            _id: periodExpression("date", range.granularity),
+            relapses: { $sum: 1 },
+            cigarettesSmoked: { $sum: { $ifNull: ["$cigarettesSmokedCount", 0] } },
+            uniqueUsers: { $addToSet: "$userId" },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]),
+      DailyCheckin.aggregate<{
+        _id: null
+        totalRelapses: number
+        totalCigarettes: number
+        totalUsers: string[]
+      }>([
+        {
+          $match: {
+            date: { $gte: range.from, $lte: range.to },
+            smokedToday: true,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalRelapses: { $sum: 1 },
+            totalCigarettes: { $sum: { $ifNull: ["$cigarettesSmokedCount", 0] } },
+            totalUsers: { $addToSet: "$userId" },
+          },
+        },
+      ]),
+    ])
+
+    const summaryRow = summary[0]
+
+    res.status(200).json({
+      success: true,
+      data: {
+        summary: {
+          totalRelapses: summaryRow?.totalRelapses || 0,
+          totalCigarettes: summaryRow?.totalCigarettes || 0,
+          affectedUsers: summaryRow?.totalUsers.length || 0,
+        },
+        series: normalizeSeries(relapseSeries, (row) => ({
+          period: row._id,
+          relapses: row.relapses,
+          cigarettesSmoked: row.cigarettesSmoked,
+          uniqueUsers: row.uniqueUsers.length,
+        })),
+      },
+      meta: rangePayload(range),
+    })
+  } catch (error) {
+    console.error("[admin-stats] Error getting relapse stats:", error)
+    res.status(500).json({ success: false, message: "Error al obtener estadisticas de recaidas" })
+  }
+}

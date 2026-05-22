@@ -31,8 +31,11 @@ import adminStatsService, {
   AnalyticsGranularity,
   CheckinStats,
   CravingStats,
+  HighRiskUser,
   NotificationStats,
   OverviewStats,
+  RelapseStats,
+  SymptomStats,
   UserStats,
 } from "../../services/adminStatsService"
 
@@ -156,6 +159,120 @@ const EmptyState = styled.div`
   text-align: center;
 `
 
+const SectionCard = styled.div`
+  background: ${AppColors.cardBackground};
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+`
+
+const SectionTitle = styled.h2`
+  color: ${AppColors.text};
+  font-size: 18px;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+const DataTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  th {
+    text-align: left;
+    padding: 10px 8px;
+    font-weight: 600;
+    color: ${AppColors.textSecondary};
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    color: ${AppColors.text};
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+`
+
+const RiskBadge = styled.span<{ $score: number }>`
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: ${(p) =>
+    p.$score >= 70 ? "rgba(229, 115, 115, 0.2)" : p.$score >= 40 ? "rgba(255, 183, 77, 0.2)" : "rgba(76, 175, 80, 0.2)"};
+  color: ${(p) =>
+    p.$score >= 70 ? AppColors.error : p.$score >= 40 ? AppColors.warning : AppColors.success};
+`
+
+const CravingIndicator = styled.span<{ $level: number }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  &::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: ${(p) =>
+      p.$level >= 7 ? AppColors.error : p.$level >= 4 ? AppColors.warning : AppColors.success};
+  }
+`
+
+const SymptomBar = styled.div<{ $width: number }>`
+  height: 6px;
+  border-radius: 3px;
+  background: ${AppColors.primary};
+  width: ${(p) => Math.min(p.$width, 100)}%;
+  transition: width 0.3s ease;
+`
+
+const Grid2 = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 24px;
+
+  @media (max-width: 960px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const MiniStat = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: ${AppColors.background};
+  border-radius: 6px;
+  margin-bottom: 8px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`
+
+const MiniStatLabel = styled.span`
+  color: ${AppColors.textSecondary};
+  font-size: 0.85rem;
+`
+
+const MiniStatValue = styled.span`
+  color: ${AppColors.text};
+  font-weight: 600;
+`
+
 const tooltipStyle = {
   border: "none",
   borderRadius: "8px",
@@ -197,6 +314,9 @@ const Dashboard: React.FC = () => {
   const [checkinsStats, setCheckinsStats] = useState<CheckinStats | null>(null)
   const [cravingsStats, setCravingsStats] = useState<CravingStats | null>(null)
   const [notificationsStats, setNotificationsStats] = useState<NotificationStats | null>(null)
+  const [highRiskUsers, setHighRiskUsers] = useState<HighRiskUser[]>([])
+  const [symptomsStats, setSymptomsStats] = useState<SymptomStats | null>(null)
+  const [relapseStats, setRelapseStats] = useState<RelapseStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState("")
@@ -212,19 +332,26 @@ const Dashboard: React.FC = () => {
       }
       setError("")
 
-      const [overviewData, usersData, checkinsData, cravingsData, notificationsData] = await Promise.all([
-        adminStatsService.getOverview(),
-        adminStatsService.getUsersStats(filters),
-        adminStatsService.getCheckinsStats(filters),
-        adminStatsService.getCravingsStats(filters),
-        adminStatsService.getNotificationsStats(filters),
-      ])
+      const [overviewData, usersData, checkinsData, cravingsData, notificationsData, highRiskData, symptomsData, relapsesData] =
+        await Promise.all([
+          adminStatsService.getOverview(),
+          adminStatsService.getUsersStats(filters),
+          adminStatsService.getCheckinsStats(filters),
+          adminStatsService.getCravingsStats(filters),
+          adminStatsService.getNotificationsStats(filters),
+          adminStatsService.getHighRiskUsers(),
+          adminStatsService.getSymptomsStats(filters),
+          adminStatsService.getRelapseStats(filters),
+        ])
 
       setOverview(overviewData)
       setUsersStats(usersData)
       setCheckinsStats(checkinsData)
       setCravingsStats(cravingsData)
       setNotificationsStats(notificationsData)
+      setHighRiskUsers(highRiskData)
+      setSymptomsStats(symptomsData)
+      setRelapseStats(relapsesData)
     } catch (err: any) {
       const message =
         err?.response?.data?.message ||
@@ -405,6 +532,201 @@ const Dashboard: React.FC = () => {
           </RiskText>
         </div>
       </RiskSection>
+
+      <Grid2>
+        <SectionCard>
+          <SectionTitle>Síntomas más frecuentes</SectionTitle>
+          {symptomsStats && symptomsStats.breakdown.length > 0 ? (
+            <div>
+              <div style={{ display: "flex", gap: 12, marginBottom: 14 }}>
+                <MiniStat style={{ flex: 1 }}>
+                  <MiniStatLabel>Total reportes</MiniStatLabel>
+                  <MiniStatValue>{formatNumber(symptomsStats.totalSymptoms)}</MiniStatValue>
+                </MiniStat>
+                <MiniStat style={{ flex: 1 }}>
+                  <MiniStatLabel>Síntomas únicos</MiniStatLabel>
+                  <MiniStatValue>{symptomsStats.uniqueSymptoms}</MiniStatValue>
+                </MiniStat>
+                <MiniStat style={{ flex: 1 }}>
+                  <MiniStatLabel>Usuarios afectados</MiniStatLabel>
+                  <MiniStatValue>{formatNumber(symptomsStats.affectedUsers)}</MiniStatValue>
+                </MiniStat>
+              </div>
+              <DataTable>
+                <thead>
+                  <tr>
+                    <th>Síntoma</th>
+                    <th>Frecuencia</th>
+                    <th>Usuarios</th>
+                    <th>%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {symptomsStats.breakdown.slice(0, 8).map((s) => {
+                    const pct = (s.count / symptomsStats.totalSymptoms) * 100
+                    return (
+                      <tr key={s.symptom}>
+                        <td style={{ textTransform: "capitalize" }}>{s.symptom}</td>
+                        <td>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <SymptomBar $width={pct} />
+                            <span>{s.count}</span>
+                          </div>
+                        </td>
+                        <td>{s.uniqueUsers}</td>
+                        <td>{pct.toFixed(1)}%</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </DataTable>
+            </div>
+          ) : (
+            <EmptyState style={{ height: 120 }}>
+              Sin datos de síntomas en el rango seleccionado.
+            </EmptyState>
+          )}
+        </SectionCard>
+
+        <SectionCard>
+          <SectionTitle>Usuarios de mayor riesgo</SectionTitle>
+          {highRiskUsers.length > 0 ? (
+            <DataTable>
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Score</th>
+                  <th>Craving</th>
+                  <th>Factores</th>
+                </tr>
+              </thead>
+              <tbody>
+                {highRiskUsers.slice(0, 8).map((u) => (
+                  <tr key={u._id}>
+                    <td style={{ maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {u.name}
+                    </td>
+                    <td>
+                      <RiskBadge $score={u.riskScore}>{u.riskScore}</RiskBadge>
+                    </td>
+                    <td>
+                      <CravingIndicator $level={u.cravingLevel}>
+                        {u.cravingLevel.toFixed(1)}
+                      </CravingIndicator>
+                    </td>
+                    <td style={{ fontSize: "0.75rem", maxWidth: 160 }}>
+                      {u.factors.slice(0, 2).join(", ")}
+                      {u.factors.length > 2 && ` +${u.factors.length - 2}`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          ) : (
+            <EmptyState style={{ height: 120 }}>
+              No hay usuarios con riesgo alto registrados.
+            </EmptyState>
+          )}
+        </SectionCard>
+      </Grid2>
+
+      <Grid2>
+        <SectionCard>
+          <SectionTitle>Recaídas recientes</SectionTitle>
+          {relapseStats && relapseStats.series.length > 0 ? (
+            <div>
+              <div style={{ display: "flex", gap: 12, marginBottom: 14 }}>
+                <MiniStat style={{ flex: 1 }}>
+                  <MiniStatLabel>Total recaídas</MiniStatLabel>
+                  <MiniStatValue>{formatNumber(relapseStats.summary.totalRelapses)}</MiniStatValue>
+                </MiniStat>
+                <MiniStat style={{ flex: 1 }}>
+                  <MiniStatLabel>Cigarrillos</MiniStatLabel>
+                  <MiniStatValue>{formatNumber(relapseStats.summary.totalCigarettes)}</MiniStatValue>
+                </MiniStat>
+                <MiniStat style={{ flex: 1 }}>
+                  <MiniStatLabel>Usuarios</MiniStatLabel>
+                  <MiniStatValue>{formatNumber(relapseStats.summary.affectedUsers)}</MiniStatValue>
+                </MiniStat>
+              </div>
+              <DataTable>
+                <thead>
+                  <tr>
+                    <th>Período</th>
+                    <th>Recaídas</th>
+                    <th>Cigarrillos</th>
+                    <th>Usuarios</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {relapseStats.series.slice(-10).reverse().map((s) => (
+                    <tr key={s.period}>
+                      <td>{s.period}</td>
+                      <td>{s.relapses}</td>
+                      <td>{s.cigarettesSmoked}</td>
+                      <td>{s.uniqueUsers}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </DataTable>
+            </div>
+          ) : (
+            <EmptyState style={{ height: 120 }}>
+              No hay recaídas registradas en el rango seleccionado.
+            </EmptyState>
+          )}
+        </SectionCard>
+
+        <SectionCard>
+          <SectionTitle>Actividad reciente</SectionTitle>
+          {checkinsStats && checkinsStats.series.length > 0 ? (
+            <div>
+              <div style={{ display: "flex", gap: 12, marginBottom: 14 }}>
+                <MiniStat style={{ flex: 1 }}>
+                  <MiniStatLabel>Check-ins totales</MiniStatLabel>
+                  <MiniStatValue>{formatNumber(checkinsStats.summary.totalCheckins)}</MiniStatValue>
+                </MiniStat>
+                <MiniStat style={{ flex: 1 }}>
+                  <MiniStatLabel>Usuarios únicos</MiniStatLabel>
+                  <MiniStatValue>{formatNumber(checkinsStats.summary.uniqueUsers)}</MiniStatValue>
+                </MiniStat>
+                <MiniStat style={{ flex: 1 }}>
+                  <MiniStatLabel>Craving promedio</MiniStatLabel>
+                  <MiniStatValue>{checkinsStats.summary.averageCraving.toFixed(2)}</MiniStatValue>
+                </MiniStat>
+              </div>
+              <DataTable>
+                <thead>
+                  <tr>
+                    <th>Período</th>
+                    <th>Check-ins</th>
+                    <th>Usuarios</th>
+                    <th>Recaídas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {checkinsStats.series.slice(-10).reverse().map((s) => (
+                    <tr key={s.period}>
+                      <td>{s.period}</td>
+                      <td>{s.checkins}</td>
+                      <td>{s.uniqueUsers}</td>
+                      <td>
+                        <span style={{ color: s.relapses > 0 ? AppColors.error : AppColors.text }}>
+                          {s.relapses}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </DataTable>
+            </div>
+          ) : (
+            <EmptyState style={{ height: 120 }}>
+              No hay actividad registrada en el rango seleccionado.
+            </EmptyState>
+          )}
+        </SectionCard>
+      </Grid2>
     </>
   )
 }

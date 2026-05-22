@@ -126,12 +126,75 @@ const request = async <T>(path: string, params?: AnalyticsFilters): Promise<T> =
   return response.data.data
 }
 
+export interface HighRiskUser {
+  _id: string
+  name: string
+  email: string
+  userId: string
+  role: string
+  status: string
+  riskScore: number
+  riskLevel: string
+  factors: string[]
+  cravingLevel: number
+  mood: string
+  smokedToday: boolean
+  currentStreak: number
+  lastSnapshot: string
+  lastCheckin: {
+    date: string
+    cravingLevel: number
+    mood: string
+    symptoms: string[]
+    smokedToday: boolean
+  } | null
+  recentRelapses: Array<{
+    date: string
+    cigarettesSmokedCount: number
+  }>
+}
+
+export interface SymptomStats {
+  totalSymptoms: number
+  uniqueSymptoms: number
+  affectedUsers: number
+  breakdown: Array<{
+    symptom: string
+    count: number
+    uniqueUsers: number
+  }>
+  series: Array<{
+    period: string
+    symptoms: Array<{
+      name: string
+      count: number
+    }>
+  }>
+}
+
+export interface RelapseStats {
+  summary: {
+    totalRelapses: number
+    totalCigarettes: number
+    affectedUsers: number
+  }
+  series: Array<{
+    period: string
+    relapses: number
+    cigarettesSmoked: number
+    uniqueUsers: number
+  }>
+}
+
 export const adminStatsService = {
   getOverview: () => request<OverviewStats>("/overview"),
   getUsersStats: (filters: AnalyticsFilters) => request<UserStats>("/users", filters),
   getCheckinsStats: (filters: AnalyticsFilters) => request<CheckinStats>("/checkins", filters),
   getCravingsStats: (filters: AnalyticsFilters) => request<CravingStats>("/cravings", filters),
   getNotificationsStats: (filters: AnalyticsFilters) => request<NotificationStats>("/notifications", filters),
+  getHighRiskUsers: () => request<HighRiskUser[]>("/high-risk-users"),
+  getSymptomsStats: (filters: AnalyticsFilters) => request<SymptomStats>("/symptoms", filters),
+  getRelapseStats: (filters: AnalyticsFilters) => request<RelapseStats>("/relapses", filters),
 }
 
 export default adminStatsService
