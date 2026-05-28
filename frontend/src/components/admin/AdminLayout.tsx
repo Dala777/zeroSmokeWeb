@@ -7,7 +7,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom"
 import { AppColors } from "../../styles/colors"
 import Button from "../ui/Button"
 import { useAuth } from "../../contexts/AuthContext"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, LayoutDashboard, BarChart2, Home, FileText, HelpCircle, Users, Shield, MessageSquare, Settings, LogOut } from "lucide-react"
 
 const AdminContainer = styled.div`
   display: flex;
@@ -43,14 +43,20 @@ const SidebarHeader = styled.div`
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 `
 
-const Logo = styled.div`
+const BrandLogo = styled.div`
   font-size: 1.5rem;
   font-weight: 700;
-  color: ${AppColors.primary};
+  color: #1F2937;
   
   span {
-    color: ${AppColors.text};
+    color: #22C55E;
   }
+`
+
+const SeparatorLine = styled.div`
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  margin: 0 1.5rem 0.5rem;
 `
 
 const CloseButton = styled.button`
@@ -105,41 +111,46 @@ const MenuSection = styled.div`
 `
 
 const MenuTitle = styled.h3`
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: ${AppColors.textSecondary};
+  color: #9CA3AF;
   padding: 0 1.5rem;
-  margin: 1rem 0 0.5rem;
+  margin: 1.25rem 0 0.5rem;
   font-weight: 600;
-  opacity: 0.7;
+`
+
+const MenuTitleFirst = styled(MenuTitle)`
+  margin-top: 0.75rem;
 `
 
 const MenuItem = styled(NavLink)`
   display: flex;
   align-items: center;
-  padding: 0.75rem 1.5rem;
-  color: ${AppColors.text};
+  padding: 10px 16px;
+  margin: 0 10px;
+  border-radius: 8px;
+  color: #6B7280;
   text-decoration: none;
   transition: all 0.2s ease;
-  border-left: 3px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
   
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: ${AppColors.primary};
+    background-color: rgba(0, 0, 0, 0.03);
+    color: #22C55E;
   }
   
   &.active {
-    background-color: rgba(76, 175, 80, 0.1);
-    color: ${AppColors.primary};
-    border-left: 3px solid ${AppColors.primary};
+    background-color: #f0fdf4;
+    color: #22C55E;
     font-weight: 500;
   }
 `
 
 const MenuIcon = styled.span`
   margin-right: 0.75rem;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -405,64 +416,65 @@ const AdminLayout: React.FC = () => {
     <AdminContainer>
       <Sidebar isOpen={sidebarOpen}>
         <SidebarHeader>
-          <Logo>
+          <BrandLogo>
             Zero<span>Smoke</span>
-          </Logo>
+          </BrandLogo>
           <CloseButton onClick={closeSidebar}>✕</CloseButton>
         </SidebarHeader>
+        <SeparatorLine />
 
         <SidebarContent>
           <MenuSection>
-            <MenuTitle>Panel Principal</MenuTitle>
+            <MenuTitleFirst>Panel Principal</MenuTitleFirst>
             <MenuItem to="/admin/dashboard" onClick={closeSidebar}>
-              <MenuIcon>📊</MenuIcon> Dashboard
+              <MenuIcon><LayoutDashboard size={18} /></MenuIcon> Dashboard
             </MenuItem>
             <MenuItem to="/admin/analytics" onClick={closeSidebar}>
-              <MenuIcon>📈</MenuIcon> Analytics Avanzado
+              <MenuIcon><BarChart2 size={18} /></MenuIcon> Analytics Avanzado
             </MenuItem>
           </MenuSection>
 
           <MenuSection>
             <MenuTitle>Contenido</MenuTitle>
             <MenuItem to="/admin/homepage" onClick={closeSidebar}>
-              <MenuIcon>🏠</MenuIcon> Página de Inicio
+              <MenuIcon><Home size={18} /></MenuIcon> Página de Inicio
             </MenuItem>
             <MenuItem to="/admin/articles" onClick={closeSidebar}>
-              <MenuIcon>📰</MenuIcon> Artículos
+              <MenuIcon><FileText size={18} /></MenuIcon> Artículos
             </MenuItem>
             <MenuItem to="/admin/faqs" onClick={closeSidebar}>
-              <MenuIcon>❓</MenuIcon> FAQs
+              <MenuIcon><HelpCircle size={18} /></MenuIcon> FAQs
             </MenuItem>
           </MenuSection>
 
           <MenuSection>
             <MenuTitle>Usuarios</MenuTitle>
             <MenuItem to="/admin/users" onClick={closeSidebar}>
-              <MenuIcon>👥</MenuIcon> Gestión de Usuarios
+              <MenuIcon><Users size={18} /></MenuIcon> Gestión de Usuarios
             </MenuItem>
             <MenuItem to="/admin/admins" onClick={closeSidebar}>
-              <MenuIcon>🔑</MenuIcon> Administradores
+              <MenuIcon><Shield size={18} /></MenuIcon> Administradores
             </MenuItem>
           </MenuSection>
 
           <MenuSection>
             <MenuTitle>Comunicación</MenuTitle>
             <MenuItem to="/admin/messages" onClick={closeSidebar}>
-              <MenuIcon>✉️</MenuIcon> Mensajes
+              <MenuIcon><MessageSquare size={18} /></MenuIcon> Mensajes
             </MenuItem>
           </MenuSection>
 
           <MenuSection>
             <MenuTitle>Configuración</MenuTitle>
             <MenuItem to="/admin/settings" onClick={closeSidebar}>
-              <MenuIcon>⚙️</MenuIcon> Configuración
+              <MenuIcon><Settings size={18} /></MenuIcon> Configuración
             </MenuItem>
           </MenuSection>
         </SidebarContent>
 
         <SidebarFooter>
           <Button variant="outline" size="small" fullWidth onClick={handleLogout}>
-            Cerrar Sesión
+            <LogOut size={16} style={{ marginRight: 8 }} /> Cerrar Sesión
           </Button>
         </SidebarFooter>
       </Sidebar>

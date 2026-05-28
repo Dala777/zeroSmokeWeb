@@ -4,6 +4,9 @@ import {
   Activity,
   AlertTriangle,
   BarChart3,
+  ExternalLink,
+  Maximize2,
+  Minimize2,
   RefreshCw,
   TrendingUp,
   Users,
@@ -15,6 +18,7 @@ const GRAFANA_URL = process.env.REACT_APP_GRAFANA_URL || "http://localhost:3002"
 const DASHBOARD_UID = process.env.REACT_APP_GRAFANA_DASHBOARD_UID || ""
 
 type TabId = "overview" | "research" | "alerts" | "heatmaps"
+type Granularity = "day" | "week" | "month"
 
 const tabs: { id: TabId; label: string }[] = [
   { id: "overview", label: "Overview" },
@@ -31,67 +35,96 @@ const refreshOptions = [
   { value: 300, label: "5m" },
 ]
 
-const PageIntro = styled.div`
-  margin-bottom: 22px;
-
-  h1 {
-    color: ${AppColors.text};
-    font-size: 28px;
-    line-height: 1.2;
-    margin: 0 0 6px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  p {
-    color: ${AppColors.textSecondary};
-    margin: 0;
-  }
+const PageWrapper = styled.div`
+  padding: 0;
+  background: ${AppColors.background};
 `
 
-const StatusBadge = styled.span<{ $connected: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
-  margin-top: 8px;
-  color: ${(p) => (p.$connected ? AppColors.success : AppColors.error)};
-  background: ${(p) =>
-    p.$connected ? `${AppColors.success}18` : `${AppColors.error}18`};
-
-  &::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: ${(p) => (p.$connected ? AppColors.success : AppColors.error)};
-  }
-`
-
-const Toolbar = styled.div`
+const ControlBar = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 18px;
+  padding: 12px 20px;
+  background: ${AppColors.cardBackground};
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 `
 
-const ToolbarGroup = styled.div`
+const ControlGroup = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 `
 
+const ControlLabel = styled.span`
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: ${AppColors.textSecondary};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`
+
+const SelectStyled = styled.select`
+  padding: 6px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  background: ${AppColors.cardBackground};
+  color: ${AppColors.text};
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+
+  &:focus {
+    border-color: ${AppColors.primary};
+  }
+`
+
+const ControlButton = styled.button<{ $active?: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: ${(p) => (p.$active ? `${AppColors.primary}18` : AppColors.cardBackground)};
+  color: ${(p) => (p.$active ? AppColors.accent : AppColors.textSecondary)};
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: ${AppColors.primary};
+    color: ${AppColors.accent};
+  }
+`
+
+const ConnectionDot = styled.span<{ $connected: boolean }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: ${(p) => (p.$connected ? AppColors.success : AppColors.error)};
+  flex-shrink: 0;
+
+  &::after {
+    content: "${(p) => (p.$connected ? " Conectado" : " No disponible")}";
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: ${AppColors.textSecondary};
+    margin-left: 6px;
+  }
+`
+
 const TabBar = styled.div`
   display: flex;
   gap: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 `
 
@@ -114,48 +147,57 @@ const TabButton = styled.button<{ $active: boolean }>`
   }
 `
 
-const SelectStyled = styled.select`
-  padding: 6px 10px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 6px;
-  background: ${AppColors.cardBackground};
-  color: ${AppColors.text};
-  font-size: 0.85rem;
-  cursor: pointer;
-  outline: none;
-
-  &:focus {
-    border-color: ${AppColors.primary};
-  }
-`
-
-const RefreshButton = styled.button<{ $active: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: ${(p) => (p.$active ? `${AppColors.primary}18` : AppColors.cardBackground)};
-  color: ${(p) => (p.$active ? AppColors.accent : AppColors.textSecondary)};
-  border-radius: 6px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: ${AppColors.primary};
-    color: ${AppColors.accent};
-  }
-`
-
 const PlaceholderCard = styled.div`
   background: ${AppColors.cardBackground};
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 48px 24px;
   text-align: center;
   color: ${AppColors.textSecondary};
   border: 1px solid rgba(0, 0, 0, 0.06);
+`
+
+const FullscreenOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+`
+
+const FullscreenIframe = styled.iframe`
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #fff;
+`
+
+const FullscreenToolbar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: ${AppColors.cardBackground};
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+`
+
+const NoConfigMessage = styled.div`
+  background: ${AppColors.cardBackground};
+  border-radius: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+
+  h3 {
+    color: ${AppColors.text};
+    margin: 0 0 8px;
+  }
+
+  p {
+    color: ${AppColors.textSecondary};
+    margin: 0;
+    font-size: 0.9rem;
+  }
 `
 
 const SectionTitle = styled.h2`
@@ -174,7 +216,7 @@ const ResearchGrid = styled.div`
 `
 
 const ResearchCard = styled.div`
-  background: ${AppColors.background};
+  background: ${AppColors.cardBackground};
   border-radius: 8px;
   padding: 18px;
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -210,52 +252,48 @@ const ResearchCardText = styled.p`
   line-height: 1.5;
 `
 
-const NoConfigMessage = styled.div`
-  background: ${AppColors.cardBackground};
-  border-radius: 8px;
-  padding: 48px 24px;
-  text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-
-  h3 {
-    color: ${AppColors.text};
-    margin: 0 0 8px;
-  }
-
-  p {
-    color: ${AppColors.textSecondary};
-    margin: 0;
-    font-size: 0.9rem;
-  }
-`
-
 const DashboardEmbedded = styled.div`
   margin-bottom: 8px;
+`
+
+const LastUpdate = styled.span`
+  font-size: 0.78rem;
+  color: ${AppColors.textSecondary};
+  white-space: nowrap;
 `
 
 const AnalyticsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabId>("overview")
   const [autoRefresh, setAutoRefresh] = useState(false)
   const [refreshSeconds, setRefreshSeconds] = useState(30)
+  const [granularity, setGranularity] = useState<Granularity>("day")
+  const [fullscreen, setFullscreen] = useState(false)
 
   const grafanaConfigured = DASHBOARD_UID.length > 0
 
   const dashboardUrl = useMemo(() => {
     if (!DASHBOARD_UID) return ""
-    let url = `${GRAFANA_URL}/d/${DASHBOARD_UID}?theme=light&kiosk=tv`
+    let url = `${GRAFANA_URL}/d/${DASHBOARD_UID}?orgId=1&kiosk&theme=dark&var-granularity=${granularity}`
     if (autoRefresh && refreshSeconds > 0) {
       url += `&refresh=${refreshSeconds}s`
     }
     return url
-  }, [autoRefresh, refreshSeconds])
+  }, [autoRefresh, refreshSeconds, granularity])
 
   const handleRefreshToggle = useCallback(() => {
-    if (autoRefresh) {
-      setAutoRefresh(false)
-    } else {
-      setAutoRefresh(true)
-    }
-  }, [autoRefresh])
+    setAutoRefresh((prev) => !prev)
+  }, [])
+
+  const openInGrafana = useCallback(() => {
+    window.open(dashboardUrl, "_blank", "noopener")
+  }, [dashboardUrl])
+
+  const now = new Date()
+  const lastUpdateStr = now.toLocaleTimeString("es-ES", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  })
 
   const renderTabContent = () => {
     if (!grafanaConfigured) {
@@ -297,43 +335,44 @@ const AnalyticsPage: React.FC = () => {
     }
   }
 
+  if (fullscreen) {
+    return (
+      <FullscreenOverlay>
+        <FullscreenToolbar>
+          <span style={{ fontWeight: 600, color: AppColors.text, fontSize: "0.9rem" }}>
+            ZeroSmoke — Clinical Research & Health Analytics
+          </span>
+          <ControlButton onClick={() => setFullscreen(false)}>
+            <Minimize2 size={16} /> Salir de pantalla completa
+          </ControlButton>
+        </FullscreenToolbar>
+        <FullscreenIframe src={dashboardUrl} title="ZeroSmoke Analytics" allow="fullscreen" />
+      </FullscreenOverlay>
+    )
+  }
+
   return (
-    <>
-      <PageIntro>
-        <h1>
-          <BarChart3 size={28} />
-          Analytics Avanzado
-        </h1>
-        <p>Panel de investigación y análisis de datos con integración Grafana</p>
-        <StatusBadge $connected={grafanaConfigured}>
-          {grafanaConfigured
-            ? `Grafana conectado (${GRAFANA_URL})`
-            : "Grafana no configurado"}
-        </StatusBadge>
-      </PageIntro>
-
-      <TabBar>
-        {tabs.map((tab) => (
-          <TabButton
-            key={tab.id}
-            $active={activeTab === tab.id}
-            onClick={() => setActiveTab(tab.id)}
+    <PageWrapper>
+      <ControlBar>
+        <ControlGroup>
+          <ControlLabel>Dashboard</ControlLabel>
+          <SelectStyled
+            value={granularity}
+            onChange={(e) => setGranularity(e.target.value as Granularity)}
           >
-            {tab.label}
-          </TabButton>
-        ))}
-      </TabBar>
+            <option value="day">Diario</option>
+            <option value="week">Semanal</option>
+            <option value="month">Mensual</option>
+          </SelectStyled>
+          <ConnectionDot $connected={grafanaConfigured} />
+          <LastUpdate>Actualizado: {lastUpdateStr}</LastUpdate>
+        </ControlGroup>
 
-      <Toolbar>
-        <ToolbarGroup />
-        <ToolbarGroup>
-          <RefreshButton
-            $active={autoRefresh}
-            onClick={handleRefreshToggle}
-          >
+        <ControlGroup>
+          <ControlButton onClick={handleRefreshToggle} $active={autoRefresh}>
             <RefreshCw size={14} />
-            Auto-refresh
-          </RefreshButton>
+            Auto
+          </ControlButton>
           {autoRefresh && (
             <SelectStyled
               value={refreshSeconds}
@@ -348,8 +387,26 @@ const AnalyticsPage: React.FC = () => {
                 ))}
             </SelectStyled>
           )}
-        </ToolbarGroup>
-      </Toolbar>
+          <ControlButton onClick={() => setFullscreen(true)}>
+            <Maximize2 size={14} /> Pantalla completa
+          </ControlButton>
+          <ControlButton onClick={openInGrafana}>
+            <ExternalLink size={14} /> Abrir en Grafana
+          </ControlButton>
+        </ControlGroup>
+      </ControlBar>
+
+      <TabBar>
+        {tabs.map((tab) => (
+          <TabButton
+            key={tab.id}
+            $active={activeTab === tab.id}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </TabButton>
+        ))}
+      </TabBar>
 
       {renderTabContent()}
 
@@ -419,7 +476,7 @@ const AnalyticsPage: React.FC = () => {
           </ResearchCardText>
         </ResearchCard>
       </ResearchGrid>
-    </>
+    </PageWrapper>
   )
 }
 

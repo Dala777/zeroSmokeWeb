@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import styled, { keyframes } from "styled-components"
+import { useLocation } from "react-router-dom"
 import { AppColors } from "../styles/colors"
 import Button from "./ui/Button"
 import Input from "./ui/Input"
@@ -365,11 +366,40 @@ const WelcomeAnimation = styled.div`
 `
 
 const Chatbot: React.FC = () => {
+  const location = useLocation()
   const { isOpen, messages, toggleChat, addMessage } = useChatbot()
   const [inputValue, setInputValue] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [hasNewMessage, setHasNewMessage] = useState(false)
+
+  // Auto-scroll al último mensaje
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages, isTyping])
+
+  // Mensaje de bienvenida
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      const welcomeMessage = {
+        text: "¡Hola! Soy el asistente virtual de ZeroSmoke. ¿En qué puedo ayudarte hoy?",
+        isUser: false,
+        timestamp: new Date(),
+      }
+      addMessage(welcomeMessage)
+    }
+  }, [isOpen, messages.length, addMessage])
+
+  // Limpiar notificación cuando se abre el chat
+  useEffect(() => {
+    if (isOpen) {
+      setHasNewMessage(false)
+    }
+  }, [isOpen])
+
+  if (location.pathname.startsWith("/admin")) {
+    return null
+  }
 
   // Preguntas sugeridas
   const suggestedQuestions = [
@@ -657,30 +687,6 @@ const Chatbot: React.FC = () => {
       1000 + Math.random() * 1000,
     )
   }
-
-  // Auto-scroll al último mensaje
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages, isTyping])
-
-  // Mensaje de bienvenida
-  useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      const welcomeMessage = {
-        text: "¡Hola! Soy el asistente virtual de ZeroSmoke. ¿En qué puedo ayudarte hoy?",
-        isUser: false,
-        timestamp: new Date(),
-      }
-      addMessage(welcomeMessage)
-    }
-  }, [isOpen, messages.length, addMessage])
-
-  // Limpiar notificación cuando se abre el chat
-  useEffect(() => {
-    if (isOpen) {
-      setHasNewMessage(false)
-    }
-  }, [isOpen])
 
   return (
     <ChatbotContainer>

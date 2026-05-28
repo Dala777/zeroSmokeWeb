@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react"
 import styled from "styled-components"
-import { ExternalLink, Maximize2, Minimize2 } from "lucide-react"
+import { Minimize2 } from "lucide-react"
 import { AppColors } from "../../styles/colors"
 
 interface GrafanaEmbedProps {
@@ -11,7 +11,7 @@ interface GrafanaEmbedProps {
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   background: ${AppColors.cardBackground};
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -19,42 +19,23 @@ const Wrapper = styled.div`
 
 const IframeStyled = styled.iframe<{ $visible: boolean }>`
   width: 100%;
-  height: 550px;
+  min-height: calc(100vh - 280px);
+  height: 900px;
   border: none;
   display: ${(p) => (p.$visible ? "block" : "none")};
-
-  @media (max-width: 768px) {
-    height: 380px;
-  }
+  background: #111;
+  overflow: hidden;
 `
 
-const Toolbar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 8px 12px;
+const HeaderOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
   background: ${AppColors.background};
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-`
-
-const ToolbarButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: ${AppColors.cardBackground};
-  color: ${AppColors.textSecondary};
-  border-radius: 6px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
-
-  &:hover {
-    border-color: ${AppColors.primary};
-    color: ${AppColors.accent};
-  }
+  z-index: 10;
+  pointer-events: none;
 `
 
 const LoadingOverlay = styled.div`
@@ -136,6 +117,7 @@ const FullscreenIframe = styled.iframe`
   flex: 1;
   width: 100%;
   border: none;
+  background: #fff;
 `
 
 const FullscreenToolbar = styled.div`
@@ -153,11 +135,29 @@ const FullscreenTitle = styled.span`
   font-size: 0.9rem;
 `
 
+const ToolbarButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: ${AppColors.cardBackground};
+  color: ${AppColors.textSecondary};
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    border-color: ${AppColors.primary};
+    color: ${AppColors.accent};
+  }
+`
+
 const GrafanaEmbed: React.FC<GrafanaEmbedProps> = ({ src, title = "Panel Grafana" }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
-  const iframeRef = useRef<HTMLIFrameElement>(null)
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   const handleLoad = useCallback(() => {
@@ -190,10 +190,6 @@ const GrafanaEmbed: React.FC<GrafanaEmbedProps> = ({ src, title = "Panel Grafana
     setError(false)
   }, [src])
 
-  const openInNewTab = useCallback(() => {
-    window.open(src, "_blank", "noopener")
-  }, [src])
-
   if (fullscreen) {
     return (
       <FullscreenOverlay>
@@ -210,15 +206,6 @@ const GrafanaEmbed: React.FC<GrafanaEmbedProps> = ({ src, title = "Panel Grafana
 
   return (
     <Wrapper>
-      <Toolbar>
-        <ToolbarButton onClick={openInNewTab} title="Abrir en nueva pestaña">
-          <ExternalLink size={14} /> Abrir en Grafana
-        </ToolbarButton>
-        <ToolbarButton onClick={() => setFullscreen(true)} title="Ver en pantalla completa">
-          <Maximize2 size={14} /> Pantalla completa
-        </ToolbarButton>
-      </Toolbar>
-
       {loading && (
         <LoadingOverlay>
           <div style={{ textAlign: "center" }}>
@@ -240,8 +227,8 @@ const GrafanaEmbed: React.FC<GrafanaEmbedProps> = ({ src, title = "Panel Grafana
         </ErrorOverlay>
       )}
 
+      <HeaderOverlay />
       <IframeStyled
-        ref={iframeRef}
         src={src}
         title={title}
         $visible={!error}
@@ -253,4 +240,6 @@ const GrafanaEmbed: React.FC<GrafanaEmbedProps> = ({ src, title = "Panel Grafana
   )
 }
 
+export { ToolbarButton }
+export type { GrafanaEmbedProps }
 export default GrafanaEmbed
