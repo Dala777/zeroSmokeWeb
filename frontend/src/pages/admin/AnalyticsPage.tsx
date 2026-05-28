@@ -11,7 +11,7 @@ import {
 import { AppColors } from "../../styles/colors"
 import GrafanaEmbed from "../../components/admin/GrafanaEmbed"
 
-const GRAFANA_URL = process.env.REACT_APP_GRAFANA_URL || "http://localhost:3001"
+const GRAFANA_URL = process.env.REACT_APP_GRAFANA_URL || "http://localhost:3002"
 const DASHBOARD_UID = process.env.REACT_APP_GRAFANA_DASHBOARD_UID || ""
 
 type TabId = "overview" | "research" | "alerts" | "heatmaps"

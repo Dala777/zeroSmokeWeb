@@ -1,0 +1,522 @@
+{
+  "__inputs": [],
+  "__requires": [
+    { "type": "grafana", "id": "grafana", "name": "Grafana", "version": "10.4.0" },
+    { "type": "datasource", "id": "yesoreyeram-infinity-datasource", "name": "Infinity", "version": "2.5.0" }
+  ],
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "title": "ZeroSmoke — Clinical Research Dashboard",
+      "type": "row",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+    {
+      "id": 2,
+      "title": "Usuarios Registrados",
+      "description": "Total acumulado de usuarios en la plataforma",
+      "type": "stat",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "sparkline": { "show": true, "yMin": null, "yMax": null, "lineWidth": 2, "fillOpacity": 25, "lineColor": "#1A6B5A" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "#1A6B5A" }] },
+          "unit": "none",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "/summary?format=grafana",
+          "type": "json",
+          "parser": "json",
+          "root_selector": "totalUsers",
+          "url": "",
+          "method": "GET",
+          "headers": [],
+          "data": ""
+        },
+        {
+          "query": "/users?from=${__from:date:YYYY-MM-DD}&to=${__to:date:YYYY-MM-DD}&granularity=day&format=grafana",
+          "type": "json",
+          "parser": "json",
+          "root_selector": "",
+          "url": "",
+          "method": "GET",
+          "headers": [],
+          "data": "",
+          "timeField": "time",
+          "valueField": "value",
+          "alias": "sparkline"
+        }
+      ],
+      "transformations": []
+    },
+    {
+      "id": 3,
+      "title": "Usuarios Activos (Hoy)",
+      "description": "Usuarios con estado activo en las últimas 24h",
+      "type": "stat",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "sparkline": { "show": true, "lineWidth": 2, "fillOpacity": 25, "lineColor": "#3B82F6" } },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "#6B7280" }, { "value": 1, "color": "#3B82F6" }] },
+          "unit": "none",
+          "decimals": 0
+        }
+      },
+      "options": { "graphMode": "area", "justifyMode": "center", "textMode": "value_and_name", "colorMode": "value" },
+      "targets": [{ "query": "/summary?format=grafana", "type": "json", "parser": "json", "root_selector": "activeUsers" }]
+    },
+    {
+      "id": 4,
+      "title": "Craving Promedio (Hoy)",
+      "description": "Nivel de ansiedad promedio en escala 0\u201310",
+      "type": "stat",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "sparkline": { "show": true, "lineWidth": 2, "fillOpacity": 25, "lineColor": "#EAB308" } },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "#22C55E" }, { "value": 4, "color": "#EAB308" }, { "value": 7, "color": "#DC2626" }] },
+          "unit": "none",
+          "decimals": 1,
+          "max": 10
+        }
+      },
+      "options": {
+        "graphMode": "area",
+        "justifyMode": "center",
+        "textMode": "value_and_name",
+        "colorMode": "thresholds",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true
+      },
+      "targets": [{ "query": "/summary?format=grafana", "type": "json", "parser": "json", "root_selector": "averageCraving" }]
+    },
+    {
+      "id": 5,
+      "title": "Reca\u00eddas Detectadas (Hoy)",
+      "description": "Check-ins con consumo de tabaco reportado",
+      "type": "stat",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "sparkline": { "show": true, "lineWidth": 2, "fillOpacity": 25, "lineColor": "#DC2626" } },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "#22C55E" }, { "value": 1, "color": "#EAB308" }, { "value": 5, "color": "#DC2626" }] },
+          "unit": "none",
+          "decimals": 0
+        }
+      },
+      "options": { "graphMode": "area", "justifyMode": "center", "textMode": "value_and_name", "colorMode": "thresholds" },
+      "targets": [{ "query": "/summary?format=grafana", "type": "json", "parser": "json", "root_selector": "totalRelapses" }]
+    },
+    {
+      "id": 6,
+      "title": "Planes Activos",
+      "description": "Planes personalizados en curso",
+      "type": "stat",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 5, "w": 4, "x": 16, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "#6B7280" }, { "value": 1, "color": "#3B82F6" }] },
+          "unit": "none",
+          "decimals": 0
+        }
+      },
+      "options": { "graphMode": "area", "justifyMode": "center", "textMode": "value_and_name", "colorMode": "value" },
+      "targets": [{ "query": "/summary?format=grafana", "type": "json", "parser": "json", "root_selector": "activePlans" }]
+    },
+    {
+      "id": 7,
+      "title": "Planes Completados",
+      "description": "Planes finalizados exitosamente",
+      "type": "stat",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 5, "w": 4, "x": 20, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "#6B7280" }, { "value": 1, "color": "#22C55E" }] },
+          "unit": "none",
+          "decimals": 0
+        }
+      },
+      "options": { "graphMode": "area", "justifyMode": "center", "textMode": "value_and_name", "colorMode": "value" },
+      "targets": [{ "query": "/summary?format=grafana", "type": "json", "parser": "json", "root_selector": "completedPlans" }]
+    },
+    {
+      "id": 8,
+      "title": "Registro de Usuarios en el Tiempo",
+      "description": "Nuevos registros agregados por per\u00edodo",
+      "type": "timeseries",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "gradientMode": "opacity",
+            "spanNulls": true,
+            "showPoints": "auto",
+            "pointSize": 3,
+            "stacking": { "mode": "none" },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "axisColorMode": "text",
+            "scaleDistribution": { "type": "linear" },
+            "hideFrom": { "tooltip": false, "viz": false, "legend": false }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "transparent" }] },
+          "unit": "none",
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "query": "/users?from=${__from:date:YYYY-MM-DD}&to=${__to:date:YYYY-MM-DD}&granularity=${granularity}&format=grafana",
+          "type": "json",
+          "parser": "json",
+          "root_selector": "",
+          "timeField": "time",
+          "valueField": "value",
+          "alias": "Registros"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Check-ins Diarios",
+      "description": "Volumen de check-ins realizados por per\u00edodo",
+      "type": "timeseries",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "gradientMode": "opacity",
+            "spanNulls": true,
+            "showPoints": "auto",
+            "pointSize": 3
+          },
+          "unit": "none",
+          "min": 0
+        }
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "query": "/checkins?from=${__from:date:YYYY-MM-DD}&to=${__to:date:YYYY-MM-DD}&granularity=${granularity}&format=grafana",
+          "type": "json",
+          "parser": "json",
+          "timeField": "time",
+          "valueField": "value",
+          "alias": "Check-ins"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Tendencia de Craving Promedio",
+      "description": "Evoluci\u00f3n del craving promedio en escala 0\u201310",
+      "type": "timeseries",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "gradientMode": "opacity",
+            "spanNulls": true,
+            "showPoints": "auto",
+            "pointSize": 3
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "transparent" },
+              { "value": 4, "color": "#EAB308", "line": { "show": true, "dash": "dash" } },
+              { "value": 7, "color": "#DC2626", "line": { "show": true, "dash": "dash" } }
+            ]
+          },
+          "unit": "none",
+          "min": 0,
+          "max": 10
+        }
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "query": "/cravings?from=${__from:date:YYYY-MM-DD}&to=${__to:date:YYYY-MM-DD}&granularity=${granularity}&format=grafana",
+          "type": "json",
+          "parser": "json",
+          "timeField": "time",
+          "valueField": "value",
+          "alias": "Craving Promedio"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Eventos de Reca\u00edda Detectados",
+      "description": "Check-ins con consumo positivo por per\u00edodo",
+      "type": "timeseries",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "bars",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "barMaxWidth": 20,
+            "fillOpacity": 80,
+            "lineWidth": 0,
+            "gradientMode": "none"
+          },
+          "unit": "none",
+          "min": 0
+        }
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "query": "/relapses?from=${__from:date:YYYY-MM-DD}&to=${__to:date:YYYY-MM-DD}&granularity=${granularity}&format=grafana",
+          "type": "json",
+          "parser": "json",
+          "timeField": "time",
+          "valueField": "value",
+          "alias": "Reca\u00eddas"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Adherencia a Planes",
+      "description": "Distribuci\u00f3n de estados de planes personalizados",
+      "type": "table",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 22 },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "align": "left", "cellOptions": { "type": "auto" }, "minWidth": 80 },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "transparent" }] }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "averageCompletion" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "#DC2626" }, { "value": 30, "color": "#EA580C" }, { "value": 60, "color": "#EAB308" }, { "value": 80, "color": "#22C55E" }] } },
+              { "id": "unit", "value": "percent" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "status" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              { "id": "mappings", "value": [{ "type": 1, "options": { "active": { "color": "#22C55E" }, "completed": { "color": "#3B82F6" }, "abandoned": { "color": "#DC2626" } } }] }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "footer": { "show": false },
+        "sortBy": [{ "displayName": "count", "desc": true }],
+        "frameIndex": 0
+      },
+      "targets": [
+        {
+          "query": "/research?from=${__from:date:YYYY-MM-DD}&to=${__to:date:YYYY-MM-DD}",
+          "type": "json",
+          "parser": "json",
+          "root_selector": "data.planAdherence[*]"
+        }
+      ],
+      "transformations": [
+        { "id": "renameByRegex", "options": { "regex": "status", "rename": "Estado" } },
+        { "id": "renameByRegex", "options": { "regex": "count", "rename": "Usuarios" } },
+        { "id": "renameByRegex", "options": { "regex": "averageCompletion", "rename": "Completado Prom." } },
+        { "id": "renameByRegex", "options": { "regex": "averageCurrentDay", "rename": "D\u00eda Promedio" } }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Top 10 Usuarios m\u00e1s Activos",
+      "description": "Ranking de engagement por check-ins realizados",
+      "type": "table",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 22 },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "align": "left", "cellOptions": { "type": "auto" }, "minWidth": 80 }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "checkins" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              { "id": "custom.width", "value": 100 },
+              { "id": "displayName", "value": "Check-ins" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "lastCheckin" },
+            "properties": [
+              { "id": "displayName", "value": "\u00daltimo Check-in" },
+              { "id": "unit", "value": "time:YYYY-MM-DD" }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "sortBy": [{ "displayName": "checkins", "desc": true }],
+        "frameIndex": 0,
+        "footer": { "show": false }
+      },
+      "targets": [
+        {
+          "query": "/research?from=${__from:date:YYYY-MM-DD}&to=${__to:date:YYYY-MM-DD}",
+          "type": "json",
+          "parser": "json",
+          "root_selector": "data.mostActiveUsers[*]"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "title": "Alertas Recientes",
+      "description": "Usuarios con score de riesgo elevado",
+      "type": "table",
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "ZS_API" },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 22 },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "align": "left", "cellOptions": { "type": "auto" }, "minWidth": 80 }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "riskScore" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "#22C55E" }, { "value": 40, "color": "#EA580C" }, { "value": 70, "color": "#DC2626" }] } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "cravingLevel" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "#22C55E" }, { "value": 4, "color": "#EAB308" }, { "value": 7, "color": "#DC2626" }] } }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "sortBy": [{ "displayName": "riskScore", "desc": true }],
+        "frameIndex": 0,
+        "footer": { "show": false }
+      },
+      "targets": [
+        {
+          "query": "/alerts/high-risk?from=${__from:date:YYYY-MM-DD}&to=${__to:date:YYYY-MM-DD}",
+          "type": "json",
+          "parser": "json",
+          "root_selector": "data.alerts[*]"
+        }
+      ],
+      "transformations": [
+        { "id": "renameByRegex", "options": { "regex": "userName", "rename": "Usuario" } },
+        { "id": "renameByRegex", "options": { "regex": "riskScore", "rename": "Score" } },
+        { "id": "renameByRegex", "options": { "regex": "cravingLevel", "rename": "Craving" } },
+        { "id": "renameByRegex", "options": { "regex": "mood", "rename": "\u00c1nimo" } }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["zerosmoke", "monitoring", "clinical"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": true, "text": "day", "value": "day" },
+        "hide": 0,
+        "label": "Granularidad",
+        "name": "granularity",
+        "options": [
+          { "selected": true, "text": "day", "value": "day" },
+          { "selected": false, "text": "week", "value": "week" },
+          { "selected": false, "text": "month", "value": "month" }
+        ],
+        "query": "day, week, month",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": { "from": "now-30d", "to": "now" },
+  "timepicker": {
+    "refresh_intervals": ["10s", "30s", "1m", "5m", "15m", "30m", "1h"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+  },
+  "timezone": "",
+  "title": "ZeroSmoke \u2014 Clinical Research & Health Analytics",
+  "version": 1,
+  "weekStart": ""
+}

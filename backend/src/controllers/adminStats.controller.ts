@@ -140,6 +140,19 @@ const sendGrafanaSeries = (res: Response, series: PeriodMetric[], valueKey: stri
   )
 }
 
+const handleSeriesFormat = (req: Request, res: Response, series: PeriodMetric[], valueKey: string): boolean => {
+  if (req.query.format === "grafana") {
+    sendGrafanaSeries(res, series, valueKey)
+    return true
+  }
+  if (req.query.format === "stat") {
+    const last = series[series.length - 1]
+    res.status(200).json({ value: last ? last[valueKey] || 0 : 0 })
+    return true
+  }
+  return false
+}
+
 export const getOverviewStats = async (req: Request, res: Response): Promise<void> => {
   try {
     const todayStart = startOfDay(new Date())
@@ -210,7 +223,7 @@ export const getUserStats = async (req: Request, res: Response): Promise<void> =
     const lastLoginMatch = { lastLogin: { $gte: range.from, $lte: range.to } }
 
     const [totals, registrations, activeLogins, planUsage] = await Promise.all([
-      User.aggregate<{ _id: null; totalUsers: number; activeUsers: number; pendingUsers: number; inactiveUsers: number; adminUsers: number }>([
+      User.aggregate<{ totalUsers: number; activeUsers: number; pendingUsers: number; inactiveUsers: number; adminUsers: number }>([
         {
           $group: {
             _id: null,
@@ -221,6 +234,7 @@ export const getUserStats = async (req: Request, res: Response): Promise<void> =
             adminUsers: { $sum: { $cond: [{ $eq: ["$role", "admin"] }, 1, 0] } },
           },
         },
+        { $project: { _id: 0, totalUsers: 1, activeUsers: 1, pendingUsers: 1, inactiveUsers: 1, adminUsers: 1 } },
       ]),
       User.aggregate<{ _id: string; registeredUsers: number }>([
         { $match: createdAtMatch },
@@ -254,10 +268,7 @@ export const getUserStats = async (req: Request, res: Response): Promise<void> =
       activeUsers: activeByPeriod.get(period) || 0,
     }))
 
-    if (req.query.format === "grafana") {
-      sendGrafanaSeries(res, series, "registeredUsers")
-      return
-    }
+    if (handleSeriesFormat(req, res, series, "registeredUsers")) return
 
     res.status(200).json({
       success: true,
@@ -336,10 +347,7 @@ export const getCheckinStats = async (req: Request, res: Response): Promise<void
       averageCraving: roundNumber(row.averageCraving || 0),
     }))
 
-    if (req.query.format === "grafana") {
-      sendGrafanaSeries(res, series, "checkins")
-      return
-    }
+    if (handleSeriesFormat(req, res, series, "checkins")) return
 
     res.status(200).json({
       success: true,
@@ -422,10 +430,7 @@ export const getCravingStats = async (req: Request, res: Response): Promise<void
 
     const cravingSeries = mergeCravingSeries(checkinRows, smokingRows)
 
-    if (req.query.format === "grafana") {
-      sendGrafanaSeries(res, cravingSeries, "averageCraving")
-      return
-    }
+    if (handleSeriesFormat(req, res, cravingSeries, "averageCraving")) return
 
     res.status(200).json({
       success: true,
@@ -501,10 +506,7 @@ export const getNotificationStats = async (req: Request, res: Response): Promise
       uniqueUsers: row.uniqueUsers.length,
     }))
 
-    if (req.query.format === "grafana") {
-      sendGrafanaSeries(res, notifSeries, "sent")
-      return
-    }
+    if (handleSeriesFormat(req, res, notifSeries, "sent")) return
 
     res.status(200).json({
       success: true,
@@ -531,7 +533,7 @@ export const getNotificationStats = async (req: Request, res: Response): Promise
   }
 }
 
-export const getHighRiskUsers = async (_req: Request, res: Response): Promise<void> => {
+export const getHighRiskUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const users = await RiskSnapshot.aggregate([
       { $sort: { dateKey: -1, createdAt: -1 } },
@@ -613,6 +615,11 @@ export const getHighRiskUsers = async (_req: Request, res: Response): Promise<vo
       { $limit: 50 },
     ])
 
+    if (req.query.format === "grafana") {
+      res.status(200).json(users)
+      return
+    }
+
     res.status(200).json({
       success: true,
       data: users,
@@ -667,10 +674,7 @@ export const getSymptomsStats = async (req: Request, res: Response): Promise<voi
       symptomCount: row.symptoms.reduce((sum, sym) => sum + sym.count, 0),
     }))
 
-    if (req.query.format === "grafana") {
-      sendGrafanaSeries(res, symptomTimeSeries, "symptomCount")
-      return
-    }
+    if (handleSeriesFormat(req, res, symptomTimeSeries, "symptomCount")) return
 
     res.status(200).json({
       success: true,
@@ -749,10 +753,7 @@ export const getRelapseStats = async (req: Request, res: Response): Promise<void
       uniqueUsers: row.uniqueUsers.length,
     }))
 
-    if (req.query.format === "grafana") {
-      sendGrafanaSeries(res, series, "relapses")
-      return
-    }
+    if (handleSeriesFormat(req, res, series, "relapses")) return
 
     res.status(200).json({
       success: true,
@@ -833,10 +834,7 @@ export const getResearchStats = async (req: Request, res: Response): Promise<voi
       relapses: row.relapses,
     }))
 
-    if (req.query.format === "grafana") {
-      sendGrafanaSeries(res, weeklySeries, "checkins")
-      return
-    }
+    if (handleSeriesFormat(req, res, weeklySeries, "checkins")) return
 
     res.status(200).json({
       success: true,
@@ -988,10 +986,15 @@ export const getHeatmapCravings = async (req: Request, res: Response): Promise<v
       .filter((h) => h._id.dayOfWeek >= 1 && h._id.dayOfWeek <= 7)
       .map((h) => ({
         x: dayNames[h._id.dayOfWeek - 1] || `D${h._id.dayOfWeek}`,
-        y: `${h._id.hour}:00`,
+        y: `${String(h._id.hour).padStart(2, "0")}:00`,
         value: roundNumber(h.avgCraving),
         count: h.count,
       }))
+
+    if (req.query.format === "grafana") {
+      res.status(200).json(result)
+      return
+    }
 
     res.status(200).json({ success: true, data: result })
   } catch (error) {
