@@ -202,6 +202,50 @@ export interface RelapseStats {
   }>
 }
 
+export interface SummaryStats {
+  totalUsers: number
+  activeUsers: number
+  averageCraving: number
+  totalRelapses: number
+  activePlans: number
+  completedPlans: number
+}
+
+export interface HeatmapEntry {
+  x: string
+  y: string
+  value: number
+  count: number
+}
+
+export interface AlertHighRisk {
+  alerts: Array<{
+    _id: string
+    userId: string
+    userName: string
+    userEmail: string
+    riskScore: number
+    riskLevel: string
+    factors: string[]
+    cravingLevel: number
+    mood: string
+    smokedToday: boolean
+    currentStreak: number
+    lastCheckinDate: string
+    lastCraving: number
+    lastSymptoms: string[]
+  }>
+  recentRelapses: Array<{
+    _id: string
+    userName: string
+    userEmail: string
+    date: string
+    cravingLevel: number
+    cigarettesSmokedCount: number
+    symptoms: string[]
+  }>
+}
+
 export const adminStatsService = {
   getOverview: () => request<OverviewStats>("/overview"),
   getUsersStats: (filters: AnalyticsFilters) => request<UserStats>("/users", filters),
@@ -212,6 +256,9 @@ export const adminStatsService = {
   getSymptomsStats: (filters: AnalyticsFilters) => request<SymptomStats>("/symptoms", filters),
   getRelapseStats: (filters: AnalyticsFilters) => request<RelapseStats>("/relapses", filters),
   getResearchStats: (filters: AnalyticsFilters) => request<ResearchStats>("/research", filters),
+  getSummary: () => request<SummaryStats>("/summary"),
+  getHeatmapCravings: (filters: AnalyticsFilters) => request<HeatmapEntry[]>("/heatmap/cravings", filters),
+  getAlertsHighRisk: () => request<AlertHighRisk>("/alerts/high-risk"),
   downloadCheckinsCSV: async () => {
     const response = await axios.get(`${ADMIN_STATS_URL}/export/checkins`, {
       responseType: "blob",

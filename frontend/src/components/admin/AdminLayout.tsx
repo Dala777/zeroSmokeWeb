@@ -395,6 +395,7 @@ const AdminLayout: React.FC = () => {
     if (path.includes("/users")) return "Gestión de Usuarios"
     if (path.includes("/admins")) return "Administradores"
     if (path.includes("/messages")) return "Mensajes"
+    if (path.includes("/analytics")) return "Analytics Avanzado"
     if (path.includes("/settings")) return "Configuración"
 
     return "Panel de Administración"
@@ -415,6 +416,9 @@ const AdminLayout: React.FC = () => {
             <MenuTitle>Panel Principal</MenuTitle>
             <MenuItem to="/admin/dashboard" onClick={closeSidebar}>
               <MenuIcon>📊</MenuIcon> Dashboard
+            </MenuItem>
+            <MenuItem to="/admin/analytics" onClick={closeSidebar}>
+              <MenuIcon>📈</MenuIcon> Analytics Avanzado
             </MenuItem>
           </MenuSection>
 

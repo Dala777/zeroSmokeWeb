@@ -33,11 +33,13 @@ import adminStatsService, {
   AnalyticsGranularity,
   CheckinStats,
   CravingStats,
+  HeatmapEntry,
   HighRiskUser,
   NotificationStats,
   OverviewStats,
   RelapseStats,
   ResearchStats,
+  SummaryStats,
   SymptomStats,
   UserStats,
 } from "../../services/adminStatsService"
@@ -327,6 +329,58 @@ const AdherenceTrack = styled.div`
   margin-top: 4px;
 `
 
+const HeatmapWrapper = styled.div`
+  overflow-x: auto;
+  max-height: 420px;
+  overflow-y: auto;
+`
+
+const HeatmapTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+
+  th,
+  td {
+    padding: 3px 4px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    min-width: 34px;
+  }
+
+  th {
+    font-weight: 600;
+    color: ${AppColors.textSecondary};
+    background: ${AppColors.background};
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+`
+
+const HeatmapCellStyled = styled.td<{ $value: number; $hasData: boolean }>`
+  background-color: ${(p) =>
+    p.$hasData
+      ? p.$value >= 8
+        ? "#E53935"
+        : p.$value >= 6
+          ? "#FB8C00"
+          : p.$value >= 4
+            ? "#FDD835"
+            : p.$value >= 2
+              ? "#81C784"
+              : "#E8F5E9"
+      : "transparent"};
+  color: ${(p) => (p.$hasData && p.$value >= 6 ? "#fff" : AppColors.text)};
+  font-weight: ${(p) => (p.$hasData ? 600 : 400)};
+  cursor: ${(p) => (p.$hasData ? "pointer" : "default")};
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`
+
 const tooltipStyle = {
   border: "none",
   borderRadius: "8px",
@@ -372,6 +426,8 @@ const Dashboard: React.FC = () => {
   const [symptomsStats, setSymptomsStats] = useState<SymptomStats | null>(null)
   const [relapseStats, setRelapseStats] = useState<RelapseStats | null>(null)
   const [researchStats, setResearchStats] = useState<ResearchStats | null>(null)
+  const [summaryStats, setSummaryStats] = useState<SummaryStats | null>(null)
+  const [heatmapData, setHeatmapData] = useState<HeatmapEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState("")
@@ -387,7 +443,7 @@ const Dashboard: React.FC = () => {
       }
       setError("")
 
-      const [overviewData, usersData, checkinsData, cravingsData, notificationsData, highRiskData, symptomsData, relapsesData, researchData] =
+      const [overviewData, usersData, checkinsData, cravingsData, notificationsData, highRiskData, symptomsData, relapsesData, researchData, summaryData, heatmapDataResult] =
         await Promise.all([
           adminStatsService.getOverview(),
           adminStatsService.getUsersStats(filters),
@@ -398,6 +454,8 @@ const Dashboard: React.FC = () => {
           adminStatsService.getSymptomsStats(filters),
           adminStatsService.getRelapseStats(filters),
           adminStatsService.getResearchStats(filters),
+          adminStatsService.getSummary(),
+          adminStatsService.getHeatmapCravings(filters),
         ])
 
       setOverview(overviewData)
@@ -409,6 +467,8 @@ const Dashboard: React.FC = () => {
       setSymptomsStats(symptomsData)
       setRelapseStats(relapsesData)
       setResearchStats(researchData)
+      setSummaryStats(summaryData)
+      setHeatmapData(heatmapDataResult)
     } catch (err: any) {
       const message =
         err?.response?.data?.message ||
@@ -434,6 +494,12 @@ const Dashboard: React.FC = () => {
         { label: "Recaidas Hoy", value: formatNumber(overview.relapsesToday), icon: <AlertTriangle size={22} /> },
         { label: "Push Enviadas", value: formatNumber(overview.notificationsSent), icon: <Bell size={22} /> },
         { label: "Alto Riesgo", value: formatNumber(overview.highRiskUsers), icon: <AlertTriangle size={22} /> },
+        ...(summaryStats
+          ? [
+              { label: "Planes Activos", value: formatNumber(summaryStats.activePlans), icon: <TrendingUp size={22} /> },
+              { label: "Planes Completados", value: formatNumber(summaryStats.completedPlans), icon: <Activity size={22} /> },
+            ]
+          : []),
       ]
     : []
 
@@ -943,6 +1009,59 @@ const Dashboard: React.FC = () => {
           )}
         </SectionCard>
       </Grid2>
+
+      <ResearchHeader>
+        <BarChart3 size={24} />
+        <h2>Mapa de Calor de Craving</h2>
+      </ResearchHeader>
+
+      <SectionCard>
+        {heatmapData.length > 0 ? (
+          <HeatmapWrapper>
+            <HeatmapTable>
+              <thead>
+                <tr>
+                  <th>Hora</th>
+                  {["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"].map((day) => (
+                    <th key={day}>{day}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: 24 }, (_, h) => {
+                  const hour = `${h}:00`
+                  return (
+                    <tr key={hour}>
+                      <th>{hour}</th>
+                      {["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"].map((day) => {
+                        const entry = heatmapData.find((e) => e.x === day && e.y === hour)
+                        return (
+                          <HeatmapCellStyled
+                            key={`${day}-${hour}`}
+                            $value={entry?.value ?? 0}
+                            $hasData={!!entry}
+                            title={
+                              entry
+                                ? `${day} ${hour}: ${entry.value.toFixed(1)} (${entry.count} eventos)`
+                                : ""
+                            }
+                          >
+                            {entry ? entry.value.toFixed(1) : ""}
+                          </HeatmapCellStyled>
+                        )
+                      })}
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </HeatmapTable>
+          </HeatmapWrapper>
+        ) : (
+          <EmptyState style={{ height: 120 }}>
+            Sin datos de craving para el mapa de calor en el rango seleccionado.
+          </EmptyState>
+        )}
+      </SectionCard>
     </>
   )
 }

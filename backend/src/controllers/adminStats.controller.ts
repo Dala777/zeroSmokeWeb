@@ -493,6 +493,18 @@ export const getNotificationStats = async (req: Request, res: Response): Promise
 
     const summaryRow = summary[0]
     const readRate = summaryRow && summaryRow.sent > 0 ? (summaryRow.read / summaryRow.sent) * 100 : 0
+    const notifSeries = normalizeSeries(seriesRows, (row) => ({
+      period: row._id,
+      sent: row.sent,
+      read: row.read,
+      readRate: row.sent > 0 ? roundNumber((row.read / row.sent) * 100) : 0,
+      uniqueUsers: row.uniqueUsers.length,
+    }))
+
+    if (req.query.format === "grafana") {
+      sendGrafanaSeries(res, notifSeries, "sent")
+      return
+    }
 
     res.status(200).json({
       success: true,
@@ -503,13 +515,7 @@ export const getNotificationStats = async (req: Request, res: Response): Promise
           readRate: roundNumber(readRate),
           uniqueUsers: summaryRow?.uniqueUsers.length || 0,
         },
-        series: normalizeSeries(seriesRows, (row) => ({
-          period: row._id,
-          sent: row.sent,
-          read: row.read,
-          readRate: row.sent > 0 ? roundNumber((row.read / row.sent) * 100) : 0,
-          uniqueUsers: row.uniqueUsers.length,
-        })),
+        series: notifSeries,
         byType: byTypeRows.map((row) => ({
           type: row._id,
           sent: row.sent,
@@ -656,6 +662,15 @@ export const getSymptomsStats = async (req: Request, res: Response): Promise<voi
     ])
 
     const totalAffected = await DailyCheckin.distinct("userId", match)
+    const symptomTimeSeries = normalizeSeries(symptomSeries, (row) => ({
+      period: row._id,
+      symptomCount: row.symptoms.reduce((sum, sym) => sum + sym.count, 0),
+    }))
+
+    if (req.query.format === "grafana") {
+      sendGrafanaSeries(res, symptomTimeSeries, "symptomCount")
+      return
+    }
 
     res.status(200).json({
       success: true,
@@ -811,6 +826,18 @@ export const getResearchStats = async (req: Request, res: Response): Promise<voi
       ]),
     ])
 
+    const weeklySeries = normalizeSeries(weeklyTrend, (row) => ({
+      period: row._id,
+      avgCraving: roundNumber(row.avgCraving || 0),
+      checkins: row.checkins,
+      relapses: row.relapses,
+    }))
+
+    if (req.query.format === "grafana") {
+      sendGrafanaSeries(res, weeklySeries, "checkins")
+      return
+    }
+
     res.status(200).json({
       success: true,
       data: {
@@ -827,12 +854,7 @@ export const getResearchStats = async (req: Request, res: Response): Promise<voi
           averageCompletion: roundNumber(p.avgCompletion || 0),
           averageCurrentDay: Math.round(p.avgCurrentDay || 0),
         })),
-        weeklyTrend: normalizeSeries(weeklyTrend, (row) => ({
-          period: row._id,
-          avgCraving: roundNumber(row.avgCraving || 0),
-          checkins: row.checkins,
-          relapses: row.relapses,
-        })),
+        weeklyTrend: weeklySeries,
       },
       meta: rangePayload(range),
     })
@@ -897,4 +919,175 @@ export const withGrafanaFormat = (
     return true
   }
   return false
+}
+
+export const getSummaryStats = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const todayStart = startOfDay(new Date())
+    const tomorrowStart = endOfDay(todayStart)
+    const todayKey = buildDateKey(todayStart)
+
+    const [totalUsers, activeUsers, cravingResult, relapsesResult, activePlans, completedPlans] = await Promise.all([
+      User.countDocuments(),
+      User.countDocuments({ status: "active" }),
+      DailyCheckin.aggregate<{ _id: null; averageCraving: number }>([
+        { $match: { date: { $gte: todayStart, $lt: tomorrowStart }, cravingLevel: { $type: "number" } } },
+        { $group: { _id: null, averageCraving: { $avg: "$cravingLevel" } } },
+      ]),
+      DailyCheckin.countDocuments({ date: { $gte: todayStart, $lt: tomorrowStart }, smokedToday: true }),
+      UserPlan.countDocuments({ status: "active" }),
+      UserPlan.countDocuments({ status: "completed" }),
+    ])
+
+    const payload = {
+      totalUsers,
+      activeUsers,
+      averageCraving: roundNumber(cravingResult[0]?.averageCraving || 0),
+      totalRelapses: relapsesResult,
+      activePlans,
+      completedPlans,
+    }
+
+    if (req.query.format === "grafana") {
+      res.status(200).json(payload)
+      return
+    }
+
+    res.status(200).json({ success: true, data: payload })
+  } catch (error) {
+    console.error("[admin-stats] Error getting summary:", error)
+    res.status(500).json({ success: false, message: "Error al obtener resumen" })
+  }
+}
+
+export const getHeatmapCravings = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const range = parseDateRange(req)
+
+    const heatmap = await DailyCheckin.aggregate<{
+      _id: { dayOfWeek: number; hour: number }
+      avgCraving: number
+      count: number
+    }>([
+      { $match: { date: { $gte: range.from, $lte: range.to }, cravingLevel: { $type: "number" } } },
+      {
+        $group: {
+          _id: {
+            dayOfWeek: { $dayOfWeek: "$date" },
+            hour: { $hour: "$date" },
+          },
+          avgCraving: { $avg: "$cravingLevel" },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id.dayOfWeek": 1, "_id.hour": 1 } },
+    ])
+
+    const dayNames = ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"]
+    const result = heatmap
+      .filter((h) => h._id.dayOfWeek >= 1 && h._id.dayOfWeek <= 7)
+      .map((h) => ({
+        x: dayNames[h._id.dayOfWeek - 1] || `D${h._id.dayOfWeek}`,
+        y: `${h._id.hour}:00`,
+        value: roundNumber(h.avgCraving),
+        count: h.count,
+      }))
+
+    res.status(200).json({ success: true, data: result })
+  } catch (error) {
+    console.error("[admin-stats] Error getting heatmap:", error)
+    res.status(500).json({ success: false, message: "Error al obtener heatmap de cravings" })
+  }
+}
+
+export const getAlertsHighRisk = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const range = parseDateRange(req)
+    const todayKey = buildDateKey(new Date())
+
+    const [recentAlerts, recentRelapses] = await Promise.all([
+      RiskSnapshot.aggregate([
+        { $match: { dateKey: todayKey, riskLevel: "alto" } },
+        { $sort: { riskScore: -1 } },
+        { $limit: 20 },
+        {
+          $lookup: {
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "dailycheckins",
+            let: { uid: "$userId" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$userId", "$$uid"] } } },
+              { $sort: { date: -1 } },
+              { $limit: 1 },
+            ],
+            as: "lastCheckin",
+          },
+        },
+        { $unwind: { path: "$lastCheckin", preserveNullAndEmptyArrays: true } },
+        {
+          $project: {
+            _id: 1,
+            userId: 1,
+            userName: "$user.name",
+            userEmail: "$user.email",
+            riskScore: 1,
+            riskLevel: 1,
+            factors: 1,
+            cravingLevel: 1,
+            mood: 1,
+            smokedToday: 1,
+            currentStreak: 1,
+            lastCheckinDate: "$lastCheckin.date",
+            lastCraving: "$lastCheckin.cravingLevel",
+            lastSymptoms: "$lastCheckin.symptoms",
+          },
+        },
+      ]),
+      DailyCheckin.aggregate([
+        { $match: { date: { $gte: range.from, $lte: range.to }, smokedToday: true } },
+        { $sort: { date: -1 } },
+        { $limit: 10 },
+        {
+          $lookup: {
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+        {
+          $project: {
+            _id: 1,
+            userName: "$user.name",
+            userEmail: "$user.email",
+            date: 1,
+            cravingLevel: 1,
+            cigarettesSmokedCount: 1,
+            symptoms: 1,
+          },
+        },
+      ]),
+    ])
+
+    const payload = { alerts: recentAlerts, recentRelapses }
+
+    if (req.query.format === "grafana") {
+      res.status(200).json(payload)
+      return
+    }
+
+    res.status(200).json({ success: true, data: payload })
+  } catch (error) {
+    console.error("[admin-stats] Error getting alerts:", error)
+    res.status(500).json({ success: false, message: "Error al obtener alertas de alto riesgo" })
+  }
 }

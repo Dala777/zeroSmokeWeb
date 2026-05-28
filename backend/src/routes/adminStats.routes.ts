@@ -1,12 +1,15 @@
 import { Router } from "express"
 import {
+  getAlertsHighRisk,
   getCheckinStats,
   getCravingStats,
+  getHeatmapCravings,
   getHighRiskUsers,
   getNotificationStats,
   getOverviewStats,
   getRelapseStats,
   getResearchStats,
+  getSummaryStats,
   getSymptomsStats,
   getUserStats,
   exportCheckinsCSV,
@@ -28,5 +31,8 @@ router.get("/symptoms", getSymptomsStats)
 router.get("/relapses", getRelapseStats)
 router.get("/research", getResearchStats)
 router.get("/export/checkins", exportCheckinsCSV)
+router.get("/summary", getSummaryStats)
+router.get("/heatmap/cravings", getHeatmapCravings)
+router.get("/alerts/high-risk", getAlertsHighRisk)
 
 export default router
