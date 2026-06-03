@@ -7,7 +7,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom"
 import { AppColors } from "../../styles/colors"
 import Button from "../ui/Button"
 import { useAuth } from "../../contexts/AuthContext"
-import { ChevronRight, LayoutDashboard, BarChart2, Home, FileText, HelpCircle, Users, Shield, MessageSquare, Settings, LogOut } from "lucide-react"
+import { ChevronRight, LayoutDashboard, BarChart2, Brain, Home, FileText, HelpCircle, Users, Shield, MessageSquare, Settings, LogOut } from "lucide-react"
 
 const AdminContainer = styled.div`
   display: flex;
@@ -407,6 +407,7 @@ const AdminLayout: React.FC = () => {
     if (path.includes("/admins")) return "Administradores"
     if (path.includes("/messages")) return "Mensajes"
     if (path.includes("/analytics")) return "Analytics Avanzado"
+    if (path.includes("/data-science")) return "Ciencia de Datos"
     if (path.includes("/settings")) return "Configuración"
 
     return "Panel de Administración"
@@ -431,6 +432,9 @@ const AdminLayout: React.FC = () => {
             </MenuItem>
             <MenuItem to="/admin/analytics" onClick={closeSidebar}>
               <MenuIcon><BarChart2 size={18} /></MenuIcon> Analytics Avanzado
+            </MenuItem>
+            <MenuItem to="/admin/data-science" onClick={closeSidebar}>
+              <MenuIcon><Brain size={18} /></MenuIcon> Ciencia de Datos
             </MenuItem>
           </MenuSection>
 

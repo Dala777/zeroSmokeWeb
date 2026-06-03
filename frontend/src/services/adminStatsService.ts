@@ -246,6 +246,18 @@ export interface AlertHighRisk {
   }>
 }
 
+export interface LinearRegressionResult {
+  equation: string
+  slope: number
+  intercept: number
+  r2: number
+  mae: number
+  rmse: number
+  datasetSize: number
+  points: Array<{ cravingLevel: number; relapseRisk: number }>
+  predictions: Array<{ cravingLevel: number; predicted: number; actual: number }>
+}
+
 export const adminStatsService = {
   getOverview: () => request<OverviewStats>("/overview"),
   getUsersStats: (filters: AnalyticsFilters) => request<UserStats>("/users", filters),
@@ -259,6 +271,10 @@ export const adminStatsService = {
   getSummary: () => request<SummaryStats>("/summary"),
   getHeatmapCravings: (filters: AnalyticsFilters) => request<HeatmapEntry[]>("/heatmap/cravings", filters),
   getAlertsHighRisk: () => request<AlertHighRisk>("/alerts/high-risk"),
+  getLinearRegression: () =>
+    axios
+      .get<LinearRegressionResult>(`${API_URL}/admin/ml/linear-regression`)
+      .then((r) => r.data),
   downloadCheckinsCSV: async () => {
     const response = await axios.get(`${ADMIN_STATS_URL}/export/checkins`, {
       responseType: "blob",
