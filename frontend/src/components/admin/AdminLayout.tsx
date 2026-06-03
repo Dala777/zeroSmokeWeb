@@ -407,6 +407,7 @@ const AdminLayout: React.FC = () => {
     if (path.includes("/admins")) return "Administradores"
     if (path.includes("/messages")) return "Mensajes"
     if (path.includes("/analytics")) return "Analytics Avanzado"
+    if (path.includes("/data-science-v2")) return "Data Science v2 (Académico)"
     if (path.includes("/data-science")) return "Ciencia de Datos"
     if (path.includes("/settings")) return "Configuración"
 
@@ -435,6 +436,9 @@ const AdminLayout: React.FC = () => {
             </MenuItem>
             <MenuItem to="/admin/data-science" onClick={closeSidebar}>
               <MenuIcon><Brain size={18} /></MenuIcon> Ciencia de Datos
+            </MenuItem>
+            <MenuItem to="/admin/data-science-v2" onClick={closeSidebar}>
+              <MenuIcon><Brain size={18} /></MenuIcon> Data Science v2 (Académico)
             </MenuItem>
           </MenuSection>
 

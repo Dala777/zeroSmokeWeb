@@ -11,6 +11,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "seed:plans": "ts-node src/config/runSeed.ts",
+    "seed:datascience": "ts-node src/scripts/seedDataScience.ts",
     "transform:plans": "ts-node src/config/transformPlans.ts"
   },
   "keywords": [],

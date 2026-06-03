@@ -18,6 +18,7 @@ import MessagesList from "./pages/admin/MessagesList"
 import MessageDetail from "./pages/admin/MessageDetail"
 import AnalyticsPage from "./pages/admin/AnalyticsPage"
 import DataSciencePage from "./pages/admin/DataSciencePage"
+import DataScienceV2Page from "./pages/admin/DataScienceV2Page"
 import LoginPage from "./pages/LoginPage"
 import RegisterPage from "./pages/RegisterPage"
 import Chatbot from "./components/Chatbot"
@@ -73,6 +74,7 @@ const AppRoutes: React.FC = () => {
           <Route path="messages/:id" element={<MessageDetail />} />
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="data-science" element={<DataSciencePage />} />
+          <Route path="data-science-v2" element={<DataScienceV2Page />} />
         </Route>
 
         {/* Estructura de rutas para el layout principal */}
