@@ -1,6 +1,5 @@
 import type React from "react"
 import styled from "styled-components"
-import { AppColors } from "../../styles/colors"
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
@@ -19,26 +18,26 @@ const InputLabel = styled.label`
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: ${AppColors.textSecondary};
+  color: #6B7280;
 `
 
 const StyledInput = styled.input<{ hasError?: boolean }>`
-  padding: 0.75rem 1rem;
-  border: 1px solid ${(props) => (props.hasError ? AppColors.error : "rgba(255, 255, 255, 0.2)")};
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: ${AppColors.text};
-  font-size: 1rem;
+  padding: 10px 14px;
+  border: 1px solid ${(props) => (props.hasError ? "#DC2626" : "#D1D5DB")};
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: #111827;
+  font-size: 14px;
   transition: all 0.3s ease;
   
   &:focus {
     outline: none;
-    border-color: ${(props) => (props.hasError ? AppColors.error : AppColors.primary)};
-    box-shadow: 0 0 0 2px ${(props) => (props.hasError ? "rgba(229, 115, 115, 0.2)" : "rgba(76, 175, 80, 0.2)")};
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
   }
   
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: #9CA3AF;
   }
   
   &:disabled {
@@ -48,7 +47,7 @@ const StyledInput = styled.input<{ hasError?: boolean }>`
 `
 
 const ErrorMessage = styled.span`
-  color: ${AppColors.error};
+  color: #DC2626;
   font-size: 0.75rem;
   margin-top: 0.25rem;
 `

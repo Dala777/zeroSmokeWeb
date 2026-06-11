@@ -2,7 +2,6 @@ import type React from "react"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import axios from "axios"
-import { AppColors } from "../../styles/colors"
 import Button from "../../components/ui/Button"
 import Input from "../../components/ui/Input"
 import LoadingState from "../../components/admin/LoadingState"
@@ -24,8 +23,6 @@ interface AdminUser {
 
 const PageContainer = styled.div`
   padding: 1.5rem;
-  background-color: ${AppColors.background};
-  border-radius: 8px;
 `
 
 const PageHeader = styled.div`
@@ -37,7 +34,8 @@ const PageHeader = styled.div`
 
 const PageTitle = styled.h2`
   font-size: 1.5rem;
-  color: ${AppColors.primary};
+  color: #111827;
+  font-weight: 700;
 `
 
 const SearchContainer = styled.div`
@@ -56,115 +54,123 @@ const FilterContainer = styled.div`
 `
 
 const SelectFilter = styled.select`
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: ${AppColors.text};
-  font-size: 1rem;
+  padding: 10px 14px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: #111827;
+  font-size: 14px;
 
   &:focus {
     outline: none;
-    border-color: ${AppColors.primary};
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
   }
 `
 
 const TableContainer = styled.div`
   overflow-x: auto;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  background: white;
 `
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  background-color: ${AppColors.cardBackground};
-  border-radius: 8px;
-  overflow: hidden;
 `
 
 const TableHead = styled.thead`
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: #F9FAFB;
 `
 
 const TableRow = styled.tr`
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #E5E7EB;
 
   &:last-child {
     border-bottom: none;
   }
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: #F9FAFB;
   }
 `
 
 const TableHeader = styled.th`
-  padding: 1rem;
+  padding: 12px 16px;
   text-align: left;
-  font-weight: 500;
-  color: ${AppColors.textSecondary};
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
 `
 
 const TableCell = styled.td`
-  padding: 1rem;
-  color: ${AppColors.text};
+  padding: 12px 16px;
+  color: #111827;
+  font-size: 14px;
 `
 
 const UserAvatar = styled.div`
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background-color: ${AppColors.primary};
+  background-color: #16a34a;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   color: white;
+  font-size: 13px;
 `
 
 const UserStatus = styled.span<{ $status: "active" | "inactive" | "pending" }>`
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
   background-color: ${(p) =>
     p.$status === "active"
-      ? "rgba(76, 175, 80, 0.2)"
+      ? "#DCFCE7"
       : p.$status === "inactive"
-        ? "rgba(229, 115, 115, 0.2)"
-        : "rgba(255, 183, 77, 0.2)"};
+        ? "#FEE2E2"
+        : "#FEF3C7"};
   color: ${(p) =>
-    p.$status === "active" ? AppColors.success : p.$status === "inactive" ? AppColors.error : AppColors.warning};
+    p.$status === "active" ? "#15803D" : p.$status === "inactive" ? "#DC2626" : "#D97706"};
 `
 
 const DependencyBadge = styled.span<{ $level: string }>`
-  display: inline-block;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
   background-color: ${(p) =>
-    p.$level === "high" ? "rgba(229, 115, 115, 0.2)" : p.$level === "moderate" ? "rgba(255, 183, 77, 0.2)" : "rgba(76, 175, 80, 0.2)"};
+    p.$level === "high" ? "#FEE2E2" : p.$level === "moderate" ? "#FEF3C7" : "#DCFCE7"};
   color: ${(p) =>
-    p.$level === "high" ? AppColors.error : p.$level === "moderate" ? AppColors.warning : AppColors.success};
+    p.$level === "high" ? "#DC2626" : p.$level === "moderate" ? "#D97706" : "#15803D"};
 `
 
-const ActionButton = styled.button`
-  background-color: rgba(255, 255, 255, 0.1);
-  color: ${AppColors.text};
+const ActionButton = styled.button<{ $variant?: "warning" | "danger" }>`
+  background: none;
   border: none;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  padding: 4px 8px;
+  font-size: 13px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-right: 0.5rem;
+  color: ${(p) => (p.$variant === "danger" ? "#DC2626" : "#D97706")};
+  text-decoration: underline;
+  text-underline-offset: 2px;
 
   &:hover {
-    background-color: ${AppColors.primary};
-    color: white;
+    opacity: 0.8;
   }
 
-  &:last-child {
-    margin-right: 0;
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 `
 
@@ -176,21 +182,21 @@ const Pagination = styled.div`
   margin-top: 2rem;
 `
 
-const PageButton = styled.button<{ $isActive?: boolean }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
+const PageButton = styled.button<{ $active?: boolean }>`
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(p) => (p.$isActive ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
-  color: ${(p) => (p.$isActive ? "white" : AppColors.text)};
-  border: none;
+  background-color: ${(p) => (p.$active ? "#16a34a" : "transparent")};
+  color: ${(p) => (p.$active ? "white" : "#6B7280")};
+  border: 1px solid ${(p) => (p.$active ? "#16a34a" : "#D1D5DB")};
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 14px;
 
   &:hover:not([disabled]) {
-    background-color: ${(p) => (p.$isActive ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
+    background-color: ${(p) => (p.$active ? "#15803d" : "#F9FAFB")};
   }
 
   &:disabled {
@@ -214,7 +220,7 @@ const MetaRow = styled.div`
 `
 
 const PaginationInfo = styled.span`
-  color: ${AppColors.textSecondary};
+  color: #6B7280;
   font-size: 0.875rem;
 `
 
@@ -437,10 +443,10 @@ const UsersList: React.FC = () => {
                   {user.lastLogin ? formatDate(user.lastLogin) : <span style={{ opacity: 0.4 }}>Nunca</span>}
                 </TableCell>
                 <TableCell>
-                  <ActionButton disabled={toggling === user._id} onClick={() => handleStatusToggle(user._id, user.status)}>
+                  <ActionButton $variant="warning" disabled={toggling === user._id} onClick={() => handleStatusToggle(user._id, user.status)}>
                     {user.status === "active" ? "Desactivar" : "Activar"}
                   </ActionButton>
-                  <ActionButton onClick={() => handleDelete(user._id)}>Eliminar</ActionButton>
+                  <ActionButton $variant="danger" onClick={() => handleDelete(user._id)}>Eliminar</ActionButton>
                 </TableCell>
               </TableRow>
             ))}

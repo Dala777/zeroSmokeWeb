@@ -1,7 +1,6 @@
 import type React from "react"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
-import { AppColors } from "../../styles/colors"
 import Button from "../../components/ui/Button"
 import Card from "../../components/ui/Card"
 import Input from "../../components/ui/Input"
@@ -20,8 +19,6 @@ interface AdminFAQ {
 
 const PageContainer = styled.div`
   padding: 1.5rem;
-  background-color: ${AppColors.background};
-  border-radius: 8px;
 `
 
 const PageHeader = styled.div`
@@ -33,7 +30,8 @@ const PageHeader = styled.div`
 
 const PageTitle = styled.h2`
   font-size: 1.5rem;
-  color: ${AppColors.primary};
+  color: #111827;
+  font-weight: 700;
 `
 
 const SearchContainer = styled.div`
@@ -51,27 +49,27 @@ const CategoryFilter = styled.div`
 `
 
 const CategoryPill = styled.button<{ active: boolean }>`
-  padding: 0.5rem 1rem;
+  padding: 6px 16px;
   border-radius: 20px;
-  background-color: ${(p) => (p.active ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
-  color: ${(p) => (p.active ? "white" : AppColors.text)};
-  border: none;
+  background-color: ${(p) => (p.active ? "#16a34a" : "#F3F4F6")};
+  color: ${(p) => (p.active ? "white" : "#6B7280")};
+  border: 1px solid ${(p) => (p.active ? "#16a34a" : "#D1D5DB")};
   font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    background-color: ${(p) => (p.active ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
+    background-color: ${(p) => (p.active ? "#15803d" : "#E5E7EB")};
   }
 `
 
 const ClickableCard = styled(Card)`
   margin-bottom: 1rem;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: box-shadow 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
 `
 
@@ -84,20 +82,22 @@ const FaqHeader = styled.div`
 
 const FaqQuestion = styled.h3`
   font-size: 1.125rem;
-  color: ${AppColors.textSecondary};
+  color: #111827;
+  font-weight: 600;
   margin-bottom: 0.5rem;
 `
 
 const FaqCategory = styled.span`
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  background-color: rgba(76, 175, 80, 0.1);
-  color: ${AppColors.primary};
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  background-color: #DCFCE7;
+  color: #15803D;
 `
 
 const FaqAnswer = styled.p`
-  color: ${AppColors.text};
+  color: #6B7280;
   margin-bottom: 1rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -110,42 +110,41 @@ const FaqActions = styled.div`
   gap: 0.5rem;
 `
 
-const ActionButton = styled.button`
-  background-color: rgba(255, 255, 255, 0.1);
-  color: ${AppColors.text};
+const ActionButton = styled.button<{ $variant?: "warning" | "danger" }>`
+  background: none;
   border: none;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  padding: 4px 8px;
+  font-size: 13px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  color: ${(p) => (p.$variant === "danger" ? "#DC2626" : "#D97706")};
+  text-decoration: underline;
+  text-underline-offset: 2px;
 
   &:hover {
-    background-color: ${AppColors.primary};
-    color: white;
+    opacity: 0.8;
   }
 `
 
 const TextArea = styled.textarea`
   width: 100%;
   min-height: 120px;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: ${AppColors.text};
-  font-size: 1rem;
+  padding: 10px 14px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: #111827;
+  font-size: 14px;
   font-family: inherit;
   resize: vertical;
 
   &:focus {
     outline: none;
-    border-color: ${AppColors.primary};
-    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: #9CA3AF;
   }
 `
 
@@ -178,15 +177,22 @@ const ModalHeader = styled.div`
 
 const ModalTitle = styled.h2`
   font-size: 1.25rem;
-  color: ${AppColors.primary};
+  color: #111827;
+  font-weight: 700;
 `
 
 const CloseButton = styled.button`
   background: none;
   border: none;
-  color: ${AppColors.text};
+  color: #6B7280;
   font-size: 1.5rem;
   cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+
+  &:hover {
+    color: #111827;
+  }
 `
 
 const FormLabel = styled.label`
@@ -194,7 +200,7 @@ const FormLabel = styled.label`
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: ${AppColors.textSecondary};
+  color: #6B7280;
 `
 
 const ButtonContainer = styled.div`
@@ -206,16 +212,17 @@ const ButtonContainer = styled.div`
 
 const SelectFilter = styled.select`
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: ${AppColors.text};
-  font-size: 1rem;
+  padding: 10px 14px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: #111827;
+  font-size: 14px;
 
   &:focus {
     outline: none;
-    border-color: ${AppColors.primary};
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
   }
 `
 
@@ -380,7 +387,7 @@ const FaqsList: React.FC = () => {
       </CategoryFilter>
 
       {filteredFaqs.length === 0 && (
-        <div style={{ textAlign: "center", padding: 32, opacity: 0.6, color: AppColors.textSecondary }}>
+        <div style={{ textAlign: "center", padding: 32, opacity: 0.6, color: "#6B7280" }}>
           {searchTerm || selectedCategory !== "Todas"
             ? "No se encontraron preguntas con los filtros actuales."
             : "No hay preguntas frecuentes registradas."}
@@ -399,7 +406,7 @@ const FaqsList: React.FC = () => {
 
             <FaqActions onClick={(e) => e.stopPropagation()}>
               <ActionButton onClick={() => handleOpenModal(faq)}>Editar</ActionButton>
-              <ActionButton onClick={() => handleDelete(faq._id)}>Eliminar</ActionButton>
+              <ActionButton $variant="danger" onClick={() => handleDelete(faq._id)}>Eliminar</ActionButton>
             </FaqActions>
           </ClickableCard>
         </div>

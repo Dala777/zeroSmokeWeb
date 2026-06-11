@@ -2,7 +2,6 @@ import type React from "react"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
-import { AppColors } from "../../styles/colors"
 import Button from "../../components/ui/Button"
 import Card from "../../components/ui/Card"
 import Input from "../../components/ui/Input"
@@ -26,8 +25,6 @@ interface AdminArticle {
 
 const PageContainer = styled.div`
   padding: 1.5rem;
-  background-color: ${AppColors.background};
-  border-radius: 8px;
 `
 
 const PageHeader = styled.div`
@@ -39,7 +36,8 @@ const PageHeader = styled.div`
 
 const PageTitle = styled.h2`
   font-size: 1.5rem;
-  color: ${AppColors.primary};
+  color: #111827;
+  font-weight: 700;
 `
 
 const SearchContainer = styled.div`
@@ -57,16 +55,17 @@ const FilterContainer = styled.div`
 `
 
 const SelectFilter = styled.select`
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: ${AppColors.text};
-  font-size: 1rem;
+  padding: 10px 14px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: #111827;
+  font-size: 14px;
 
   &:focus {
     outline: none;
-    border-color: ${AppColors.primary};
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
   }
 `
 
@@ -83,8 +82,8 @@ const ArticleCard = styled(Card)`
 const ArticleImage = styled.div`
   width: 100%;
   height: 200px;
-  background-color: ${AppColors.cardBackground};
-  border-radius: 4px;
+  background-color: #F9FAFB;
+  border-radius: 8px;
   overflow: hidden;
   margin-bottom: 1rem;
 
@@ -116,16 +115,18 @@ const ArticleHeader = styled.div`
 
 const ArticleTitle = styled.h3`
   font-size: 1.25rem;
-  color: ${AppColors.textSecondary};
+  color: #111827;
+  font-weight: 600;
   margin-bottom: 0.5rem;
 `
 
 const ArticleStatus = styled.span<{ $status: "published" | "draft" }>`
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  background-color: ${(p) => (p.$status === "published" ? "rgba(76, 175, 80, 0.2)" : "rgba(255, 183, 77, 0.2)")};
-  color: ${(p) => (p.$status === "published" ? AppColors.success : AppColors.warning)};
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  background-color: ${(p) => (p.$status === "published" ? "#DCFCE7" : "#FEF3C7")};
+  color: ${(p) => (p.$status === "published" ? "#15803D" : "#D97706")};
 `
 
 const ArticleMeta = styled.div`
@@ -133,12 +134,11 @@ const ArticleMeta = styled.div`
   gap: 1rem;
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
-  color: ${AppColors.text};
-  opacity: 0.7;
+  color: #6B7280;
 `
 
 const ArticleExcerpt = styled.p`
-  color: ${AppColors.text};
+  color: #6B7280;
   margin-bottom: 1rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -152,37 +152,33 @@ const ArticleActions = styled.div`
   flex-wrap: wrap;
 `
 
-const ActionButton = styled.button`
-  background-color: rgba(255, 255, 255, 0.1);
-  color: ${AppColors.text};
+const ActionButton = styled.button<{ $variant?: "warning" | "danger" }>`
+  background: none;
   border: none;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  padding: 4px 8px;
+  font-size: 13px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  color: ${(p) => (p.$variant === "danger" ? "#DC2626" : "#D97706")};
+  text-decoration: underline;
+  text-underline-offset: 2px;
 
   &:hover {
-    background-color: ${AppColors.primary};
-    color: white;
+    opacity: 0.8;
   }
 `
 
 const ViewLink = styled.a`
-  background-color: rgba(255, 255, 255, 0.1);
-  color: ${AppColors.text};
+  background: none;
   border: none;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  padding: 4px 8px;
+  font-size: 13px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
+  color: #16a34a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 
   &:hover {
-    background-color: ${AppColors.primary};
-    color: white;
+    opacity: 0.8;
   }
 `
 
@@ -194,21 +190,21 @@ const Pagination = styled.div`
   margin-top: 2rem;
 `
 
-const PageButton = styled.button<{ $isActive?: boolean }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
+const PageButton = styled.button<{ $active?: boolean }>`
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(p) => (p.$isActive ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
-  color: ${(p) => (p.$isActive ? "white" : AppColors.text)};
-  border: none;
+  background-color: ${(p) => (p.$active ? "#16a34a" : "transparent")};
+  color: ${(p) => (p.$active ? "white" : "#6B7280")};
+  border: 1px solid ${(p) => (p.$active ? "#16a34a" : "#D1D5DB")};
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 14px;
 
   &:hover:not([disabled]) {
-    background-color: ${(p) => (p.$isActive ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
+    background-color: ${(p) => (p.$active ? "#15803d" : "#F9FAFB")};
   }
 
   &:disabled {
@@ -218,7 +214,7 @@ const PageButton = styled.button<{ $isActive?: boolean }>`
 `
 
 const PaginationInfo = styled.span`
-  color: ${AppColors.textSecondary};
+  color: #6B7280;
   font-size: 0.875rem;
 `
 
@@ -350,7 +346,7 @@ const ArticlesList: React.FC = () => {
       </FilterContainer>
 
       {paginatedArticles.length === 0 && (
-        <div style={{ textAlign: "center", padding: 32, opacity: 0.6, color: AppColors.textSecondary }}>
+        <div style={{ textAlign: "center", padding: 32, opacity: 0.6, color: "#6B7280" }}>
           {searchTerm || statusFilter !== "all"
             ? "No se encontraron artículos con los filtros actuales."
             : "No hay artículos registrados."}
@@ -385,7 +381,7 @@ const ArticlesList: React.FC = () => {
               ) : (
                 <ActionButton onClick={() => handleStatusChange(article._id, "draft")}>Pasar a borrador</ActionButton>
               )}
-              <ActionButton onClick={() => handleDelete(article._id)}>Eliminar</ActionButton>
+              <ActionButton $variant="danger" onClick={() => handleDelete(article._id)}>Eliminar</ActionButton>
               <ViewLink href={`/articles/${article._id}`} target="_blank" rel="noopener noreferrer">
                 Ver
               </ViewLink>

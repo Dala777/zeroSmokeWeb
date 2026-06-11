@@ -3,7 +3,6 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import styled from "styled-components"
-import { AppColors } from "../../styles/colors"
 import Button from "../../components/ui/Button"
 import Input from "../../components/ui/Input"
 import Card from "../../components/ui/Card"
@@ -11,13 +10,12 @@ import { getHomePageData, updateHomePageData } from "../../services/storageServi
 
 const PageContainer = styled.div`
   padding: 1.5rem;
-  background-color: ${AppColors.background};
-  border-radius: 8px;
 `
 
 const SectionTitle = styled.h2`
   font-size: 1.5rem;
-  color: ${AppColors.primary};
+  color: #111827;
+  font-weight: 700;
   margin-bottom: 1.5rem;
 `
 
@@ -27,7 +25,7 @@ const FormSection = styled.div`
 
 const FormLabel = styled.h3`
   font-size: 1.125rem;
-  color: ${AppColors.textSecondary};
+  color: #6B7280;
   margin-bottom: 1rem;
 `
 
@@ -59,53 +57,53 @@ const FeatureCardOptions = styled.div`
 `
 
 const OptionButton = styled.button`
-  background-color: rgba(255, 255, 255, 0.1);
-  color: ${AppColors.text};
-  border: none;
-  border-radius: 4px;
+  background: none;
+  color: #6B7280;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
   width: 30px;
   height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
   
   &:hover {
-    background-color: ${AppColors.primary};
+    background-color: #16a34a;
     color: white;
+    border-color: #16a34a;
   }
 `
 
 const TextArea = styled.textarea`
   width: 100%;
   min-height: 120px;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: ${AppColors.text};
-  font-size: 1rem;
+  padding: 10px 14px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: #111827;
+  font-size: 14px;
   font-family: inherit;
   resize: vertical;
   
   &:focus {
     outline: none;
-    border-color: ${AppColors.primary};
-    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
   }
   
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: #9CA3AF;
   }
 `
 
-// Enhanced image preview with better UI
 const ImagePreview = styled.div`
   width: 100%;
   height: 250px;
-  background-color: ${AppColors.cardBackground};
-  border: 1px dashed rgba(255, 255, 255, 0.3);
+  background-color: #F9FAFB;
+  border: 1px dashed #D1D5DB;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -119,38 +117,15 @@ const ImagePreview = styled.div`
     height: 100%;
     object-fit: cover;
   }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.2) 0%,
-      rgba(0, 0, 0, 0.4) 100%
-    );
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  &:hover::after {
-    opacity: 1;
-  }
 `
 
-// Add image upload helper text
 const ImageHelperText = styled.p`
   font-size: 0.85rem;
-  color: ${AppColors.textSecondary};
+  color: #6B7280;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
 `
 
-// Reemplazar los estilos inline con componentes styled
 const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -298,13 +273,13 @@ const HomePageEdit: React.FC = () => {
   )
 }
 
-// Añadir este nuevo estilo
 const SuccessMessage = styled.div`
-  background-color: rgba(76, 175, 80, 0.1);
-  color: ${AppColors.success};
+  background-color: #DCFCE7;
+  color: #15803D;
   padding: 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
+  font-size: 14px;
 `
 
 export default HomePageEdit

@@ -1,6 +1,5 @@
 import type React from "react"
 import styled, { css } from "styled-components"
-import { AppColors } from "../../styles/colors"
 
 type ButtonVariant = "primary" | "secondary" | "tertiary" | "outline" | "text"
 type ButtonSize = "small" | "medium" | "large"
@@ -16,55 +15,55 @@ const getButtonStyles = (variant: ButtonVariant) => {
   switch (variant) {
     case "primary":
       return css`
-        background-color: ${AppColors.primary};
+        background-color: #16a34a;
         color: white;
         border: none;
         
         &:hover {
-          background-color: ${AppColors.tertiary};
+          background-color: #15803d;
         }
       `
     case "secondary":
       return css`
-        background-color: ${AppColors.secondary};
-        color: ${AppColors.background};
-        border: none;
-        
-        &:hover {
-          background-color: ${AppColors.primary};
-        }
-      `
-    case "tertiary":
-      return css`
-        background-color: ${AppColors.tertiary};
+        background-color: #6B7280;
         color: white;
         border: none;
         
         &:hover {
-          background-color: ${AppColors.accent};
+          background-color: #4B5563;
+        }
+      `
+    case "tertiary":
+      return css`
+        background-color: #F3F4F6;
+        color: #111827;
+        border: none;
+        
+        &:hover {
+          background-color: #E5E7EB;
         }
       `
     case "outline":
       return css`
         background-color: transparent;
-        color: ${AppColors.primary};
-        border: 2px solid ${AppColors.primary};
+        color: #16a34a;
+        border: 2px solid #16a34a;
         
         &:hover {
-          background-color: ${AppColors.primary};
+          background-color: #16a34a;
           color: white;
         }
       `
     case "text":
       return css`
         background-color: transparent;
-        color: ${AppColors.primary};
+        color: #16a34a;
         border: none;
         padding: 0.5rem 1rem;
         
         &:hover {
-          color: ${AppColors.tertiary};
-          background-color: rgba(76, 175, 80, 0.1);
+          color: #15803d;
+          background-color: rgba(22, 163, 74, 0.1);
         }
       `
     default:
@@ -119,7 +118,7 @@ const StyledButton = styled.button<{
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3);
   }
 `
 

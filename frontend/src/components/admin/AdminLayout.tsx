@@ -407,7 +407,6 @@ const AdminLayout: React.FC = () => {
     if (path.includes("/admins")) return "Administradores"
     if (path.includes("/messages")) return "Mensajes"
     if (path.includes("/analytics")) return "Analytics Avanzado"
-    if (path.includes("/data-science-v2")) return "Data Science v2 (Académico)"
     if (path.includes("/data-science")) return "Ciencia de Datos"
     if (path.includes("/settings")) return "Configuración"
 

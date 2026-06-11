@@ -4,15 +4,11 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
-import { AppColors } from "../../styles/colors"
 import { getMessages } from "../../services/storageService"
 import type { Message } from "../../services/storageService"
 
-// Componentes estilizados
 const PageContainer = styled.div`
   padding: 1.5rem;
-  background-color: ${AppColors.background};
-  border-radius: 8px;
 `
 
 const PageHeader = styled.div`
@@ -23,21 +19,23 @@ const PageHeader = styled.div`
 `
 
 const PageTitle = styled.h2`
-  font-size: 1.5rem;
-  color: ${AppColors.primary};
+  font-size: 24px;
+  color: #111827;
+  font-weight: 700;
 `
 
 const RefreshButton = styled.button`
-  padding: 0.5rem 1rem;
-  background-color: ${AppColors.primary};
+  padding: 10px 20px;
+  background-color: #16a34a;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: ${AppColors.accent};
+    background-color: #15803d;
   }
 
   &:disabled {
@@ -52,20 +50,21 @@ const SearchContainer = styled.div`
 
 const SearchInput = styled.input`
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: ${AppColors.text};
-  font-size: 1rem;
+  padding: 10px 14px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: #111827;
+  font-size: 14px;
 
   &:focus {
     outline: none;
-    border-color: ${AppColors.primary};
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: #9CA3AF;
   }
 `
 
@@ -76,16 +75,17 @@ const FilterContainer = styled.div`
 `
 
 const FilterButton = styled.button<{ active: boolean }>`
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   border: none;
-  border-radius: 4px;
-  background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
-  color: ${(props) => (props.active ? "white" : AppColors.text)};
+  border-radius: 8px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
+  background-color: ${(props) => (props.active ? "#16a34a" : "transparent")};
+  color: ${(props) => (props.active ? "white" : "#6B7280")};
 
   &:hover {
-    background-color: ${(props) => (props.active ? AppColors.accent : "rgba(255, 255, 255, 0.2)")};
+    background-color: ${(props) => (props.active ? "#15803d" : "#F3F4F6")};
   }
 `
 
@@ -96,51 +96,68 @@ const MessagesTable = styled.table`
 `
 
 const TableHead = styled.thead`
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: #F9FAFB;
 `
 
 const TableRow = styled.tr<{ unread?: boolean }>`
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #F3F4F6;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
   font-weight: ${(props) => (props.unread ? "bold" : "normal")};
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: #F9FAFB;
   }
 `
 
 const TableHeader = styled.th`
-  padding: 1rem;
+  padding: 12px 16px;
   text-align: left;
-  color: ${AppColors.textSecondary};
-  font-size: 0.875rem;
+  color: #6B7280;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-bottom: 1px solid #E5E7EB;
 `
 
 const TableCell = styled.td`
-  padding: 1rem;
-  color: ${AppColors.text};
-  font-size: 0.875rem;
+  padding: 16px;
+  font-size: 14px;
+`
+
+const SenderCell = styled(TableCell)`
+  color: #374151;
+`
+
+const SubjectCell = styled(TableCell)`
+  color: #111827;
+  font-weight: 500;
+`
+
+const DateCell = styled(TableCell)`
+  color: #9CA3AF;
+  font-size: 13px;
 `
 
 const StatusBadge = styled.span<{ status: "new" | "read" | "answered" }>`
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
   background-color: ${(props) =>
     props.status === "new"
-      ? "rgba(255, 183, 77, 0.2)"
+      ? "#DCFCE7"
       : props.status === "read"
-        ? "rgba(33, 150, 243, 0.2)"
-        : "rgba(76, 175, 80, 0.2)"};
+        ? "#F3F4F6"
+        : "#DBEAFE"};
   color: ${(props) =>
-    props.status === "new" ? AppColors.warning : props.status === "read" ? AppColors.secondary : AppColors.success};
+    props.status === "new" ? "#15803D" : props.status === "read" ? "#6B7280" : "#1D4ED8"};
 `
 
 const EmptyState = styled.div`
   text-align: center;
   padding: 3rem;
-  color: ${AppColors.text};
+  color: #6B7280;
 `
 
 const Pagination = styled.div`
@@ -150,20 +167,20 @@ const Pagination = styled.div`
 `
 
 const PageButton = styled.button<{ active?: boolean }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
-  color: ${(props) => (props.active ? "white" : AppColors.text)};
-  border: none;
+  background-color: ${(props) => (props.active ? "#16a34a" : "transparent")};
+  color: ${(props) => (props.active ? "white" : "#6B7280")};
+  border: 1px solid ${(props) => (props.active ? "#16a34a" : "#D1D5DB")};
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 14px;
 
   &:hover:not([disabled]) {
-    background-color: ${(props) => (props.active ? AppColors.accent : "rgba(255, 255, 255, 0.2)")};
+    background-color: ${(props) => (props.active ? "#15803d" : "#F9FAFB")};
   }
 
   &:disabled {
@@ -189,12 +206,10 @@ const MessagesList: React.FC = () => {
     try {
       setLoading(true)
       const messagesData = await getMessages()
-      console.log("Mensajes recibidos:", messagesData)
       setMessages(messagesData)
       setFilteredMessages(messagesData)
       setError("")
     } catch (err: any) {
-      console.error("Error fetching messages:", err)
       setError("Error al cargar los mensajes. Por favor, intenta de nuevo más tarde.")
     } finally {
       setLoading(false)
@@ -207,7 +222,6 @@ const MessagesList: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    // Filtrar mensajes por término de búsqueda y estado
     let filtered = messages
 
     if (searchTerm) {
@@ -225,10 +239,9 @@ const MessagesList: React.FC = () => {
     }
 
     setFilteredMessages(filtered)
-    setCurrentPage(1) // Resetear a la primera página cuando cambian los filtros
+    setCurrentPage(1)
   }, [searchTerm, statusFilter, messages])
 
-  // Calcular mensajes paginados
   const indexOfLastMessage = currentPage * messagesPerPage
   const indexOfFirstMessage = indexOfLastMessage - messagesPerPage
   const currentMessages = filteredMessages.slice(indexOfFirstMessage, indexOfLastMessage)
@@ -243,8 +256,7 @@ const MessagesList: React.FC = () => {
   }
 
   const handleRowClick = (id: string | number | undefined) => {
-    if (!id) return // No hacer nada si el ID es undefined
-    console.log("Navigating to message detail:", id)
+    if (!id) return
     navigate(`/admin/messages/${id}`)
   }
 
@@ -256,7 +268,6 @@ const MessagesList: React.FC = () => {
   const renderPagination = () => {
     const pageButtons = []
 
-    // Botón anterior
     pageButtons.push(
       <PageButton
         key="prev"
@@ -267,13 +278,11 @@ const MessagesList: React.FC = () => {
       </PageButton>,
     )
 
-    // Botones de página
     for (let i = 1; i <= totalPages; i++) {
-      // Mostrar solo 5 botones de página
       if (
-        i === 1 || // Primera página
-        i === totalPages || // Última página
-        (i >= currentPage - 1 && i <= currentPage + 1) // Páginas cercanas a la actual
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - 1 && i <= currentPage + 1)
       ) {
         pageButtons.push(
           <PageButton key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
@@ -284,12 +293,10 @@ const MessagesList: React.FC = () => {
         (i === currentPage - 2 && currentPage > 3) ||
         (i === currentPage + 2 && currentPage < totalPages - 2)
       ) {
-        // Añadir puntos suspensivos
         pageButtons.push(<span key={`ellipsis-${i}`}>...</span>)
       }
     }
 
-    // Botón siguiente
     pageButtons.push(
       <PageButton
         key="next"
@@ -355,15 +362,15 @@ const MessagesList: React.FC = () => {
                   onClick={() => (message._id || message.id ? handleRowClick(message._id || message.id) : null)}
                   unread={message.status === "new"}
                 >
-                  <TableCell>{message.name}</TableCell>
-                  <TableCell>{message.subject}</TableCell>
-                  <TableCell>
+                  <SenderCell>{message.name}</SenderCell>
+                  <SubjectCell>{message.subject}</SubjectCell>
+                  <DateCell>
                     {new Date(message.createdAt).toLocaleDateString("es-ES", {
                       year: "numeric",
                       month: "short",
                       day: "numeric",
                     })}
-                  </TableCell>
+                  </DateCell>
                   <TableCell>
                     <StatusBadge status={message.status}>
                       {message.status === "new" ? "Nuevo" : message.status === "read" ? "Leído" : "Respondido"}

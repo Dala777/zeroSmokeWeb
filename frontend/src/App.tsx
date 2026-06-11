@@ -14,6 +14,8 @@ import ArticlesList from "./pages/admin/ArticlesList"
 import ArticleEdit from "./pages/admin/ArticleEdit"
 import FaqsList from "./pages/admin/FaqsList"
 import UsersList from "./pages/admin/UsersList"
+import AdminsPage from "./pages/admin/AdminsPage"
+import SettingsPage from "./pages/admin/SettingsPage"
 import MessagesList from "./pages/admin/MessagesList"
 import MessageDetail from "./pages/admin/MessageDetail"
 import AnalyticsPage from "./pages/admin/AnalyticsPage"
@@ -70,6 +72,8 @@ const AppRoutes: React.FC = () => {
           <Route path="articles/edit/:id" element={<ArticleEdit />} />
           <Route path="faqs" element={<FaqsList />} />
           <Route path="users" element={<UsersList />} />
+          <Route path="admins" element={<AdminsPage />} />
+          <Route path="settings" element={<SettingsPage />} />
           <Route path="messages" element={<MessagesList />} />
           <Route path="messages/:id" element={<MessageDetail />} />
           <Route path="analytics" element={<AnalyticsPage />} />
