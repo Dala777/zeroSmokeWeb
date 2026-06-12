@@ -10,6 +10,7 @@ MODEL_DIR = os.path.join(os.path.dirname(__file__), "saved_models")
 MODEL_PATH = os.path.join(MODEL_DIR, "linear_regression_v2.joblib")
 FEATURES_PATH = os.path.join(MODEL_DIR, "feature_names.json")
 SCALER_PATH = os.path.join(MODEL_DIR, "scaler.joblib")
+METRICS_PATH = os.path.join(MODEL_DIR, "metrics.json")
 
 
 def train_regression(features: list[dict], target: list[float]) -> dict:
@@ -40,6 +41,23 @@ def train_regression(features: list[dict], target: list[float]) -> dict:
     joblib.dump(model, MODEL_PATH)
     with open(FEATURES_PATH, "w") as f:
         json.dump(feature_cols, f)
+
+    metrics = {
+        "r2": round(r2, 4),
+        "mae": round(mae, 4),
+        "rmse": round(rmse, 4),
+        "intercept": float(model.intercept_),
+        "coefficients": coefficients,
+        "feature_importance": {
+            k: round(v, 4) for k, v in sorted(importance.items(), key=lambda x: x[1], reverse=True)
+        },
+        "feature_names": feature_cols,
+        "n_samples": len(y),
+        "n_features": len(feature_cols),
+        "last_training": __import__("datetime").datetime.now().isoformat(),
+    }
+    with open(METRICS_PATH, "w") as f:
+        json.dump(metrics, f, indent=2)
 
     return {
         "r2": round(r2, 4),
@@ -93,7 +111,7 @@ def get_model_info() -> dict:
     with open(FEATURES_PATH, "r") as f:
         feature_names = json.load(f)
 
-    return {
+    info = {
         "status": "ready",
         "model_type": "LinearRegression",
         "n_features": len(feature_names),
@@ -103,3 +121,10 @@ def get_model_info() -> dict:
             name: float(coef) for name, coef in zip(feature_names, model.coef_)
         },
     }
+
+    if os.path.exists(METRICS_PATH):
+        with open(METRICS_PATH, "r") as f:
+            metrics = json.load(f)
+            info.update(metrics)
+
+    return info

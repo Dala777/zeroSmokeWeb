@@ -174,7 +174,7 @@ interface ArticleForm {
 const ArticleEdit: React.FC = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const isEditing = id !== "new"
+  const isEditing = id !== undefined && id !== "new"
 
   const [article, setArticle] = useState<ArticleForm>({
     title: "",

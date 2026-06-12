@@ -1,0 +1,36 @@
+{
+  "r2": 0.5938,
+  "mae": 23.9291,
+  "rmse": 30.1386,
+  "intercept": -22.594335414191775,
+  "coefficients": {
+    "emotion_score": 32.813701544256325,
+    "symptom_score": 36.13810112922618,
+    "completed_activity_rate": 0.045274189919116026,
+    "hour_segment": 0.15740427000701995,
+    "past_week_risk": 0.43964273999616665,
+    "consecutive_smoke_days": 11.596713308153896,
+    "stress_indicator": -4.617377191430329
+  },
+  "feature_importance": {
+    "symptom_score": 36.1381,
+    "emotion_score": 32.8137,
+    "consecutive_smoke_days": 11.5967,
+    "stress_indicator": 4.6174,
+    "past_week_risk": 0.4396,
+    "hour_segment": 0.1574,
+    "completed_activity_rate": 0.0453
+  },
+  "feature_names": [
+    "emotion_score",
+    "symptom_score",
+    "completed_activity_rate",
+    "hour_segment",
+    "past_week_risk",
+    "consecutive_smoke_days",
+    "stress_indicator"
+  ],
+  "n_samples": 1508,
+  "n_features": 7,
+  "last_training": "2026-06-12T10:13:28.518364"
+}
