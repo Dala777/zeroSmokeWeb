@@ -1,40 +1,26 @@
 import type React from "react"
 import styled, { keyframes } from "styled-components"
 import { AppColors } from "../styles/colors"
-import { Award, Clock, Heart, Shield } from "lucide-react"
+import { Award, Clock, Heart, Shield, Smartphone } from "lucide-react"
 import { Link } from "react-router-dom"
 import Button from "./ui/Button"
 
-// Import animations
 const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 `
 
 const float = keyframes`
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 `
 
 const AppPreviewSection = styled.section`
-  padding: 6rem 0;
+  padding: 4rem 0;
   background-color: ${AppColors.background};
   position: relative;
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -42,82 +28,84 @@ const AppPreviewSection = styled.section`
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at bottom left, ${AppColors.cardBackground}40, transparent 70%);
+    background: radial-gradient(circle at top right, ${AppColors.cardBackground}40, transparent 70%);
     z-index: 0;
   }
 `
 
 const SectionTitle = styled.h2`
-  font-size: 2.5rem;
+  font-size: 2rem;
   text-align: center;
-  margin-bottom: 3.5rem;
-  color: ${AppColors.primary};
+  margin-bottom: 2.5rem;
+  color: ${AppColors.text};
   position: relative;
   z-index: 1;
 
   &::after {
     content: '';
     display: block;
-    width: 80px;
-    height: 4px;
-    background-color: ${AppColors.accent};
-    margin: 0.8rem auto 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, ${AppColors.primary}, ${AppColors.accent});
+    margin: 0.75rem auto 0;
     border-radius: 2px;
   }
 
   @media (max-width: 768px) {
-    font-size: 2rem;
-    margin-bottom: 2.5rem;
+    font-size: 1.625rem;
+    margin-bottom: 2rem;
   }
 `
 
 const AppPreviewContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
   display: flex;
   align-items: center;
+  gap: 4rem;
   position: relative;
   z-index: 1;
-  
-  @media (max-width: 992px) {
+
+  @media (max-width: 1024px) {
     flex-direction: column;
     gap: 3rem;
   }
 `
 
 const PhoneContainer = styled.div`
-  flex: 1;
+  flex: 0 0 280px;
   display: flex;
   justify-content: center;
   position: relative;
-  
-  @media (max-width: 992px) {
-    order: 1;
+
+  @media (max-width: 1024px) {
+    flex: 0 0 auto;
+    order: -1;
   }
 `
 
 const PhoneFrame = styled.div`
-  width: 280px;
-  height: 570px;
+  width: 260px;
+  height: 530px;
   background-color: ${AppColors.cardBackground};
-  border-radius: 36px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-  padding: 12px;
+  border-radius: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  padding: 10px;
   position: relative;
-  z-index: 2;
   animation: ${float} 6s ease-in-out infinite;
-  
+  border: 1px solid ${AppColors.border};
+
   &::before {
     content: '';
     position: absolute;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 150px;
-    height: 30px;
+    width: 120px;
+    height: 24px;
     background-color: ${AppColors.cardBackground};
-    border-radius: 0 0 15px 15px;
+    border-radius: 0 0 12px 12px;
     z-index: 3;
   }
 `
@@ -125,7 +113,7 @@ const PhoneFrame = styled.div`
 const PhoneScreen = styled.div`
   width: 100%;
   height: 100%;
-  border-radius: 24px;
+  border-radius: 22px;
   overflow: hidden;
   position: relative;
 `
@@ -136,75 +124,34 @@ const ScreenImage = styled.img`
   object-fit: cover;
 `
 
-const PhoneOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0));
-  border-radius: 24px;
-  pointer-events: none;
-  z-index: 2;
-`
-
-const SecondaryPhone = styled(PhoneFrame)`
-  position: absolute;
-  top: 40px;
-  left: -80px;
-  transform: scale(0.85);
-  opacity: 0.7;
-  z-index: 1;
-  animation: ${float} 6s ease-in-out infinite 1s;
-  
-  @media (max-width: 1200px) {
-    display: none;
-  }
-`
-
-const ThirdPhone = styled(PhoneFrame)`
-  position: absolute;
-  top: 40px;
-  right: -80px;
-  transform: scale(0.85);
-  opacity: 0.7;
-  z-index: 1;
-  animation: ${float} 6s ease-in-out infinite 2s;
-  
-  @media (max-width: 1200px) {
-    display: none;
-  }
-`
-
 const FeaturesContainer = styled.div`
   flex: 1;
-  padding-left: 3rem;
-  
-  @media (max-width: 992px) {
-    padding-left: 0;
-    order: 2;
+  min-width: 0;
+
+  @media (max-width: 1024px) {
+    width: 100%;
   }
 `
 
 const FeaturesTitle = styled.h3`
-  font-size: 2.2rem;
-  margin-bottom: 1.5rem;
-  color: ${AppColors.primary};
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  color: ${AppColors.text};
   animation: ${fadeIn} 0.8s ease-out;
-  
+
   @media (max-width: 768px) {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     text-align: center;
   }
 `
 
 const FeaturesDescription = styled.p`
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
-  color: ${AppColors.text};
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: ${AppColors.textSecondary};
   line-height: 1.6;
   animation: ${fadeIn} 0.8s ease-out 0.2s both;
-  
+
   @media (max-width: 768px) {
     text-align: center;
   }
@@ -212,76 +159,74 @@ const FeaturesDescription = styled.p`
 
 const FeaturesList = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `
 
 const FeatureItem = styled.div`
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  animation: ${fadeIn} 0.8s ease-out;
-  animation-fill-mode: both;
-  
-  &:nth-child(1) {
-    animation-delay: 0.3s;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: ${AppColors.surface};
+  border-radius: 12px;
+  animation: ${fadeIn} 0.8s ease-out both;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background-color: ${AppColors.primary}10;
+    transform: translateX(4px);
   }
-  
-  &:nth-child(2) {
-    animation-delay: 0.4s;
-  }
-  
-  &:nth-child(3) {
-    animation-delay: 0.5s;
-  }
-  
-  &:nth-child(4) {
-    animation-delay: 0.6s;
-  }
-  
-  @media (max-width: 768px) {
-    justify-content: center;
-  }
+
+  &:nth-child(1) { animation-delay: 0.3s; }
+  &:nth-child(2) { animation-delay: 0.4s; }
+  &:nth-child(3) { animation-delay: 0.5s; }
+  &:nth-child(4) { animation-delay: 0.6s; }
 `
 
 const FeatureIcon = styled.div`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: ${AppColors.primary}20;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, ${AppColors.primary}20, ${AppColors.tertiary});
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${AppColors.primary};
+  color: ${AppColors.accent};
   flex-shrink: 0;
 `
 
-const FeatureText = styled.div`
+const FeatureTextContainer = styled.div`
   flex: 1;
 `
 
 const FeatureTitle = styled.h4`
-  font-size: 1.2rem;
-  margin-bottom: 0.3rem;
-  color: ${AppColors.textSecondary};
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+  color: ${AppColors.text};
+  font-weight: 600;
 `
 
 const FeatureDescription = styled.p`
-  font-size: 0.95rem;
-  color: ${AppColors.text};
-  line-height: 1.5;
+  font-size: 0.85rem;
+  color: ${AppColors.textSecondary};
+  line-height: 1.4;
+  margin: 0;
 `
 
 const ButtonContainer = styled.div`
-  margin-top: 2.5rem;
+  margin-top: 2rem;
   animation: ${fadeIn} 0.8s ease-out 0.7s both;
-  
+
   @media (max-width: 768px) {
     text-align: center;
   }
 `
 
-// App screenshots - Usando imágenes de la carpeta especificada
 const appScreenshots = [
   require("../styles/images/app_screen1.png"),
   require("../styles/images/app_screen2.png"),
@@ -293,7 +238,14 @@ const AppPreview: React.FC = () => {
     <AppPreviewSection id="app-preview">
       <SectionTitle>Nuestra Aplicación Móvil</SectionTitle>
       <AppPreviewContainer>
-        {/* Contenedor de texto a la izquierda */}
+        <PhoneContainer>
+          <PhoneFrame>
+            <PhoneScreen>
+              <ScreenImage src={appScreenshots[0]} alt="App Screenshot" />
+            </PhoneScreen>
+          </PhoneFrame>
+        </PhoneContainer>
+
         <FeaturesContainer>
           <FeaturesTitle>Lleva tu progreso contigo</FeaturesTitle>
           <FeaturesDescription>
@@ -303,86 +255,47 @@ const AppPreview: React.FC = () => {
 
           <FeaturesList>
             <FeatureItem>
-              <FeatureIcon>
-                <Award size={24} />
-              </FeatureIcon>
-              <FeatureText>
+              <FeatureIcon><Award size={20} /></FeatureIcon>
+              <FeatureTextContainer>
                 <FeatureTitle>Sistema de logros</FeatureTitle>
-                <FeatureDescription>
-                  Gana medallas y recompensas por cada día sin fumar para mantenerte motivado.
-                </FeatureDescription>
-              </FeatureText>
+                <FeatureDescription>Gana medallas y recompensas por cada día sin fumar.</FeatureDescription>
+              </FeatureTextContainer>
             </FeatureItem>
 
             <FeatureItem>
-              <FeatureIcon>
-                <Clock size={24} />
-              </FeatureIcon>
-              <FeatureText>
+              <FeatureIcon><Clock size={20} /></FeatureIcon>
+              <FeatureTextContainer>
                 <FeatureTitle>Seguimiento en tiempo real</FeatureTitle>
-                <FeatureDescription>
-                  Visualiza tu progreso, ahorro económico y mejoras en tu salud día a día.
-                </FeatureDescription>
-              </FeatureText>
+                <FeatureDescription>Visualiza tu progreso, ahorro y mejoras en tu salud.</FeatureDescription>
+              </FeatureTextContainer>
             </FeatureItem>
 
             <FeatureItem>
-              <FeatureIcon>
-                <Heart size={24} />
-              </FeatureIcon>
-              <FeatureText>
+              <FeatureIcon><Heart size={20} /></FeatureIcon>
+              <FeatureTextContainer>
                 <FeatureTitle>Apoyo emocional</FeatureTitle>
-                <FeatureDescription>
-                  Chatbot inteligente que te brinda apoyo en momentos de ansiedad o deseo de fumar.
-                </FeatureDescription>
-              </FeatureText>
+                <FeatureDescription>Chatbot inteligente para momentos de ansiedad.</FeatureDescription>
+              </FeatureTextContainer>
             </FeatureItem>
 
             <FeatureItem>
-              <FeatureIcon>
-                <Shield size={24} />
-              </FeatureIcon>
-              <FeatureText>
+              <FeatureIcon><Shield size={20} /></FeatureIcon>
+              <FeatureTextContainer>
                 <FeatureTitle>Recursos personalizados</FeatureTitle>
-                <FeatureDescription>
-                  Accede a estrategias y contenido educativo adaptado a tu perfil y nivel de dependencia.
-                </FeatureDescription>
-              </FeatureText>
+                <FeatureDescription>Contenido educativo adaptado a tu perfil.</FeatureDescription>
+              </FeatureTextContainer>
             </FeatureItem>
           </FeaturesList>
 
           <ButtonContainer>
             <Button size="medium">
+              <Smartphone size={18} />
               <Link to="/app" style={{ color: "inherit", textDecoration: "none" }}>
                 Descargar Aplicación
               </Link>
             </Button>
           </ButtonContainer>
         </FeaturesContainer>
-
-        {/* Contenedor de teléfonos a la derecha con posición ajustada */}
-        <PhoneContainer>
-          <SecondaryPhone>
-            <PhoneScreen>
-              <ScreenImage src={appScreenshots[1]} alt="App Screenshot" />
-              <PhoneOverlay />
-            </PhoneScreen>
-          </SecondaryPhone>
-
-          <PhoneFrame>
-            <PhoneScreen>
-              <ScreenImage src={appScreenshots[0]} alt="App Screenshot" />
-              <PhoneOverlay />
-            </PhoneScreen>
-          </PhoneFrame>
-
-          <ThirdPhone>
-            <PhoneScreen>
-              <ScreenImage src={appScreenshots[2]} alt="App Screenshot" />
-              <PhoneOverlay />
-            </PhoneScreen>
-          </ThirdPhone>
-        </PhoneContainer>
       </AppPreviewContainer>
     </AppPreviewSection>
   )

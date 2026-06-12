@@ -9,6 +9,7 @@ import Card from "../components/ui/Card"
 import Button from "../components/ui/Button"
 import LoadingState from "../components/admin/LoadingState"
 import { articleAPI } from "../services/api"
+import { Calendar, User, ArrowRight } from "lucide-react"
 
 interface PublicArticle {
   _id: string
@@ -26,14 +27,21 @@ interface PublicArticle {
 const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 3rem 1.5rem;
 `
 
 const PageTitle = styled.h1`
-  font-size: 2.5rem;
-  color: ${AppColors.primary};
-  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: ${AppColors.text};
+  margin-bottom: 0.5rem;
   text-align: center;
+`
+
+const PageSubtitle = styled.p`
+  text-align: center;
+  color: ${AppColors.textSecondary};
+  margin-bottom: 2rem;
+  font-size: 1.05rem;
 `
 
 const FilterContainer = styled.div`
@@ -41,87 +49,130 @@ const FilterContainer = styled.div`
   gap: 0.5rem;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 `
 
-const FilterPill = styled.button<{ active: boolean }>`
-  padding: 0.5rem 1rem;
+const FilterPill = styled.button<{ $active: boolean }>`
+  padding: 0.5rem 1.25rem;
   border-radius: 20px;
-  background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
-  color: ${(props) => (props.active ? "white" : AppColors.text)};
-  border: 1px solid ${(props) => (props.active ? AppColors.primary : "rgba(255,255,255,0.2)")};
+  background-color: ${(props) => (props.$active ? AppColors.primary : "transparent")};
+  color: ${(props) => (props.$active ? "white" : AppColors.textSecondary)};
+  border: 1px solid ${(props) => (props.$active ? AppColors.primary : AppColors.border)};
   font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+  font-weight: ${(props) => (props.$active ? "600" : "400")};
+
   &:hover {
-    background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
+    border-color: ${AppColors.primary};
+    color: ${(props) => (props.$active ? "white" : AppColors.primary)};
   }
 `
 
 const ArticlesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
 `
 
 const ArticleCard = styled(Card)`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid ${AppColors.border};
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    border-color: ${AppColors.primary}30;
+  }
 `
 
 const ArticleImage = styled.div`
   height: 200px;
-  background-color: ${AppColors.cardBackground};
-  border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 1rem;
-  img { width: 100%; height: 100%; object-fit: cover; }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  ${ArticleCard}:hover img {
+    transform: scale(1.05);
+  }
+`
+
+const ArticleBody = styled.div`
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`
+
+const CategoryBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  background: linear-gradient(135deg, ${AppColors.primary}15, ${AppColors.tertiary});
+  color: ${AppColors.accent};
+  margin-bottom: 0.75rem;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 `
 
 const ArticleTitle = styled.h3`
-  font-size: 1.25rem;
-  color: ${AppColors.textSecondary};
+  font-size: 1.1rem;
+  color: ${AppColors.text};
   margin-bottom: 0.5rem;
+  line-height: 1.4;
+  font-weight: 600;
 `
 
 const ArticleMeta = styled.div`
   display: flex;
-  justify-content: space-between;
-  font-size: 0.875rem;
-  color: ${AppColors.text};
-  opacity: 0.7;
-  margin-bottom: 0.5rem;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: ${AppColors.textLight};
+  margin-bottom: 0.75rem;
+  align-items: center;
 `
 
-const CategoryBadge = styled.span`
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background-color: rgba(76, 175, 80, 0.1);
-  color: ${AppColors.primary};
+const MetaItem = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 `
 
 const ArticleExcerpt = styled.p`
-  color: ${AppColors.text};
-  margin-bottom: 1.5rem;
+  color: ${AppColors.textSecondary};
+  font-size: 0.875rem;
+  line-height: 1.6;
   flex-grow: 1;
+  margin-bottom: 1rem;
 `
 
 const TagsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
 `
 
 const TagPill = styled.span`
   display: inline-flex;
-  padding: 0.25rem 0.75rem;
-  background-color: rgba(76, 175, 80, 0.1);
-  color: ${AppColors.primary};
-  border-radius: 16px;
-  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  background-color: ${AppColors.surface};
+  color: ${AppColors.textLight};
+  border-radius: 4px;
+  font-size: 0.7rem;
 `
 
 const categories = ["Todas", "Educacion", "Salud", "Consejos", "Investigacion", "Motivacion", "General"]
@@ -159,10 +210,11 @@ const ArticlesPage: React.FC = () => {
   return (
     <PageContainer>
       <PageTitle>Artículos</PageTitle>
+      <PageSubtitle>Información y recursos para ayudarte en tu camino para dejar de fumar.</PageSubtitle>
 
       <FilterContainer>
         {categories.map((cat) => (
-          <FilterPill key={cat} active={selectedCategory === cat} onClick={() => setSelectedCategory(cat)}>
+          <FilterPill key={cat} $active={selectedCategory === cat} onClick={() => setSelectedCategory(cat)}>
             {cat === "Todas" ? "Todas" : cat}
           </FilterPill>
         ))}
@@ -171,7 +223,7 @@ const ArticlesPage: React.FC = () => {
       {error && <div style={{ textAlign: "center", color: AppColors.error, padding: "1rem" }}>{error}</div>}
 
       {!error && filteredArticles.length === 0 && (
-        <div style={{ textAlign: "center", color: AppColors.text, padding: "2rem" }}>
+        <div style={{ textAlign: "center", color: AppColors.textSecondary, padding: "2rem" }}>
           No hay artículos publicados actualmente.
         </div>
       )}
@@ -182,23 +234,35 @@ const ArticlesPage: React.FC = () => {
             <ArticleImage>
               <img src={article.image || "/placeholder.svg"} alt={article.title} />
             </ArticleImage>
-            <ArticleTitle>{article.title}</ArticleTitle>
-            <ArticleMeta>
-              <span>{article.author}</span>
+            <ArticleBody>
               <CategoryBadge>{article.category}</CategoryBadge>
-              <span>{new Date(article.createdAt).toLocaleDateString()}</span>
-            </ArticleMeta>
-            <ArticleExcerpt>{article.excerpt}</ArticleExcerpt>
-            <TagsContainer>
-              {(article.tags || []).map((tag) => (
-                <TagPill key={tag}>{tag}</TagPill>
-              ))}
-            </TagsContainer>
-            <Button variant="outline" size="small" fullWidth>
-              <Link to={`/articles/${article._id}`} style={{ color: "inherit", textDecoration: "none" }}>
-                Leer más
-              </Link>
-            </Button>
+              <ArticleTitle>{article.title}</ArticleTitle>
+              <ArticleMeta>
+                {article.author && (
+                  <MetaItem>
+                    <User size={12} />
+                    {article.author}
+                  </MetaItem>
+                )}
+                <MetaItem>
+                  <Calendar size={12} />
+                  {new Date(article.createdAt).toLocaleDateString()}
+                </MetaItem>
+              </ArticleMeta>
+              <ArticleExcerpt>{article.excerpt}</ArticleExcerpt>
+              {article.tags && article.tags.length > 0 && (
+                <TagsContainer>
+                  {(article.tags || []).map((tag) => (
+                    <TagPill key={tag}>{tag}</TagPill>
+                  ))}
+                </TagsContainer>
+              )}
+              <Button variant="outline" size="small" fullWidth>
+                <Link to={`/articles/${article._id}`} style={{ color: "inherit", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                  Leer más <ArrowRight size={14} />
+                </Link>
+              </Button>
+            </ArticleBody>
           </ArticleCard>
         ))}
       </ArticlesGrid>

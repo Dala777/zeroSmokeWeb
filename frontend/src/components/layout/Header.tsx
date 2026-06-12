@@ -8,30 +8,17 @@ import { AppColors } from "../../styles/colors"
 import Button from "../ui/Button"
 import UserMenu from "../ui/UserMenu"
 import { useAuth } from "../../contexts/AuthContext"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Leaf } from "lucide-react"
 
-// Animaciones y efectos
-const fadeIn = `
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-`
-
-const HeaderContainer = styled.header`
-  background-color: ${AppColors.background};
-  padding: 1rem 0;
+const HeaderContainer = styled.header<{ $scrolled: boolean }>`
+  background-color: ${(props) => (props.$scrolled ? `${AppColors.cardBackground}eg` : AppColors.cardBackground)};
+  padding: ${(props) => (props.$scrolled ? "0.6rem 0" : "1rem 0")};
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: ${(props) => (props.$scrolled ? "0 2px 20px rgba(0, 0, 0, 0.1)" : "0 1px 3px rgba(0, 0, 0, 0.05)")};
   transition: all 0.3s ease;
-  
-  &.scrolled {
-    padding: 0.7rem 0;
-    background-color: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(10px);
-  }
+  backdrop-filter: blur(12px);
 `
 
 const HeaderContent = styled.div`
@@ -43,56 +30,44 @@ const HeaderContent = styled.div`
   padding: 0 1.5rem;
 `
 
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-`
-
 const Logo = styled(Link)`
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: ${AppColors.primary};
   display: flex;
   align-items: center;
-  transition: transform 0.3s ease;
+  gap: 0.5rem;
   font-family: 'Montserrat', sans-serif;
-  
-  &:hover {
-    transform: scale(1.05);
-  }
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
 
   span {
     color: ${AppColors.text};
+    font-weight: 300;
   }
 `
 
-const LogoIcon = styled.div`
-  margin-right: 0.5rem;
-  color: ${AppColors.primary};
-  font-size: 1.8rem;
-`
-
-const Nav = styled.nav<{ isOpen: boolean }>`
-  ${fadeIn}
-  
-  @media (min-width: 769px) {
-    animation: fadeIn 0.5s ease;
+const Nav = styled.nav<{ $isOpen: boolean }>`
+  @media (min-width: 1025px) {
     display: flex;
     align-items: center;
+    gap: 0.25rem;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     position: fixed;
     top: 0;
     right: 0;
     height: 100vh;
-    width: 280px;
+    width: 300px;
     background-color: ${AppColors.cardBackground};
     padding: 5rem 2rem 2rem;
-    transform: ${({ isOpen }) => (isOpen ? "translateX(0)" : "translateX(100%)")};
-    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+    transform: ${({ $isOpen }) => ($isOpen ? "translateX(0)" : "translateX(100%)")};
+    transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.15);
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
   }
 `
 
@@ -101,68 +76,54 @@ const NavList = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
+  gap: 0.25rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     flex-direction: column;
-    gap: 2rem;
+    gap: 0.5rem;
   }
 `
 
 const NavItem = styled.li`
-  margin-left: 2.5rem;
   position: relative;
-
-  @media (max-width: 768px) {
-    margin-left: 0;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: ${AppColors.primary};
-    transition: width 0.3s ease;
-  }
-  
-  &:hover::after, &.active::after {
-    width: 100%;
-  }
 `
 
 const NavLink = styled(Link)<{ $isActive?: boolean }>`
-  color: ${(props) => (props.$isActive ? AppColors.primary : AppColors.text)};
+  color: ${(props) => (props.$isActive ? AppColors.primary : AppColors.textSecondary)};
   font-weight: 500;
-  transition: color 0.3s ease;
+  font-size: 0.925rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
   display: block;
-  padding: 0.5rem 0;
-  font-size: 1.05rem;
+  transition: all 0.2s ease;
 
   &:hover {
     color: ${AppColors.primary};
+    background-color: ${AppColors.primary}10;
   }
 `
 
-const ButtonsContainer = styled.div`
+const ActionsContainer = styled.div`
   display: flex;
-  gap: 1rem;
   align-items: center;
-  
-  @media (max-width: 768px) {
+  gap: 0.75rem;
+  margin-left: 1.5rem;
+
+  @media (max-width: 1024px) {
     display: none;
   }
 `
 
-const MobileButtonsContainer = styled.div`
+const MobileActions = styled.div`
   display: none;
-  margin-top: 2rem;
-  
-  @media (max-width: 768px) {
+  margin-top: auto;
+  padding-top: 2rem;
+  border-top: 1px solid ${AppColors.border};
+
+  @media (max-width: 1024px) {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 `
 
@@ -174,14 +135,14 @@ const MobileMenuButton = styled.button`
   cursor: pointer;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-  
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: ${AppColors.primary}10;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -198,33 +159,31 @@ const CloseButton = styled.button`
   cursor: pointer;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s ease;
-  
+  transition: background-color 0.2s ease;
+
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: ${AppColors.primary}10;
   }
-  
-  @media (min-width: 769px) {
+
+  @media (min-width: 1025px) {
     display: none;
   }
 `
 
-const Overlay = styled.div<{ isOpen: boolean }>`
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+const Overlay = styled.div<{ $isOpen: boolean }>`
+  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
   z-index: 999;
-  transition: opacity 0.3s ease;
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
 `
 
 const Header: React.FC = () => {
@@ -235,12 +194,7 @@ const Header: React.FC = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
-    // Prevenir scroll cuando el menú está abierto
-    if (!isMenuOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "auto"
-    }
+    document.body.style.overflow = !isMenuOpen ? "hidden" : "auto"
   }
 
   const closeMenu = () => {
@@ -248,123 +202,92 @@ const Header: React.FC = () => {
     document.body.style.overflow = "auto"
   }
 
-  // Detectar scroll para cambiar el estilo del header
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true)
-      } else {
-        setScrolled(false)
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
+    const handleScroll = () => setScrolled(window.scrollY > 50)
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Cerrar menú al cambiar de ruta
   useEffect(() => {
     closeMenu()
   }, [location])
 
-  const isActive = (path: string) => {
-    return location.pathname === path
-  }
+  const isActive = (path: string) => location.pathname === path
 
   return (
-    <HeaderContainer className={scrolled ? "scrolled" : ""}>
-      <HeaderContent>
-        <LogoContainer>
+    <>
+      <HeaderContainer $scrolled={scrolled}>
+        <HeaderContent>
           <Logo to="/">
+            <Leaf size={24} />
             Zero<span>Smoke</span>
           </Logo>
-        </LogoContainer>
 
-        <MobileMenuButton onClick={toggleMenu} aria-label="Abrir menú">
-          <Menu size={24} />
-        </MobileMenuButton>
+          <MobileMenuButton onClick={toggleMenu} aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}>
+            {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </MobileMenuButton>
 
-        <Overlay isOpen={isMenuOpen} onClick={closeMenu} />
+          <Overlay $isOpen={isMenuOpen} onClick={closeMenu} />
 
-        <Nav isOpen={isMenuOpen}>
-          <CloseButton onClick={closeMenu} aria-label="Cerrar menú">
-            <X size={24} />
-          </CloseButton>
-          <NavList>
-            <NavItem className={isActive("/") ? "active" : ""}>
-              <NavLink to="/" $isActive={isActive("/")}>
-                Inicio
-              </NavLink>
-            </NavItem>
-            <NavItem className={isActive("/Gallery") ? "active" : ""}>
-              <NavLink to="/Gallery" $isActive={isActive("/Gallery")}>
-                Consecuencias
-              </NavLink>
-            </NavItem>
-            <NavItem className={isActive("/education") ? "active" : ""}>
-              <NavLink to="/education" $isActive={isActive("/education")}>
-                Educación
-              </NavLink>
-            </NavItem>
-            <NavItem className={isActive("/test") ? "active" : ""}>
-              <NavLink to="/test" $isActive={isActive("/test")}>
-                Test de Dependencia
-              </NavLink>
-            </NavItem>
-            <NavItem className={isActive("/faqs") ? "active" : ""}>
-              <NavLink to="/faqs" $isActive={isActive("/faqs")}>
-                FAQs
-              </NavLink>
-            </NavItem>
-            <NavItem className={isActive("/contacto") ? "active" : ""}>
-              <NavLink to="/contacto" $isActive={isActive("/contacto")}>
-                Contacto
-              </NavLink>
-            </NavItem>
-          </NavList>
+          <Nav $isOpen={isMenuOpen}>
+            <CloseButton onClick={closeMenu} aria-label="Cerrar menú">
+              <X size={22} />
+            </CloseButton>
 
-          <MobileButtonsContainer>
+            <NavList>
+              <NavItem>
+                <NavLink to="/" $isActive={isActive("/")}>Inicio</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="/Gallery" $isActive={isActive("/Gallery")}>Consecuencias</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="/education" $isActive={isActive("/education")}>Educación</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="/test" $isActive={isActive("/test")}>Test</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="/faqs" $isActive={isActive("/faqs")}>FAQ</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="/contacto" $isActive={isActive("/contacto")}>Contacto</NavLink>
+              </NavItem>
+            </NavList>
+
+            <MobileActions>
+              {!isAuthenticated ? (
+                <>
+                  <Button variant="outline" size="medium" fullWidth>
+                    <Link to="/login" style={{ color: "inherit", width: "100%", display: "block" }}>Iniciar Sesión</Link>
+                  </Button>
+                  <Button variant="primary" size="medium" fullWidth>
+                    <Link to="/register" style={{ color: "inherit", width: "100%", display: "block" }}>Registrarse</Link>
+                  </Button>
+                </>
+              ) : (
+                <UserMenu isMobile={true} />
+              )}
+            </MobileActions>
+          </Nav>
+
+          <ActionsContainer>
             {!isAuthenticated ? (
               <>
-                <Button variant="primary" size="medium" fullWidth>
-                  <Link to="/login" style={{ color: "inherit", width: "100%", display: "block" }}>
-                    Iniciar Sesión
-                  </Link>
+                <Button variant="outline" size="small">
+                  <Link to="/login" style={{ color: "inherit" }}>Iniciar Sesión</Link>
                 </Button>
-                <Button variant="outline" size="medium" fullWidth>
-                  <Link to="/register" style={{ color: "inherit", width: "100%", display: "block" }}>
-                    Registrarse
-                  </Link>
+                <Button variant="primary" size="small">
+                  <Link to="/register" style={{ color: "inherit" }}>Registrarse</Link>
                 </Button>
               </>
             ) : (
-              <UserMenu isMobile={true} />
+              <UserMenu />
             )}
-          </MobileButtonsContainer>
-        </Nav>
-
-        <ButtonsContainer>
-          {!isAuthenticated ? (
-            <>
-              <Button variant="outline" size="small">
-                <Link to="/login" style={{ color: "inherit" }}>
-                  Iniciar Sesión
-                </Link>
-              </Button>
-              <Button variant="primary" size="small">
-                <Link to="/register" style={{ color: "inherit" }}>
-                  Registrarse
-                </Link>
-              </Button>
-            </>
-          ) : (
-            <UserMenu />
-          )}
-        </ButtonsContainer>
-      </HeaderContent>
-    </HeaderContainer>
+          </ActionsContainer>
+        </HeaderContent>
+      </HeaderContainer>
+    </>
   )
 }
 

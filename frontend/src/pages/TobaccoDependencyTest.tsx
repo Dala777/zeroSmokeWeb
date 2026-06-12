@@ -5,286 +5,257 @@ import { useState } from "react"
 import styled, { keyframes } from "styled-components"
 import { AppColors } from "../styles/colors"
 import { progressAPI } from "../services/api"
+import { ChevronLeft, ChevronRight, RotateCcw, Save, Activity } from "lucide-react"
 
-// Importar las imágenes
 import bajaImage from "../styles/images/baja-dependencia.webp"
 import moderadaImage from "../styles/images/dependencia-moderada.webp"
 import altaImage from "../styles/images/dependencia-alta.webp"
 
 const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 `
 
-const slideInFromLeft = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+const slideIn = keyframes`
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
 `
 
 const pulse = keyframes`
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.03);
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
 `
 
 const TestContainer = styled.div`
-  max-width: 700px;
-  width: 90%;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid ${AppColors.secondary};
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 640px;
+  width: 92%;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   background-color: ${AppColors.cardBackground};
-  color: ${AppColors.text};
-  animation: ${fadeIn} 0.8s ease-in-out;
+  border: 1px solid ${AppColors.border};
+  animation: ${fadeIn} 0.5s ease-in-out;
   position: relative;
-  overflow: hidden;
 
   @media (max-width: 768px) {
     width: 95%;
-    padding: 15px;
-    margin: 15px auto;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: -30px;
-    left: -30px;
-    width: 120px;
-    height: 120px;
-    background: ${AppColors.primary}20;
-    border-radius: 50%;
-    z-index: -1;
+    padding: 1.5rem;
+    margin: 1rem auto;
   }
 `
 
 const Title = styled.h2`
   text-align: center;
   color: ${AppColors.text};
-  margin-bottom: 10px;
-  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  animation: ${slideInFromLeft} 0.8s ease-in-out;
-  
+
   @media (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 `
 
 const Subtitle = styled.p`
   text-align: center;
   color: ${AppColors.textSecondary};
-  font-size: 0.9rem;
-  margin-bottom: 15px;
-  font-style: italic;
-`
-
-const Question = styled.h3`
-  color: ${AppColors.text};
-  font-weight: 600;
-  margin-bottom: 15px;
-  text-align: left;
-  font-size: 1.1rem;
-  line-height: 1.4;
-  animation: ${fadeIn} 0.6s ease-in-out;
-  
-  @media (max-width: 768px) {
-    font-size: 1rem;
-    margin-bottom: 12px;
-  }
-`
-
-const Option = styled.div<{ isSelected: boolean }>`
-  color: ${AppColors.text};
-  padding: 12px 15px;
-  border: 1px solid ${AppColors.secondary};
-  border-radius: 8px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  background-color: ${(props) => (props.isSelected ? `${AppColors.accent}20` : AppColors.cardBackground)};
-
-  &:hover {
-    background-color: ${AppColors.tertiary}40;
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-  }
-
-  &.selected {
-    background-color: ${AppColors.accent}40;
-    border-color: ${AppColors.accent};
-    color: ${AppColors.accent};
-    font-weight: 600;
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  @media (max-width: 768px) {
-    padding: 10px 12px;
-    font-size: 0.95rem;
-  }
-`
-
-const Button = styled.button`
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  background-color: ${AppColors.primary};
-  color: white;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-  margin: 0 8px;
-
-  &:hover {
-    background-color: ${AppColors.accent};
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-  
-  @media (max-width: 768px) {
-    padding: 8px 16px;
-    font-size: 0.95rem;
-  }
-`
-
-const ResultCard = styled.div`
-  text-align: center;
-  padding: 20px;
-  border: 1px solid ${AppColors.secondary};
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  background-color: ${AppColors.cardBackground};
-  color: ${AppColors.text};
-  animation: ${fadeIn} 0.8s ease-in-out, ${pulse} 2s ease-in-out 1s;
-  
-  h3 {
-    font-size: 1.6rem;
-    margin-bottom: 15px;
-    color: ${AppColors.accent};
-  }
-  
-  p {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 15px;
-    text-align: justify;
-  }
-  
-  @media (max-width: 768px) {
-    padding: 15px;
-    
-    h3 {
-      font-size: 1.4rem;
-    }
-    
-    p {
-      font-size: 0.95rem;
-    }
-  }
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
 `
 
 const ProgressBar = styled.div`
   width: 100%;
   height: 6px;
-  background-color: ${AppColors.secondary}40;
+  background-color: ${AppColors.surface};
   border-radius: 3px;
-  margin-bottom: 15px;
+  margin-bottom: 0.75rem;
   overflow: hidden;
 `
 
-const ProgressFill = styled.div<{ width: string }>`
+const ProgressFill = styled.div<{ $width: string }>`
   height: 100%;
-  width: ${(props) => props.width};
-  background-color: ${AppColors.accent};
+  width: ${(props) => props.$width};
+  background: linear-gradient(90deg, ${AppColors.primary}, ${AppColors.accent});
   border-radius: 3px;
   transition: width 0.5s ease-in-out;
+`
+
+const QuestionCounter = styled.div`
+  text-align: center;
+  margin-bottom: 1.25rem;
+  font-size: 0.8rem;
+  color: ${AppColors.textLight};
+  font-weight: 500;
+`
+
+const Question = styled.h3`
+  color: ${AppColors.text};
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  text-align: left;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  animation: ${slideIn} 0.4s ease-in-out;
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+  }
+`
+
+const Option = styled.div<{ $isSelected: boolean }>`
+  color: ${AppColors.text};
+  padding: 0.875rem 1rem;
+  border: 1.5px solid ${(props) => (props.$isSelected ? AppColors.primary : AppColors.border)};
+  border-radius: 10px;
+  margin-bottom: 0.625rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 0.95rem;
+  background-color: ${(props) => (props.$isSelected ? `${AppColors.primary}10` : AppColors.cardBackground)};
+
+  &:hover {
+    border-color: ${AppColors.primary}50;
+    background-color: ${AppColors.primary}08;
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9rem;
+  }
+`
+
+const StyledButton = styled.button`
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, ${AppColors.primary}, ${AppColors.accent});
+  color: white;
+  font-weight: 600;
+  font-size: 0.925rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 4px 12px ${AppColors.primary}40;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+`
+
+const GhostButton = styled(StyledButton)`
+  background: transparent;
+  color: ${AppColors.textSecondary};
+  box-shadow: none;
+
+  &:hover:not(:disabled) {
+    background-color: ${AppColors.surface};
+    box-shadow: none;
+    transform: none;
+  }
+`
+
+const ResultCard = styled.div`
+  text-align: center;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid ${AppColors.border};
+  background-color: ${AppColors.cardBackground};
+  animation: ${fadeIn} 0.6s ease-in-out, ${pulse} 2s ease-in-out 1s;
+
+  h3 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: ${AppColors.accent};
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    color: ${AppColors.textSecondary};
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    h3 { font-size: 1.2rem; }
+  }
+`
+
+const ResultImage = styled.img`
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: 0 auto 1.5rem;
+  border-radius: 12px;
+  display: block;
+  animation: ${fadeIn} 0.6s ease-in-out;
+  object-fit: cover;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+`
+
+const ScoreBox = styled.div`
+  background: linear-gradient(135deg, ${AppColors.primary}15, ${AppColors.tertiary});
+  border-left: 3px solid ${AppColors.accent};
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  font-weight: 600;
+  color: ${AppColors.accent};
+  font-size: 1.1rem;
 `
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
   flex-wrap: wrap;
-  
-  @media (max-width: 768px) {
-    gap: 8px;
+`
+
+const SaveSection = styled.div`
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: ${AppColors.surface};
+  border-radius: 8px;
+  text-align: left;
+
+  label {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: ${AppColors.textSecondary};
+
+    input {
+      margin-left: 0.5rem;
+      padding: 0.4rem 0.5rem;
+      border: 1px solid ${AppColors.border};
+      border-radius: 4px;
+      width: 70px;
+      font-size: 0.875rem;
+    }
   }
 `
 
-const QuestionCounter = styled.div`
-  text-align: center;
-  margin-bottom: 10px;
+const StatusText = styled.p`
+  margin-top: 0.75rem;
   font-size: 0.85rem;
   color: ${AppColors.textSecondary};
-`
-
-const ResultImage = styled.img`
-  width: 100%;
-  max-width: 350px;
-  height: auto;
-  margin: 20px auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  display: block;
-  animation: ${fadeIn} 0.8s ease-in-out;
-  object-fit: cover;
-  
-  @media (max-width: 768px) {
-    max-width: 280px;
-  }
-`
-
-const ScoreBox = styled.div`
-  background-color: ${AppColors.tertiary}40;
-  border-left: 4px solid ${AppColors.accent};
-  padding: 15px;
-  margin: 15px 0;
-  border-radius: 6px;
-  font-weight: 600;
-  color: ${AppColors.text};
-`
-
-const AnimatedDiv = styled.div`
-  transition: opacity 0.3s ease, transform 0.3s ease;
 `
 
 interface QuestionType {
   id: number
   question: string
-  options: Array<{
-    text: string
-    score: number
-  }>
+  options: Array<{ text: string; score: number }>
 }
 
 const fagersstromQuestions: QuestionType[] = [
@@ -346,7 +317,6 @@ interface Result {
   level: string
   score: number
   description: string
-  icon: string
   imagePath: string
 }
 
@@ -357,7 +327,6 @@ const getResultInfo = (score: number): Result => {
       score,
       description:
         "Su dependencia a la nicotina es baja. Aunque fuma, su patrón sugiere que tiene cierto control sobre el consumo. Con motivación y apoyo adecuado, podría ser más sencillo dejar de fumar. Se recomienda trabajar en estrategias de reducción progresiva.",
-      icon: "🟢",
       imagePath: bajaImage,
     }
   } else if (score <= 6) {
@@ -365,8 +334,7 @@ const getResultInfo = (score: number): Result => {
       level: "Dependencia Moderada",
       score,
       description:
-        "Su dependencia a la nicotina es moderada. Experimenta síntomas de dependencia significativos y presenta patrones de consumo consolidados. Se recomienda un plan personalizado de reducción con apoyo profesional y posibles intervenciones conductuales.",
-      icon: "🟡",
+        "Su dependencia a la nicotina es moderada. Experimenta síntomas de dependencia significativos. Se recomienda un plan personalizado de reducción con apoyo profesional y posibles intervenciones conductuales.",
       imagePath: moderadaImage,
     }
   } else {
@@ -374,8 +342,7 @@ const getResultInfo = (score: number): Result => {
       level: "Dependencia Alta",
       score,
       description:
-        "Su dependencia a la nicotina es alta. Posiblemente experimenta síntomas de abstinencia severos cuando no fuma. Se recomienda encarecidamente buscar ayuda profesional, incluyendo intervenciones cognitivo-conductuales y apoyo médico especializado.",
-      icon: "🔴",
+        "Su dependencia a la nicotina es alta. Posiblemente experimenta síntomas de abstinencia severos. Se recomienda buscar ayuda profesional, incluyendo intervenciones cognitivo-conductuales y apoyo médico especializado.",
       imagePath: altaImage,
     }
   }
@@ -385,7 +352,9 @@ const TobaccoDependencyTest: React.FC = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [result, setResult] = useState<Result | null>(null)
-  const [isAnimating, setIsAnimating] = useState(false)
+  const [packagePrice, setPackagePrice] = useState<number>(0)
+  const [saveStatus, setSaveStatus] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
 
   const handleAnswerChange = (score: number) => {
     setAnswers((prev) => ({
@@ -395,83 +364,45 @@ const TobaccoDependencyTest: React.FC = () => {
   }
 
   const calculateScore = (): number => {
-    let totalScore = 0
-    for (const score of Object.values(answers)) {
-      totalScore += score
-    }
-    return totalScore
+    return Object.values(answers).reduce((sum, score) => sum + score, 0)
   }
 
   const handleNext = () => {
-    setIsAnimating(true)
-    setTimeout(() => {
-      setCurrentQuestion((prev) => Math.min(prev + 1, fagersstromQuestions.length - 1))
-      setIsAnimating(false)
-    }, 300)
+    setCurrentQuestion((prev) => Math.min(prev + 1, fagersstromQuestions.length - 1))
   }
 
   const handlePrevious = () => {
-    if (currentQuestion > 0) {
-      setIsAnimating(true)
-      setTimeout(() => {
-        setCurrentQuestion((prev) => Math.max(prev - 1, 0))
-        setIsAnimating(false)
-      }, 300)
-    }
+    setCurrentQuestion((prev) => Math.max(prev - 1, 0))
   }
 
   const handleSubmit = () => {
-    setIsAnimating(true)
-    setTimeout(() => {
-      const score = calculateScore()
-      const resultInfo = getResultInfo(score)
-      setResult(resultInfo)
-      setIsAnimating(false)
-    }, 300)
+    const score = calculateScore()
+    setResult(getResultInfo(score))
   }
 
   const handleReset = () => {
-    setIsAnimating(true)
-    setTimeout(() => {
-      setCurrentQuestion(0)
-      setAnswers({})
-      setResult(null)
-      setIsAnimating(false)
-    }, 300)
+    setCurrentQuestion(0)
+    setAnswers({})
+    setResult(null)
   }
 
-  // derive number of cigarettes per day from answer to question 4
   const deriveCigarettesPerDay = (): number => {
-    const score = answers[4] // question id 4
+    const score = answers[4]
     switch (score) {
-      case 0:
-        return 10
-      case 1:
-        return 15
-      case 2:
-        return 25
-      case 3:
-        return 35
-      default:
-        return 0
+      case 0: return 10
+      case 1: return 15
+      case 2: return 25
+      case 3: return 35
+      default: return 0
     }
   }
 
-  const [packagePrice, setPackagePrice] = useState<number>(0)
-  const [saveStatus, setSaveStatus] = useState<string | null>(null)
-  const [isSaving, setIsSaving] = useState(false)
-
   const handleSaveResult = async () => {
     if (!result) return
-
-    // Si no hay token claramente no tiene sesión activa
     const token = localStorage.getItem("token")
     if (!token) {
       setSaveStatus("Por favor, inicia sesión o regístrate para guardar tu resultado")
-      // opcional: redirigir automáticamente tras un par de segundos
-      setTimeout(() => {
-        window.location.href = "/login"
-      }, 2000)
+      setTimeout(() => { window.location.href = "/login" }, 2000)
       return
     }
 
@@ -487,31 +418,20 @@ const TobaccoDependencyTest: React.FC = () => {
       await progressAPI.saveInitialTest(data)
       setSaveStatus("Resultado guardado correctamente")
     } catch (err: any) {
-      console.error("Error saving test result:", err)
-      if (err.response && err.response.status === 401) {
-        setSaveStatus("Por favor, inicia sesión o regístrate para guardar tu resultado")
-      } else if (
-        err.response &&
-        err.response.status === 400 &&
-        err.response.data &&
-        err.response.data.message &&
-        err.response.data.message.includes("Ya existe")
-      ) {
-        // usuario ya tiene un test; intentamos actualizar
+      if (err.response?.status === 400 && err.response?.data?.message?.includes("Ya existe")) {
         try {
           await progressAPI.updateUserProgress({
             dependencyLevel: result.level,
             fagerstromScore: result.score,
           })
           setSaveStatus("Resultado actualizado correctamente")
-        } catch (updateErr: any) {
-          console.error("Error actualizando resultado:", updateErr)
+        } catch {
           setSaveStatus("No se pudo actualizar el resultado")
         }
-      } else if (err.response && err.response.data && err.response.data.message) {
-        setSaveStatus(err.response.data.message)
+      } else if (err.response?.status === 401) {
+        setSaveStatus("Por favor, inicia sesión o regístrate para guardar tu resultado")
       } else {
-        setSaveStatus("Error al guardar el resultado")
+        setSaveStatus(err.response?.data?.message || "Error al guardar el resultado")
       }
     } finally {
       setIsSaving(false)
@@ -519,120 +439,108 @@ const TobaccoDependencyTest: React.FC = () => {
   }
 
   const renderResult = () => {
-    if (result) {
-      return (
-        <ResultCard>
-          <ResultImage src={result.imagePath} alt={result.level} />
-          <h3>{result.level}</h3>
-          <ScoreBox>Puntuación: {result.score} / 10</ScoreBox>
-          <p>{result.description}</p>
-          <p style={{ fontSize: "0.9rem", fontStyle: "italic", color: AppColors.textSecondary }}>
-            Este test utiliza el <strong>Test de Fagerström para la Dependencia a la Nicotina (FTND)</strong>, el
-            instrumento de referencia validado internacionalmente para evaluar la dependencia a la nicotina según:
-            <br />
-            <strong>0-3 puntos:</strong> Dependencia Baja | <strong>4-6 puntos:</strong> Dependencia Moderada |{' '}
-            <strong>7-10 puntos:</strong> Dependencia Alta
-          </p>
+    if (!result) return null
+    return (
+      <ResultCard>
+        <ResultImage src={result.imagePath} alt={result.level} />
+        <h3>{result.level}</h3>
+        <ScoreBox>Puntuación: {result.score} / 10</ScoreBox>
+        <p>{result.description}</p>
+        <p style={{ fontSize: "0.85rem", fontStyle: "italic", color: AppColors.textLight }}>
+          Test de Fagerström para la Dependencia a la Nicotina (FTND).
+          <br />
+          <strong>0-3:</strong> Baja | <strong>4-6:</strong> Moderada | <strong>7-10:</strong> Alta
+        </p>
 
-          {/* formulario para registrar datos adicionales */}
-          <div style={{ marginTop: 20, textAlign: 'left' }}>
-            <label>
-              Cigarrillos por día (estimado):
-              <input
-                type="number"
-                value={deriveCigarettesPerDay()}
-                readOnly
-                style={{ marginLeft: 8, width: 60 }}
-              />
-            </label>
-            <br />
-            <label style={{ display: 'block', marginTop: 10 }}>
-              Precio aproximado del paquete:
-              <input
-                type="number"
-                value={packagePrice}
-                onChange={(e) => setPackagePrice(Number(e.target.value))}
-                style={{ marginLeft: 8, width: 80 }}
-              />
-            </label>
-          </div>
+        <SaveSection>
+          <label>
+            Cigarrillos por día (estimado):
+            <input type="number" value={deriveCigarettesPerDay()} readOnly />
+          </label>
+          <label>
+            Precio aproximado del paquete:
+            <input type="number" value={packagePrice} onChange={(e) => setPackagePrice(Number(e.target.value))} />
+          </label>
+        </SaveSection>
 
-          <Button onClick={handleSaveResult} disabled={isSaving} style={{ marginTop: 15 }}>
-            {isSaving ? 'Guardando...' : 'Guardar Resultado'}
-          </Button>
-          {saveStatus && (
-            <p style={{ marginTop: 10, color: AppColors.textSecondary }}>
-              {saveStatus}{' '}
-              {saveStatus.toLowerCase().includes('inicia sesión') && (
-                <a href="/login" style={{ textDecoration: 'underline', color: AppColors.accent }}>
-                  Iniciar sesión / Registrarse
-                </a>
-              )}
-            </p>
-          )}
-
-          <Button onClick={handleReset} style={{ marginTop: 10 }}>
+        <ButtonContainer>
+          <StyledButton onClick={handleSaveResult} disabled={isSaving}>
+            <Save size={16} />
+            {isSaving ? "Guardando..." : "Guardar Resultado"}
+          </StyledButton>
+          <GhostButton onClick={handleReset}>
+            <RotateCcw size={16} />
             Realizar Test Nuevamente
-          </Button>
-        </ResultCard>
-      )
-    }
-    return null
+          </GhostButton>
+        </ButtonContainer>
+
+        {saveStatus && (
+          <StatusText>
+            {saveStatus}
+            {saveStatus.toLowerCase().includes("inicia sesión") && (
+              <a href="/login" style={{ textDecoration: "underline", color: AppColors.accent, marginLeft: "0.5rem" }}>
+                Iniciar sesión
+              </a>
+            )}
+          </StatusText>
+        )}
+      </ResultCard>
+    )
   }
 
   return (
     <TestContainer>
       {!result ? (
         <>
-          <Title>Test de Fagerström</Title>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", justifyContent: "center", marginBottom: "0.5rem" }}>
+            <Activity size={24} color={AppColors.primary} />
+            <Title>Test de Fagerström</Title>
+          </div>
           <Subtitle>Evaluación validada científicamente de dependencia a la nicotina</Subtitle>
+
           <ProgressBar>
-            <ProgressFill width={`${((currentQuestion + 1) / fagersstromQuestions.length) * 100}%`} />
+            <ProgressFill $width={`${((currentQuestion + 1) / fagersstromQuestions.length) * 100}%`} />
           </ProgressBar>
           <QuestionCounter>
             Pregunta {currentQuestion + 1} de {fagersstromQuestions.length}
           </QuestionCounter>
 
-          <AnimatedDiv
-            style={{
-              opacity: isAnimating ? 0.5 : 1,
-              transform: isAnimating ? "translateX(-10px)" : "translateX(0)",
-            }}
-          >
-            <Question>{fagersstromQuestions[currentQuestion].question}</Question>
-            {fagersstromQuestions[currentQuestion].options.map((option, index) => (
-              <Option
-                key={index}
-                isSelected={answers[fagersstromQuestions[currentQuestion].id] === option.score}
-                className={answers[fagersstromQuestions[currentQuestion].id] === option.score ? "selected" : ""}
-                onClick={() => handleAnswerChange(option.score)}
-              >
-                {option.text}
-              </Option>
-            ))}
-          </AnimatedDiv>
+          <Question key={currentQuestion}>{fagersstromQuestions[currentQuestion].question}</Question>
+
+          {fagersstromQuestions[currentQuestion].options.map((option, index) => (
+            <Option
+              key={index}
+              $isSelected={answers[fagersstromQuestions[currentQuestion].id] === option.score}
+              onClick={() => handleAnswerChange(option.score)}
+            >
+              {option.text}
+            </Option>
+          ))}
 
           <ButtonContainer>
             {currentQuestion > 0 && (
-              <Button onClick={handlePrevious} disabled={isAnimating}>
+              <GhostButton onClick={handlePrevious}>
+                <ChevronLeft size={18} />
                 Anterior
-              </Button>
+              </GhostButton>
             )}
 
             {currentQuestion < fagersstromQuestions.length - 1 ? (
-              <Button
+              <StyledButton
                 onClick={handleNext}
-                disabled={answers[fagersstromQuestions[currentQuestion].id] === undefined || isAnimating}
+                disabled={answers[fagersstromQuestions[currentQuestion].id] === undefined}
               >
                 Siguiente
-              </Button>
+                <ChevronRight size={18} />
+              </StyledButton>
             ) : (
-              <Button
+              <StyledButton
                 onClick={handleSubmit}
-                disabled={answers[fagersstromQuestions[currentQuestion].id] === undefined || isAnimating}
+                disabled={answers[fagersstromQuestions[currentQuestion].id] === undefined}
               >
                 Ver Resultados
-              </Button>
+                <ChevronRight size={18} />
+              </StyledButton>
             )}
           </ButtonContainer>
         </>

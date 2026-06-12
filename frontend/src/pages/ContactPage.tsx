@@ -9,24 +9,31 @@ import Input from "../components/ui/Input"
 import Card from "../components/ui/Card"
 import { useChatbot } from "../components/ChatbotContext"
 import { messageAPI } from "../services/api"
+import { Mail, Phone, MapPin, Clock, MessageCircle, Send } from "lucide-react"
 
-// Componentes estilizados
 const PageContainer = styled.div`
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 3rem 1.5rem;
 `
 
 const PageTitle = styled.h1`
-  font-size: 2.5rem;
-  color: ${AppColors.primary};
-  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: ${AppColors.text};
+  margin-bottom: 0.5rem;
   text-align: center;
+`
+
+const PageSubtitle = styled.p`
+  text-align: center;
+  color: ${AppColors.textSecondary};
+  margin-bottom: 3rem;
+  font-size: 1.05rem;
 `
 
 const ContactGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.5fr;
   gap: 2rem;
 
   @media (max-width: 768px) {
@@ -34,94 +41,103 @@ const ContactGrid = styled.div`
   }
 `
 
-const ContactInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-`
-
-const InfoCard = styled(Card)`
+const ContactInfoSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
 `
 
-const InfoTitle = styled.h3`
-  font-size: 1.25rem;
-  color: ${AppColors.primary};
-  margin-bottom: 0.5rem;
+const InfoCard = styled(Card)`
+  padding: 1.5rem;
+  border: 1px solid ${AppColors.border};
 `
 
-const InfoText = styled.p`
+const InfoTitle = styled.h3`
+  font-size: 1rem;
   color: ${AppColors.text};
-  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `
 
 const InfoItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  color: ${AppColors.textSecondary};
+  font-size: 0.925rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 `
 
-const InfoIcon = styled.span`
-  font-size: 1.5rem;
-  color: ${AppColors.primary};
+const FormCard = styled(Card)`
+  padding: 2rem;
+  border: 1px solid ${AppColors.border};
 `
 
 const ContactForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
+`
+
+const FormRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
 `
 
 const TextArea = styled.textarea`
   width: 100%;
-  min-height: 150px;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.9);
+  min-height: 140px;
+  padding: 0.875rem 1rem;
+  border: 1px solid ${AppColors.border};
+  border-radius: 8px;
+  background-color: ${AppColors.cardBackground};
   color: ${AppColors.text};
-  font-size: 1rem;
+  font-size: 0.925rem;
   font-family: inherit;
   resize: vertical;
+  transition: all 0.2s ease;
 
   &:focus {
     outline: none;
     border-color: ${AppColors.primary};
-    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    box-shadow: 0 0 0 3px ${AppColors.primary}15;
   }
 
   &::placeholder {
-    color: rgba(0, 0, 0, 0.4);
+    color: ${AppColors.textLight};
   }
 `
 
 const SuccessMessage = styled.div`
-  background-color: rgba(76, 175, 80, 0.1);
-  color: ${AppColors.success};
+  background-color: ${AppColors.success}15;
+  color: ${AppColors.accent};
   padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0;
   text-align: center;
+  font-size: 0.925rem;
+  font-weight: 500;
 `
 
 const ErrorMessage = styled.div`
-  background-color: rgba(244, 67, 54, 0.1);
+  background-color: ${AppColors.error}15;
   color: ${AppColors.error};
   padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0;
   text-align: center;
-`
-
-const FormLabel = styled.label`
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: ${AppColors.textSecondary};
+  font-size: 0.925rem;
 `
 
 const ContactPage: React.FC = () => {
@@ -147,27 +163,10 @@ const ContactPage: React.FC = () => {
     setError("")
 
     try {
-      // Enviar el mensaje al backend
-      await messageAPI.create({
-        ...formData,
-        status: "new",
-      })
-
-      // Mostrar mensaje de éxito
+      await messageAPI.create({ ...formData, status: "new" })
       setIsSuccess(true)
-
-      // Limpiar el formulario
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      })
-
-      // Ocultar mensaje después de 5 segundos
-      setTimeout(() => {
-        setIsSuccess(false)
-      }, 5000)
+      setFormData({ name: "", email: "", subject: "", message: "" })
+      setTimeout(() => setIsSuccess(false), 5000)
     } catch (err: any) {
       console.error("Error al enviar mensaje:", err)
       setError(err.response?.data?.message || "Error al enviar el mensaje. Por favor, intenta de nuevo más tarde.")
@@ -179,55 +178,60 @@ const ContactPage: React.FC = () => {
   return (
     <PageContainer>
       <PageTitle>Contacto</PageTitle>
+      <PageSubtitle>Estamos aquí para ayudarte. No dudes en escribirnos.</PageSubtitle>
 
       <ContactGrid>
-        <ContactInfo>
+        <ContactInfoSection>
           <InfoCard>
-            <InfoTitle>Información de Contacto</InfoTitle>
-            <InfoText>
-              Si tienes alguna pregunta o comentario, no dudes en contactarnos. Estamos aquí para ayudarte en tu camino
-              hacia una vida libre de tabaco.
-            </InfoText>
-
+            <InfoTitle>
+              <Mail size={18} color={AppColors.primary} />
+              Información de Contacto
+            </InfoTitle>
             <InfoItem>
-              <InfoIcon>📧</InfoIcon>
-              <span>infozerosmoke@gmail.com</span>
+              <Mail size={16} color={AppColors.primary} />
+              infozerosmoke@gmail.com
             </InfoItem>
-
             <InfoItem>
-              <InfoIcon>📞</InfoIcon>
-              <span>+591 64957120</span>
+              <Phone size={16} color={AppColors.primary} />
+              +591 64957120
             </InfoItem>
-
             <InfoItem>
-              <InfoIcon>📍</InfoIcon>
-              <span>Avenida Villarroel, esquina N° 359</span>
+              <MapPin size={16} color={AppColors.primary} />
+              Avenida Villarroel, esquina N° 359
             </InfoItem>
           </InfoCard>
 
           <InfoCard>
-            <InfoTitle>Horario de Atención</InfoTitle>
-            <InfoText>Nuestro equipo está disponible para atenderte en los siguientes horarios:</InfoText>
+            <InfoTitle>
+              <Clock size={18} color={AppColors.primary} />
+              Horario de Atención
+            </InfoTitle>
             <InfoItem>
-              <InfoIcon>🕒</InfoIcon>
-              <span>Lunes a Viernes: 9:00 - 18:00</span>
+              <Clock size={16} color={AppColors.primary} />
+              Lun - Vie: 9:00 - 18:00
             </InfoItem>
             <InfoItem>
-              <InfoIcon>🕒</InfoIcon>
-              <span>Sábados: 10:00 - 14:00</span>
+              <Clock size={16} color={AppColors.primary} />
+              Sábados: 10:00 - 14:00
             </InfoItem>
           </InfoCard>
 
           <InfoCard>
-            <InfoTitle>Asistencia Inmediata</InfoTitle>
-            <InfoText>
-              Si necesitas ayuda inmediata, puedes utilizar nuestro asistente virtual disponible 24/7.
-            </InfoText>
-            <Button onClick={openChat}>Chatear con Asistente</Button>
+            <InfoTitle>
+              <MessageCircle size={18} color={AppColors.primary} />
+              Asistencia Inmediata
+            </InfoTitle>
+            <p style={{ color: AppColors.textSecondary, fontSize: "0.925rem", marginBottom: "1rem" }}>
+              Si necesitas ayuda inmediata, utiliza nuestro asistente virtual disponible 24/7.
+            </p>
+            <Button onClick={openChat} size="small">
+              <MessageCircle size={16} />
+              Chatear con Asistente
+            </Button>
           </InfoCard>
-        </ContactInfo>
+        </ContactInfoSection>
 
-        <Card>
+        <FormCard>
           {isSuccess && (
             <SuccessMessage>
               ¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.
@@ -237,24 +241,43 @@ const ContactPage: React.FC = () => {
           {error && <ErrorMessage>{error}</ErrorMessage>}
 
           <ContactForm onSubmit={handleSubmit}>
-            <Input label="Nombre" name="name" value={formData.name} onChange={handleChange} required fullWidth />
+            <FormRow>
+              <Input
+                label="Nombre"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                fullWidth
+                placeholder="Tu nombre"
+              />
+              <Input
+                label="Email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                fullWidth
+                placeholder="tu@email.com"
+              />
+            </FormRow>
 
             <Input
-              label="Email"
-              type="email"
-              name="email"
-              value={formData.email}
+              label="Asunto"
+              name="subject"
+              value={formData.subject}
               onChange={handleChange}
               required
               fullWidth
+              placeholder="¿Sobre qué deseas contactarnos?"
             />
 
-            <Input label="Asunto" name="subject" value={formData.subject} onChange={handleChange} required fullWidth />
-
             <div>
-              <FormLabel htmlFor="message">Mensaje</FormLabel>
+              <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "0.875rem", fontWeight: 500, color: AppColors.textSecondary }}>
+                Mensaje
+              </label>
               <TextArea
-                id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
@@ -263,15 +286,15 @@ const ContactPage: React.FC = () => {
               />
             </div>
 
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} size="medium">
+              <Send size={16} />
               {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
             </Button>
           </ContactForm>
-        </Card>
+        </FormCard>
       </ContactGrid>
     </PageContainer>
   )
 }
 
 export default ContactPage
-
