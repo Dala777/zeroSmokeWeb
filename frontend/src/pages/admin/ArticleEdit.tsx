@@ -226,16 +226,24 @@ const ArticleEdit: React.FC = () => {
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader()
-      reader.onload = (evt) => {
-        const target = evt.target
-        if (target?.result) {
-          setArticle((prev) => ({ ...prev, image: target.result as string }))
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const maxSize = 2 * 1024 * 1024
+    if (file.size > maxSize) {
+      alert(`La imagen es demasiado grande (${(file.size / (1024 * 1024)).toFixed(1)} MB). El tamaño máximo permitido es 2 MB.`)
+      e.target.value = ""
+      return
     }
+
+    const reader = new FileReader()
+    reader.onload = (evt) => {
+      const target = evt.target
+      if (target?.result) {
+        setArticle((prev) => ({ ...prev, image: target.result as string }))
+      }
+    }
+    reader.readAsDataURL(file)
   }
 
   const handleAddTag = () => {

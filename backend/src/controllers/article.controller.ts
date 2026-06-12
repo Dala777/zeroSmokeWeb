@@ -59,7 +59,7 @@ export const getArticleById = async (req: Request, res: Response): Promise<void>
 
 export const createArticle = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newArticle = new Article({ ...req.body, authorId: (req as any).user?.id || req.body.authorId })
+    const newArticle = new Article({ ...req.body, authorId: (req as any).userId || req.body.authorId })
     const savedArticle = await newArticle.save()
     res.status(201).json(savedArticle)
   } catch (error) {
