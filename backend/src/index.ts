@@ -13,6 +13,7 @@ import messageRoutes from "./routes/message.routes"
 import progressRoutes from "./routes/progress.routes"
 import planRoutes from "./routes/plan.routes"
 import chatRoutes from "./routes/chat.routes"
+import publicChatRoutes from "./routes/publicChat.routes"
 import emotionalJournalRoutes from "./routes/emotionalJournal.routes"
 import supportNetworkRoutes from "./routes/supportNetwork.routes"
 import rewardsRoutes from "./routes/rewards.routes"
@@ -64,6 +65,7 @@ app.use("/api/messages", messageRoutes)
 app.use("/api/progress", progressRoutes) // Cambiar a /api/progress
 app.use("/api/plans", planRoutes) // Nueva ruta para planes
 app.use("/api/chat", chatRoutes)
+app.use("/api/chat/public", publicChatRoutes)
 app.use("/api/emotional-journal", emotionalJournalRoutes)
 app.use("/api/support-network", supportNetworkRoutes)
 app.use("/api/rewards", rewardsRoutes)

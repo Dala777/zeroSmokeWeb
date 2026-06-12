@@ -170,10 +170,18 @@ const FeatureIcon = styled.div`
   font-size: 1.75rem;
   color: ${AppColors.accent};
   transition: transform 0.3s ease;
+  overflow: hidden;
 
   ${FeatureCard}:hover & {
     transform: scale(1.1);
   }
+`
+
+const FeatureImage = styled.img`
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  padding: 8px;
 `
 
 const FeatureTitle = styled.h3`
@@ -424,7 +432,11 @@ const HomePage: React.FC = () => {
           {homeData.features.map((feature) => (
             <FeatureCard key={feature.id} hoverable>
               <FeatureIcon>
-                <span style={{ fontSize: "1.75rem" }}>{feature.icon}</span>
+                {feature.image ? (
+                  <FeatureImage src={feature.image} alt={feature.title} />
+                ) : (
+                  <span style={{ fontSize: "1.75rem" }}>{feature.icon}</span>
+                )}
               </FeatureIcon>
               <FeatureTitle>{feature.title}</FeatureTitle>
               <FeatureDescription>{feature.description}</FeatureDescription>

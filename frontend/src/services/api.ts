@@ -171,6 +171,13 @@ export const reportAPI = {
   },
 }
 
+export const publicChatAPI = {
+  sendMessage: (data: { message: string; history?: { role: string; text: string }[] }) => {
+    console.log("Sending public chat message to:", `${API_URL}/chat/public`)
+    return axios.post(`${API_URL}/chat/public`, data)
+  },
+}
+
 export default {
   setAuthToken,
   authAPI,
@@ -179,5 +186,6 @@ export default {
   messageAPI,
   progressAPI,
   reportAPI,
+  publicChatAPI,
 }
 
