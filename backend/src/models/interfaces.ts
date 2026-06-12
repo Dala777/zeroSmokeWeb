@@ -29,6 +29,7 @@ export interface IArticle extends Document {
   excerpt?: string
   content: string
   image?: string
+  category: "Educacion" | "Salud" | "Consejos" | "Investigacion" | "Motivacion" | "General"
   status: "published" | "draft"
   authorId: string
   author?: string
@@ -41,6 +42,8 @@ export interface IFAQ extends Document {
   question: string
   answer: string
   category: string
+  status: "active" | "inactive"
+  order: number
   createdAt: Date
   updatedAt?: Date
 }

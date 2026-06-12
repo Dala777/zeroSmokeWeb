@@ -13,6 +13,8 @@ interface AdminFAQ {
   question: string
   answer: string
   category: string
+  status: "active" | "inactive"
+  order: number
   createdAt: string
   updatedAt?: string
 }
@@ -57,7 +59,6 @@ const CategoryPill = styled.button<{ active: boolean }>`
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s ease;
-
   &:hover {
     background-color: ${(p) => (p.active ? "#15803d" : "#E5E7EB")};
   }
@@ -67,7 +68,6 @@ const ClickableCard = styled(Card)`
   margin-bottom: 1rem;
   cursor: pointer;
   transition: box-shadow 0.2s ease;
-
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
@@ -85,6 +85,9 @@ const FaqQuestion = styled.h3`
   color: #111827;
   font-weight: 600;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 `
 
 const FaqCategory = styled.span`
@@ -94,6 +97,15 @@ const FaqCategory = styled.span`
   font-weight: 500;
   background-color: #DCFCE7;
   color: #15803D;
+`
+
+const StatusBadge = styled.span<{ $status: "active" | "inactive" }>`
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  background-color: ${(p) => (p.$status === "active" ? "#DCFCE7" : "#FEF3C7")};
+  color: ${(p) => (p.$status === "active" ? "#15803D" : "#D97706")};
 `
 
 const FaqAnswer = styled.p`
@@ -108,21 +120,33 @@ const FaqAnswer = styled.p`
 const FaqActions = styled.div`
   display: flex;
   gap: 0.5rem;
+  align-items: center;
 `
 
-const ActionButton = styled.button<{ $variant?: "warning" | "danger" }>`
+const ActionButton = styled.button<{ $variant?: "warning" | "danger" | "primary" }>`
   background: none;
   border: none;
   padding: 4px 8px;
   font-size: 13px;
   cursor: pointer;
-  color: ${(p) => (p.$variant === "danger" ? "#DC2626" : "#D97706")};
+  color: ${(p) =>
+    p.$variant === "danger" ? "#DC2626" : p.$variant === "primary" ? "#16a34a" : "#D97706"};
   text-decoration: underline;
   text-underline-offset: 2px;
+  &:hover { opacity: 0.8; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+`
 
-  &:hover {
-    opacity: 0.8;
-  }
+const ReorderButton = styled.button`
+  background: none;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+  color: #6B7280;
+  font-size: 14px;
+  &:hover { background-color: #F3F4F6; }
+  &:disabled { opacity: 0.3; cursor: not-allowed; }
 `
 
 const TextArea = styled.textarea`
@@ -136,24 +160,18 @@ const TextArea = styled.textarea`
   font-size: 14px;
   font-family: inherit;
   resize: vertical;
-
   &:focus {
     outline: none;
     border-color: #16a34a;
     box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
   }
-
-  &::placeholder {
-    color: #9CA3AF;
-  }
+  &::placeholder { color: #9CA3AF; }
 `
 
 const Modal = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -189,10 +207,7 @@ const CloseButton = styled.button`
   cursor: pointer;
   padding: 4px;
   line-height: 1;
-
-  &:hover {
-    color: #111827;
-  }
+  &:hover { color: #111827; }
 `
 
 const FormLabel = styled.label`
@@ -218,7 +233,6 @@ const SelectFilter = styled.select`
   background-color: #FFFFFF;
   color: #111827;
   font-size: 14px;
-
   &:focus {
     outline: none;
     border-color: #16a34a;
@@ -230,6 +244,39 @@ const FormGroup = styled.div`
   margin-bottom: 1.5rem;
 `
 
+const ConfirmOverlay = styled.div`
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+`
+
+const ConfirmBox = styled(Card)`
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+`
+
+const ConfirmTitle = styled.h3`
+  color: #111827;
+  margin-bottom: 0.75rem;
+`
+
+const ConfirmText = styled.p`
+  color: #6B7280;
+  margin-bottom: 1.5rem;
+`
+
+const ConfirmActions = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+`
+
 const FaqsList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("Todas")
@@ -238,16 +285,19 @@ const FaqsList: React.FC = () => {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
   const [currentFaq, setCurrentFaq] = useState<{
     _id: string | null
     question: string
     answer: string
     category: string
+    status: "active" | "inactive"
   }>({
     _id: null,
     question: "",
     answer: "",
     category: "Beneficios",
+    status: "active",
   })
 
   const categories = ["Todas", "Beneficios", "Consejos", "Abstinencia", "Tratamientos", "Salud", "General"]
@@ -284,9 +334,10 @@ const FaqsList: React.FC = () => {
         question: faq.question,
         answer: faq.answer,
         category: faq.category,
+        status: faq.status,
       })
     } else {
-      setCurrentFaq({ _id: null, question: "", answer: "", category: "Beneficios" })
+      setCurrentFaq({ _id: null, question: "", answer: "", category: "Beneficios", status: "active" })
     }
     setIsModalOpen(true)
   }
@@ -306,6 +357,7 @@ const FaqsList: React.FC = () => {
           question: currentFaq.question,
           answer: currentFaq.answer,
           category: currentFaq.category,
+          status: currentFaq.status,
         })
         setFaqs((prev) => prev.map((f) => (f._id === currentFaq._id ? res.data : f)))
       } else {
@@ -313,6 +365,7 @@ const FaqsList: React.FC = () => {
           question: currentFaq.question,
           answer: currentFaq.answer,
           category: currentFaq.category,
+          status: currentFaq.status,
         })
         setFaqs((prev) => [...prev, res.data])
       }
@@ -325,13 +378,38 @@ const FaqsList: React.FC = () => {
   }
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("¿Estás seguro de que quieres eliminar esta pregunta?")) return
     try {
       await faqAPI.delete(id)
       setFaqs((prev) => prev.filter((f) => f._id !== id))
+      setConfirmDelete(null)
     } catch {
       alert("Error al eliminar la pregunta")
     }
+  }
+
+  const handleToggleStatus = async (id: string) => {
+    try {
+      const res = await faqAPI.toggleStatus(id)
+      setFaqs((prev) => prev.map((f) => (f._id === id ? { ...f, ...res.data } : f)))
+    } catch {
+      alert("Error al cambiar estado")
+    }
+  }
+
+  const handleMoveUp = (index: number) => {
+    if (index === 0) return
+    const reordered = [...filteredFaqs]
+    const ids = reordered.map((f) => f._id)
+    ;[ids[index - 1], ids[index]] = [ids[index], ids[index - 1]]
+    faqAPI.reorder(ids).then(() => fetchFaqs()).catch(() => alert("Error al reordenar"))
+  }
+
+  const handleMoveDown = (index: number) => {
+    if (index === filteredFaqs.length - 1) return
+    const reordered = [...filteredFaqs]
+    const ids = reordered.map((f) => f._id)
+    ;[ids[index], ids[index + 1]] = [ids[index + 1], ids[index]]
+    faqAPI.reorder(ids).then(() => fetchFaqs()).catch(() => alert("Error al reordenar"))
   }
 
   if (loading) return <LoadingState message="Cargando preguntas frecuentes..." />
@@ -352,17 +430,13 @@ const FaqsList: React.FC = () => {
       <PageHeader>
         <PageTitle>Gestión de Preguntas Frecuentes ({faqs.length})</PageTitle>
         <div style={{ display: "flex", gap: 8 }}>
-          <Button variant="outline" onClick={fetchFaqs}>
-            Actualizar
-          </Button>
+          <Button variant="outline" onClick={fetchFaqs}>Actualizar</Button>
           <Button onClick={() => handleOpenModal()}>+ Nueva Pregunta</Button>
         </div>
       </PageHeader>
 
       {error && (
-        <div style={{ marginBottom: 16 }}>
-          <ErrorState message={error} />
-        </div>
+        <div style={{ marginBottom: 16 }}><ErrorState message={error} /></div>
       )}
 
       <SearchContainer>
@@ -394,19 +468,37 @@ const FaqsList: React.FC = () => {
         </div>
       )}
 
-      {filteredFaqs.map((faq) => (
+      {filteredFaqs.map((faq, index) => (
         <div key={faq._id} onClick={() => handleOpenModal(faq)}>
           <ClickableCard>
             <FaqHeader>
-              <FaqQuestion>{faq.question}</FaqQuestion>
+              <FaqQuestion>
+                {faq.question}
+                <StatusBadge $status={faq.status}>
+                  {faq.status === "active" ? "Activo" : "Inactivo"}
+                </StatusBadge>
+              </FaqQuestion>
               <FaqCategory>{faq.category}</FaqCategory>
             </FaqHeader>
 
             <FaqAnswer>{faq.answer}</FaqAnswer>
 
             <FaqActions onClick={(e) => e.stopPropagation()}>
+              <ReorderButton
+                disabled={index === 0}
+                onClick={() => handleMoveUp(index)}
+                title="Mover arriba"
+              >▲</ReorderButton>
+              <ReorderButton
+                disabled={index === filteredFaqs.length - 1}
+                onClick={() => handleMoveDown(index)}
+                title="Mover abajo"
+              >▼</ReorderButton>
               <ActionButton onClick={() => handleOpenModal(faq)}>Editar</ActionButton>
-              <ActionButton $variant="danger" onClick={() => handleDelete(faq._id)}>Eliminar</ActionButton>
+              <ActionButton $variant="primary" onClick={() => handleToggleStatus(faq._id)}>
+                {faq.status === "active" ? "Desactivar" : "Activar"}
+              </ActionButton>
+              <ActionButton $variant="danger" onClick={() => setConfirmDelete(faq._id)}>Eliminar</ActionButton>
             </FaqActions>
           </ClickableCard>
         </div>
@@ -422,14 +514,7 @@ const FaqsList: React.FC = () => {
               </ModalHeader>
 
               <FormGroup>
-                <Input
-                  label="Pregunta"
-                  name="question"
-                  value={currentFaq.question}
-                  onChange={handleChange}
-                  fullWidth
-                  required
-                />
+                <Input label="Pregunta" name="question" value={currentFaq.question} onChange={handleChange} fullWidth required />
               </FormGroup>
 
               <FormGroup>
@@ -439,26 +524,23 @@ const FaqsList: React.FC = () => {
 
               <FormGroup>
                 <FormLabel>Categoría</FormLabel>
-                <SelectFilter
-                  name="category"
-                  value={currentFaq.category}
-                  onChange={handleChange}
-                  aria-label="Categoría de la pregunta"
-                >
-                  {categories
-                    .filter((c) => c !== "Todas")
-                    .map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
+                <SelectFilter name="category" value={currentFaq.category} onChange={handleChange} aria-label="Categoría">
+                  {categories.filter((c) => c !== "Todas").map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </SelectFilter>
+              </FormGroup>
+
+              <FormGroup>
+                <FormLabel>Estado</FormLabel>
+                <SelectFilter name="status" value={currentFaq.status} onChange={handleChange} aria-label="Estado">
+                  <option value="active">Activo</option>
+                  <option value="inactive">Inactivo</option>
                 </SelectFilter>
               </FormGroup>
 
               <ButtonContainer>
-                <Button variant="outline" onClick={handleCloseModal}>
-                  Cancelar
-                </Button>
+                <Button variant="outline" onClick={handleCloseModal}>Cancelar</Button>
                 <Button onClick={handleSave} disabled={saving}>
                   {saving ? "Guardando..." : currentFaq._id ? "Actualizar" : "Crear"}
                 </Button>
@@ -466,6 +548,21 @@ const FaqsList: React.FC = () => {
             </ModalContent>
           </div>
         </Modal>
+      )}
+
+      {confirmDelete && (
+        <ConfirmOverlay onClick={() => setConfirmDelete(null)}>
+          <div onClick={(e) => e.stopPropagation()}>
+            <ConfirmBox>
+              <ConfirmTitle>Eliminar pregunta</ConfirmTitle>
+              <ConfirmText>¿Estás seguro de que quieres eliminar esta pregunta frecuente? Esta acción no se puede deshacer.</ConfirmText>
+              <ConfirmActions>
+                <Button variant="outline" onClick={() => setConfirmDelete(null)}>Cancelar</Button>
+                <Button variant="primary" onClick={() => handleDelete(confirmDelete)}>Eliminar</Button>
+              </ConfirmActions>
+            </ConfirmBox>
+          </div>
+        </ConfirmOverlay>
       )}
     </PageContainer>
   )

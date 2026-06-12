@@ -15,6 +15,7 @@ interface AdminArticle {
   excerpt?: string
   content: string
   image?: string
+  category: string
   status: "published" | "draft"
   authorId: string
   author?: string
@@ -221,6 +222,7 @@ const PaginationInfo = styled.span`
 const ArticlesList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
+  const [categoryFilter, setCategoryFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
   const [articles, setArticles] = useState<AdminArticle[]>([])
   const [loading, setLoading] = useState(true)
@@ -251,7 +253,8 @@ const ArticlesList: React.FC = () => {
       article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (article.excerpt?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
     const matchesStatus = statusFilter === "all" || article.status === statusFilter
-    return matchesSearch && matchesStatus
+    const matchesCategory = categoryFilter === "all" || article.category === categoryFilter
+    return matchesSearch && matchesStatus && matchesCategory
   })
 
   const totalPages = Math.max(1, Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE))
@@ -343,6 +346,22 @@ const ArticlesList: React.FC = () => {
           <option value="published">Publicados</option>
           <option value="draft">Borradores</option>
         </SelectFilter>
+        <SelectFilter
+          value={categoryFilter}
+          onChange={(e) => {
+            setCategoryFilter(e.target.value)
+            setCurrentPage(1)
+          }}
+          aria-label="Filtrar artículos por categoría"
+        >
+          <option value="all">Todas las categorías</option>
+          <option value="Educacion">Educación</option>
+          <option value="Salud">Salud</option>
+          <option value="Consejos">Consejos</option>
+          <option value="Investigacion">Investigación</option>
+          <option value="Motivacion">Motivación</option>
+          <option value="General">General</option>
+        </SelectFilter>
       </FilterContainer>
 
       {paginatedArticles.length === 0 && (
@@ -369,6 +388,7 @@ const ArticlesList: React.FC = () => {
 
             <ArticleMeta>
               <span>Autor: {article.author || "Desconocido"}</span>
+              <span>Categoría: {article.category || "General"}</span>
               <span>Fecha: {formatDate(article.createdAt)}</span>
             </ArticleMeta>
 

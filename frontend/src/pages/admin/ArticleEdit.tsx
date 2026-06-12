@@ -9,6 +9,7 @@ import Card from "../../components/ui/Card"
 import LoadingState from "../../components/admin/LoadingState"
 import ErrorState from "../../components/admin/ErrorState"
 import { articleAPI } from "../../services/api"
+import { Eye, EyeOff } from "lucide-react"
 
 const PageContainer = styled.div`
   padding: 1.5rem;
@@ -59,6 +60,10 @@ const TextArea = styled.textarea`
   &::placeholder {
     color: rgba(255, 255, 255, 0.4);
   }
+`
+
+const PreviewCard = styled(Card)`
+  margin-bottom: 1.5rem;
 `
 
 const ButtonContainer = styled.div`
@@ -159,6 +164,7 @@ interface ArticleForm {
   title: string
   content: string
   excerpt: string
+  category: string
   author: string
   status: "published" | "draft"
   image: string
@@ -174,6 +180,7 @@ const ArticleEdit: React.FC = () => {
     title: "",
     content: "",
     excerpt: "",
+    category: "General",
     author: "",
     status: "draft",
     image: "/placeholder.svg?height=400&width=600",
@@ -183,6 +190,7 @@ const ArticleEdit: React.FC = () => {
   const [loading, setLoading] = useState(isEditing)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
+  const [showPreview, setShowPreview] = useState(false)
 
   const fetchArticle = useCallback(async () => {
     if (!id || id === "new") return
@@ -195,6 +203,7 @@ const ArticleEdit: React.FC = () => {
         title: a.title || "",
         content: a.content || "",
         excerpt: a.excerpt || "",
+        category: a.category || "General",
         author: a.author || "",
         status: a.status || "draft",
         image: a.image || "/placeholder.svg?height=400&width=600",
@@ -249,6 +258,7 @@ const ArticleEdit: React.FC = () => {
         title: article.title,
         content: article.content,
         excerpt: article.excerpt,
+        category: article.category,
         author: article.author,
         status: article.status,
         image: article.image,
@@ -285,7 +295,27 @@ const ArticleEdit: React.FC = () => {
     <PageContainer>
       <PageHeader>
         <PageTitle>{isEditing ? "Editar Artículo" : "Crear Nuevo Artículo"}</PageTitle>
+        <Button variant="outline" size="small" onClick={() => setShowPreview(!showPreview)}>
+          {showPreview ? <EyeOff size={16} style={{ marginRight: 6 }} /> : <Eye size={16} style={{ marginRight: 6 }} />}
+          {showPreview ? "Ocultar Vista Previa" : "Vista Previa"}
+        </Button>
       </PageHeader>
+
+      {showPreview && (
+        <PreviewCard>
+          <h3 style={{ color: AppColors.primary, marginBottom: "0.5rem" }}>{article.title || "Sin título"}</h3>
+          <p style={{ color: AppColors.textSecondary, fontSize: "0.875rem", marginBottom: "1rem" }}>
+            {article.category} &middot; {article.author || "Sin autor"}
+          </p>
+          {article.image && (
+            <div style={{ width: "100%", height: 200, overflow: "hidden", borderRadius: 8, marginBottom: "1rem" }}>
+              <img src={article.image} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
+          )}
+          <p style={{ color: AppColors.textSecondary, marginBottom: "1rem" }}>{article.excerpt}</p>
+          <div style={{ color: AppColors.text, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{article.content}</div>
+        </PreviewCard>
+      )}
 
       <form onSubmit={handleSubmit}>
         <Card>
@@ -302,8 +332,20 @@ const ArticleEdit: React.FC = () => {
             />
 
             <FlexContainer>
-              <Input label="Autor" name="author" value={article.author} onChange={handleChange} fullWidth />
-
+              <FlexItem>
+                <Input label="Autor" name="author" value={article.author} onChange={handleChange} fullWidth />
+              </FlexItem>
+              <FlexItem>
+                <FormLabel>Categoría</FormLabel>
+                <SelectFilter name="category" value={article.category} onChange={handleChange}>
+                  <option value="Educacion">Educación</option>
+                  <option value="Salud">Salud</option>
+                  <option value="Consejos">Consejos</option>
+                  <option value="Investigacion">Investigación</option>
+                  <option value="Motivacion">Motivación</option>
+                  <option value="General">General</option>
+                </SelectFilter>
+              </FlexItem>
               <FlexItem>
                 <FormLabel>Estado</FormLabel>
                 <SelectFilter name="status" value={article.status} onChange={handleChange}>

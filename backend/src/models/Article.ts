@@ -6,6 +6,11 @@ const ArticleSchema: Schema = new Schema({
   excerpt: { type: String },
   content: { type: String, required: true },
   image: { type: String },
+  category: {
+    type: String,
+    enum: ["Educacion", "Salud", "Consejos", "Investigacion", "Motivacion", "General"],
+    default: "General",
+  },
   status: { type: String, enum: ["published", "draft"], default: "draft" },
   authorId: { type: String, required: true },
   author: { type: String },

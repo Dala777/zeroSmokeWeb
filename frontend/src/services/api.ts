@@ -66,6 +66,11 @@ export const faqAPI = {
     return axios.get(`${API_URL}/faqs`)
   },
 
+  getActive: () => {
+    console.log("Fetching active FAQs from:", `${API_URL}/faqs/active`)
+    return axios.get(`${API_URL}/faqs/active`)
+  },
+
   getById: (id: string) => axios.get(`${API_URL}/faqs/${id}`),
 
   create: (data: any) => axios.post(`${API_URL}/faqs`, data),
@@ -73,6 +78,10 @@ export const faqAPI = {
   update: (id: string, data: any) => axios.put(`${API_URL}/faqs/${id}`, data),
 
   delete: (id: string) => axios.delete(`${API_URL}/faqs/${id}`),
+
+  toggleStatus: (id: string) => axios.patch(`${API_URL}/faqs/${id}/toggle-status`),
+
+  reorder: (faqIds: string[]) => axios.put(`${API_URL}/faqs/reorder`, { faqIds }),
 }
 
 // API para mensajes
@@ -123,6 +132,45 @@ export const progressAPI = {
   updateUserProgress: (data: any) => axios.put(`${API_URL}/progress/user-progress`, data),
 }
 
+// API para reportes
+export const reportAPI = {
+  getSystem: (format?: string) => {
+    const params = format ? { format } : {}
+    return axios.get(`${API_URL}/admin/reports/system`, { params })
+  },
+
+  getUsers: (format?: string) => {
+    const params = format ? { format } : {}
+    return axios.get(`${API_URL}/admin/reports/users`, { params })
+  },
+
+  getProgress: (format?: string) => {
+    const params = format ? { format } : {}
+    return axios.get(`${API_URL}/admin/reports/progress`, { params })
+  },
+
+  getAcademic: (format?: string) => {
+    const params = format ? { format } : {}
+    return axios.get(`${API_URL}/admin/reports/academic`, { params })
+  },
+
+  downloadExport: async (type: string, format: string) => {
+    const response = await axios.get(`${API_URL}/admin/reports/${type}`, {
+      params: { format },
+      responseType: "blob",
+    })
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement("a")
+    link.href = url
+    const ext = format === "pdf" ? "pdf" : format === "xlsx" ? "xlsx" : "csv"
+    link.setAttribute("download", `ZeroSmoke_${type}_${new Date().toISOString().split("T")[0]}.${ext}`)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.URL.revokeObjectURL(url)
+  },
+}
+
 export default {
   setAuthToken,
   authAPI,
@@ -130,5 +178,6 @@ export default {
   faqAPI,
   messageAPI,
   progressAPI,
+  reportAPI,
 }
 

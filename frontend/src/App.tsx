@@ -21,6 +21,7 @@ import MessageDetail from "./pages/admin/MessageDetail"
 import AnalyticsPage from "./pages/admin/AnalyticsPage"
 import DataSciencePage from "./pages/admin/DataSciencePage"
 import DataScienceV2Page from "./pages/admin/DataScienceV2Page"
+import ReportsPage from "./pages/admin/ReportsPage"
 import LoginPage from "./pages/LoginPage"
 import RegisterPage from "./pages/RegisterPage"
 import Chatbot from "./components/Chatbot"
@@ -79,6 +80,7 @@ const AppRoutes: React.FC = () => {
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="data-science" element={<DataSciencePage />} />
           <Route path="data-science-v2" element={<DataScienceV2Page />} />
+          <Route path="reports" element={<ReportsPage />} />
         </Route>
 
         {/* Estructura de rutas para el layout principal */}

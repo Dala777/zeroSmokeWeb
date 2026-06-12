@@ -1,10 +1,26 @@
 import type { Request, Response } from "express"
 import { Article } from "../models/Article"
 
-// Obtener todos los artículos
 export const getAllArticles = async (req: Request, res: Response): Promise<void> => {
   try {
-    const articles = await Article.find().sort({ createdAt: -1 })
+    const { search, category, status } = req.query
+    const filter: Record<string, unknown> = {}
+
+    if (search && typeof search === "string") {
+      filter.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { excerpt: { $regex: search, $options: "i" } },
+        { content: { $regex: search, $options: "i" } },
+      ]
+    }
+    if (category && typeof category === "string" && category !== "all") {
+      filter.category = category
+    }
+    if (status && typeof status === "string" && status !== "all") {
+      filter.status = status
+    }
+
+    const articles = await Article.find(filter).sort({ createdAt: -1 })
     res.status(200).json(articles)
   } catch (error) {
     console.error("Error al obtener artículos:", error)
@@ -12,7 +28,21 @@ export const getAllArticles = async (req: Request, res: Response): Promise<void>
   }
 }
 
-// Obtener un artículo por ID
+export const getPublishedArticles = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { category } = req.query
+    const filter: Record<string, unknown> = { status: "published" }
+    if (category && typeof category === "string" && category !== "all") {
+      filter.category = category
+    }
+    const articles = await Article.find(filter).sort({ createdAt: -1 })
+    res.status(200).json(articles)
+  } catch (error) {
+    console.error("Error al obtener artículos publicados:", error)
+    res.status(500).json({ message: "Error en el servidor" })
+  }
+}
+
 export const getArticleById = async (req: Request, res: Response): Promise<void> => {
   try {
     const article = await Article.findById(req.params.id)
@@ -27,10 +57,9 @@ export const getArticleById = async (req: Request, res: Response): Promise<void>
   }
 }
 
-// Crear un nuevo artículo
 export const createArticle = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newArticle = new Article(req.body)
+    const newArticle = new Article({ ...req.body, authorId: (req as any).user?.id || req.body.authorId })
     const savedArticle = await newArticle.save()
     res.status(201).json(savedArticle)
   } catch (error) {
@@ -39,7 +68,6 @@ export const createArticle = async (req: Request, res: Response): Promise<void> 
   }
 }
 
-// Actualizar un artículo
 export const updateArticle = async (req: Request, res: Response): Promise<void> => {
   try {
     const updatedArticle = await Article.findByIdAndUpdate(
@@ -58,7 +86,6 @@ export const updateArticle = async (req: Request, res: Response): Promise<void> 
   }
 }
 
-// Eliminar un artículo
 export const deleteArticle = async (req: Request, res: Response): Promise<void> => {
   try {
     const deletedArticle = await Article.findByIdAndDelete(req.params.id)
@@ -72,4 +99,3 @@ export const deleteArticle = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ message: "Error en el servidor" })
   }
 }
-

@@ -23,6 +23,7 @@ import chatHistoryRoutes from "./routes/chatHistory.routes"
 import adminStatsRoutes from "./routes/adminStats.routes"
 import mlRoutes from "./routes/ml.routes"
 import mlV2Routes from "./routes/mlV2.routes"
+import reportsRoutes from "./routes/reports.routes"
 
 // Importar Firebase y scheduler
 import { initFirebaseAdmin } from "./services/notificationPush.service"
@@ -73,6 +74,7 @@ app.use("/api/chat", chatHistoryRoutes)
 app.use("/api/admin/stats", adminStatsRoutes)
 app.use("/api/admin/ml", mlRoutes)
 app.use("/api/admin/ml/v2", mlV2Routes)
+app.use("/api/admin/reports", reportsRoutes)
 
 // Ruta de prueba
 app.get("/api", (req, res) => {

@@ -1,12 +1,22 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { AppColors } from "../styles/colors"
 import Card from "../components/ui/Card"
+import LoadingState from "../components/admin/LoadingState"
+import { faqAPI } from "../services/api"
 
-// Componentes estilizados
+interface PublicFAQ {
+  _id: string
+  question: string
+  answer: string
+  category: string
+  status: string
+  order: number
+}
+
 const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -20,145 +30,138 @@ const PageTitle = styled.h1`
   text-align: center;
 `
 
-const CategoryFilter = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
-  justify-content: center;
+const CategorySection = styled.div`
+  margin-bottom: 2.5rem;
 `
 
-const CategoryPill = styled.button<{ active: boolean }>`
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.1)")};
-  color: ${(props) => (props.active ? "white" : AppColors.text)};
-  border: none;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: ${(props) => (props.active ? AppColors.primary : "rgba(255, 255, 255, 0.2)")};
-  }
+const CategoryTitle = styled.h2`
+  font-size: 1.5rem;
+  color: ${AppColors.accent};
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid ${AppColors.tertiary};
 `
 
 const FaqCard = styled(Card)`
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 `
 
-const FaqQuestion = styled.h3`
-  font-size: 1.25rem;
-  color: ${AppColors.textSecondary};
-  margin-bottom: 1rem;
+const FaqQuestion = styled.button`
+  width: 100%;
+  background: none;
+  border: none;
+  font-size: 1.125rem;
+  color: ${AppColors.text};
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.5rem 0;
+  text-align: left;
+  font-family: inherit;
 
   &:after {
     content: "+";
     font-size: 1.5rem;
+    color: ${AppColors.primary};
     transition: transform 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 1rem;
   }
 
   &[aria-expanded="true"]:after {
-    content: "-";
+    content: "−";
   }
 `
 
 const FaqAnswer = styled.div<{ isOpen: boolean }>`
-  color: ${AppColors.text};
+  color: ${AppColors.textSecondary};
   max-height: ${(props) => (props.isOpen ? "1000px" : "0")};
   overflow: hidden;
-  transition: max-height 0.5s ease;
+  transition: max-height 0.4s ease, margin 0.3s ease;
   margin-top: ${(props) => (props.isOpen ? "1rem" : "0")};
+  line-height: 1.6;
 `
 
-const FaqCategory = styled.span`
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  background-color: rgba(76, 175, 80, 0.1);
-  color: ${AppColors.primary};
-  margin-left: 1rem;
+const ErrorMessage = styled.div`
+  text-align: center;
+  color: ${AppColors.error};
+  padding: 2rem;
 `
-
-// Mock data para pruebas
-const mockFaqs = [
-  {
-    id: 1,
-    question: "¿Cuáles son los beneficios inmediatos de dejar de fumar?",
-    answer:
-      "Los beneficios inmediatos incluyen una mejora en la circulación sanguínea, normalización de la presión arterial y la frecuencia cardíaca, y un aumento en los niveles de oxígeno en la sangre. Además, el sentido del gusto y el olfato comienzan a mejorar en pocos días.",
-    category: "Beneficios",
-  },
-  {
-    id: 2,
-    question: "¿Cómo puedo manejar los antojos de nicotina?",
-    answer:
-      "Para manejar los antojos, puedes intentar técnicas como respiración profunda, beber agua, mantener las manos ocupadas con actividades, masticar chicle sin azúcar, y evitar situaciones que asocias con fumar. También puedes considerar terapias de reemplazo de nicotina como parches o chicles.",
-    category: "Consejos",
-  },
-  {
-    id: 3,
-    question: "¿Cuánto tiempo duran los síntomas de abstinencia?",
-    answer:
-      "Los síntomas físicos de abstinencia suelen alcanzar su punto máximo en los primeros 3-5 días y disminuyen gradualmente durante 2-4 semanas. Sin embargo, los antojos psicológicos pueden persistir durante meses, aunque con menor frecuencia e intensidad con el tiempo.",
-    category: "Abstinencia",
-  },
-  {
-    id: 4,
-    question: "¿Es efectiva la terapia de reemplazo de nicotina?",
-    answer:
-      "Sí, la terapia de reemplazo de nicotina (TRN) ha demostrado ser efectiva para ayudar a las personas a dejar de fumar. Proporciona nicotina en forma controlada sin las toxinas dañinas del humo del tabaco, ayudando a reducir los síntomas de abstinencia mientras se rompe el hábito.",
-    category: "Tratamientos",
-  },
-]
 
 const FaqsPage: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState("Todas")
-  const [openFaqId, setOpenFaqId] = useState<number | null>(null)
+  const [faqs, setFaqs] = useState<PublicFAQ[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [openFaqId, setOpenFaqId] = useState<string | null>(null)
 
-  // Obtener categorías únicas
-  const categories = ["Todas", ...Array.from(new Set(mockFaqs.map((faq) => faq.category)))]
+  const fetchFaqs = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError("")
+      const res = await faqAPI.getActive()
+      setFaqs(res.data)
+    } catch {
+      setError("Error al cargar las preguntas frecuentes")
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
-  // Filtrar FAQs por categoría
-  const filteredFaqs =
-    selectedCategory === "Todas" ? mockFaqs : mockFaqs.filter((faq) => faq.category === selectedCategory)
+  useEffect(() => {
+    fetchFaqs()
+  }, [fetchFaqs])
 
-  const toggleFaq = (id: number) => {
+  const groupedByCategory = faqs.reduce<Record<string, PublicFAQ[]>>((acc, faq) => {
+    if (!acc[faq.category]) acc[faq.category] = []
+    acc[faq.category].push(faq)
+    return acc
+  }, {})
+
+  const toggleFaq = (id: string) => {
     setOpenFaqId(openFaqId === id ? null : id)
+  }
+
+  if (loading) return <LoadingState message="Cargando preguntas frecuentes..." />
+
+  if (error) {
+    return (
+      <PageContainer>
+        <PageTitle>Preguntas Frecuentes</PageTitle>
+        <ErrorMessage>{error}</ErrorMessage>
+      </PageContainer>
+    )
   }
 
   return (
     <PageContainer>
       <PageTitle>Preguntas Frecuentes</PageTitle>
 
-      <CategoryFilter>
-        {categories.map((category) => (
-          <CategoryPill
-            key={category}
-            active={selectedCategory === category}
-            onClick={() => setSelectedCategory(category)}
-          >
-            {category}
-          </CategoryPill>
-        ))}
-      </CategoryFilter>
-
-      {filteredFaqs.map((faq) => (
-        <FaqCard key={faq.id}>
-          <FaqQuestion onClick={() => toggleFaq(faq.id)} aria-expanded={openFaqId === faq.id}>
-            {faq.question}
-            <FaqCategory>{faq.category}</FaqCategory>
-          </FaqQuestion>
-          <FaqAnswer isOpen={openFaqId === faq.id}>{faq.answer}</FaqAnswer>
-        </FaqCard>
-      ))}
+      {faqs.length === 0 ? (
+        <div style={{ textAlign: "center", color: AppColors.textSecondary, padding: "2rem" }}>
+          No hay preguntas frecuentes disponibles en este momento.
+        </div>
+      ) : (
+        Object.entries(groupedByCategory).map(([category, categoryFaqs]) => (
+          <CategorySection key={category}>
+            <CategoryTitle>{category}</CategoryTitle>
+            {categoryFaqs.map((faq) => (
+              <FaqCard key={faq._id}>
+                <FaqQuestion
+                  onClick={() => toggleFaq(faq._id)}
+                  aria-expanded={openFaqId === faq._id}
+                >
+                  {faq.question}
+                </FaqQuestion>
+                <FaqAnswer isOpen={openFaqId === faq._id}>{faq.answer}</FaqAnswer>
+              </FaqCard>
+            ))}
+          </CategorySection>
+        ))
+      )}
     </PageContainer>
   )
 }
 
 export default FaqsPage
-
